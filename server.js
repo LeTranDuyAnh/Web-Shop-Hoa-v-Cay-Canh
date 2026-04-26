@@ -690,17 +690,19 @@ fastify.post('/place-order', async (request, reply) => {
 
   const { customerName, phone, address, note, deliveryTime } = request.body;
   const cart = request.session.cart || [];
-  const appliedVoucher = request.session.appliedVoucher || null; // LẤY VOUCHER TỪ SESSION
+  const appliedVoucher = request.session.appliedVoucher || null; 
 
   if (cart.length === 0) return reply.redirect('/');
 
   const { ObjectId } = fastify.mongo;
   const flowerColl = fastify.mongo.db.collection('flowers');
   const orderColl = fastify.mongo.db.collection('orders');
+  const voucherColl = fastify.mongo.db.collection('vouchers'); // Khai báo collection voucher
 
   try {
     const orderItems = [];
 
+    // 1. Cập nhật kho hàng và chuẩn bị dữ liệu sản phẩm
     await Promise.all(cart.map(async (item) => {
       const flowerId = new ObjectId(item.id);
       const quantityToSubtract = parseInt(item.qty) || 0;
@@ -720,13 +722,14 @@ fastify.post('/place-order', async (request, reply) => {
       );
     }));
 
-    // Tính toán số tiền
+    // 2. Tính toán tiền bạc
     const subTotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const discountAmount = appliedVoucher ? appliedVoucher.discountAmount : 0;
-    const finalTotal = subTotal - discountAmount;
+    const finalTotal = Math.max(0, subTotal - discountAmount); // Đảm bảo không âm
 
+    // 3. Tạo đối tượng đơn hàng mới
     const newOrder = {
-      userId: new ObjectId(user.id),
+      userId: new ObjectId(user.id || user._id), // Đảm bảo lấy đúng ID
       orderedBy: {
         username: user.username,
         fullName: user.name
@@ -736,24 +739,42 @@ fastify.post('/place-order', async (request, reply) => {
         phone: phone || user.phone,
         address: address || user.address,
         note,
-        deliveryTime // Thêm trường thời gian mong muốn từ form
+        deliveryTime 
       },
       items: orderItems,
-      subTotal: subTotal, // Tổng tiền gốc
-      appliedVoucher: appliedVoucher, // Lưu vết thông tin voucher đã dùng
-      totalAmount: finalTotal, // SỐ TIỀN THỰC TẾ PHẢI TRẢ
+      subTotal: subTotal,
+      appliedVoucher: appliedVoucher,
+      totalAmount: finalTotal,
       status: 'pending',
       createdAt: new Date()
     };
 
+    // 4. Lưu đơn hàng vào Database
     const result = await orderColl.insertOne(newOrder);
-    
-    // XÓA GIỎ HÀNG VÀ VOUCHER SAU KHI ĐẶT THÀNG CÔNG
+
+    // --- 5. CỐT LÕI: ĐÁNH DẤU VOUCHER ĐÃ DÙNG ---
+    if (appliedVoucher && appliedVoucher.code) {
+      console.log(`[Voucher System] Đang khóa mã ${appliedVoucher.code} cho user: ${user.username}`);
+      
+      await voucherColl.updateOne(
+        { code: appliedVoucher.code.toUpperCase() },
+        { 
+          // Thêm ID người dùng vào mảng usedBy để lần sau includes() sẽ tìm thấy
+          $addToSet: { usedBy: (user.id || user._id).toString() },
+          // Tăng số lần sử dụng tổng thể (nếu bạn cần thống kê)
+          $inc: { usedCount: 1 } 
+        }
+      );
+    }
+    // ------------------------------------------
+
+    // 6. Xóa session sau khi hoàn tất
     request.session.cart = [];
     request.session.appliedVoucher = null; 
     
-    console.log(`[Order Success] ID: ${result.insertedId} | Tổng: ${finalTotal}đ`);
+    console.log(`[Order Success] ID: ${result.insertedId} | Thực thu: ${finalTotal}đ`);
 
+    // 7. Hiển thị trang thành công
     return reply.view('order_success.pug', { 
       order: { ...newOrder, _id: result.insertedId },
       session: request.session
@@ -1406,52 +1427,77 @@ fastify.delete('/admin/vouchers/delete/:id', async (request, reply) => {
 // Áp dụng Voucher
 fastify.post('/cart/apply-voucher', async (request, reply) => {
     const { voucherCode } = request.body;
-    // Lưu ý: Nếu dùng @fastify/session thì dùng request.session.cart thay vì .get()
     const cart = request.session.cart || []; 
     const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    // Lấy ID người dùng từ session
+    const user = request.session.user; 
 
     console.log(`[Apply Voucher] User nhập: "${voucherCode}" | Tổng đơn: ${total}đ`);
+
+    // 1. Kiểm tra đăng nhập (Bắt buộc để định danh người dùng)
+    if (!user) {
+        return reply.send({ success: false, msg: "Vui lòng đăng nhập để sử dụng mã giảm giá!" });
+    }
+
+    // Lấy ID ra an toàn (đề phòng trường hợp session dùng .id thay vì ._id)
+    const currentUserId = (user.id || user._id || "").toString();
+    
+    if (!currentUserId) {
+        return reply.send({ success: false, msg: "Lỗi dữ liệu người dùng. Vui lòng đăng nhập lại!" });
+    }
 
     const voucher = await fastify.mongo.db.collection('vouchers').findOne({ 
         code: voucherCode.toUpperCase(),
         status: 'active' 
     });
 
+    // 2. Kiểm tra tồn tại
     if (!voucher) {
-        console.warn(`[Apply Voucher] Thất bại: Mã "${voucherCode}" không tồn tại hoặc bị khóa.`);
-        return reply.send({ success: false, msg: "Mã không tồn tại!" });
+        return reply.send({ success: false, msg: "Mã không tồn tại hoặc đã bị khóa!" });
     }
 
-    // Kiểm tra hạn sử dụng
+    // 3. LOGIC QUAN TRỌNG: Kiểm tra xem người này đã dùng mã này chưa
+    // Cường dùng currentUserId đã xử lý .toString() ở trên để so sánh
+    if (voucher.usedBy && voucher.usedBy.includes(currentUserId)) {
+        return reply.send({ success: false, msg: "Mã này bạn đã sử dụng rồi, không thể dùng thêm lần nữa!" });
+    }
+
+    // 4. Kiểm tra hạn sử dụng
     if (new Date() > new Date(voucher.expiryDate)) {
-        console.warn(`[Apply Voucher] Thất bại: Mã "${voucherCode}" đã hết hạn vào ${voucher.expiryDate}`);
-        return reply.send({ success: false, msg: "Mã đã hết hạn!" });
+        return reply.send({ success: false, msg: "Mã giảm giá này đã hết hạn sử dụng!" });
     }
 
-    // Kiểm tra đơn tối thiểu
+    // 5. Kiểm tra đơn tối thiểu
     if (total < voucher.minOrderValue) {
-        console.warn(`[Apply Voucher] Thất bại: Đơn (${total}đ) chưa đủ mức tối thiểu (${voucher.minOrderValue}đ)`);
         return reply.send({ success: false, msg: `Đơn tối thiểu từ ${voucher.minOrderValue.toLocaleString()}đ` });
     }
 
-    // Tính số tiền giảm
+    // 6. Tính số tiền giảm
     let discount = 0;
     if (voucher.discountType === 'percent') {
         discount = (total * voucher.discountValue) / 100;
-        console.log(`[Apply Voucher] Tính giảm %: ${voucher.discountValue}% của ${total} = ${discount}đ`);
     } else {
         discount = voucher.discountValue;
-        console.log(`[Apply Voucher] Tính giảm tiền mặt: ${discount}đ`);
     }
 
-    // Lưu vào session (Cập nhật cú pháp chuẩn cho Fastify Session)
+    // Chặn tổng tiền âm
+    if (discount >= total) {
+        discount = total; 
+    }
+
+    // 7. Lưu vào session để dùng ở bước thanh toán
     request.session.appliedVoucher = {
         code: voucher.code,
-        discountAmount: discount
+        discountAmount: Math.round(discount)
     };
 
-    console.log(`[Apply Voucher] Thành công! Đã lưu vào Session.`);
-    return reply.send({ success: true, msg: "Đã áp dụng mã giảm giá!" });
+    return reply.send({ 
+        success: true, 
+        msg: "Đã áp dụng mã giảm giá thành công!",
+        discountAmount: Math.round(discount),
+        finalTotal: total - Math.round(discount) 
+    });
 });
 
 // Gỡ Voucher
@@ -1459,6 +1505,24 @@ fastify.get('/cart/remove-voucher', async (request, reply) => {
     console.log(`[Voucher Remove] User gỡ bỏ mã: ${request.session.appliedVoucher?.code}`);
     request.session.appliedVoucher = null;
     return reply.redirect('/cart');
+});
+
+
+// Hiển thị Kho Voucher cho khách hàng (Client side)
+fastify.get('/vouchers', async (request, reply) => {
+    try {
+        const now = new Date();
+        // Lấy các mã còn hạn và trạng thái đang hoạt động
+        const vouchers = await fastify.mongo.db.collection('vouchers').find({ 
+            expiryDate: { $gte: now },
+            status: 'active'
+        }).sort({ expiryDate: 1 }).toArray();
+        
+        return reply.view('vouchers_client.pug', { vouchers });
+    } catch (err) {
+        console.error('[Client Voucher Error]', err);
+        reply.status(500).send('Không thể tải kho voucher');
+    }
 });
 
 // Khởi động Server

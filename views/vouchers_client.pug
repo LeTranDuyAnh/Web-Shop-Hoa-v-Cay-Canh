@@ -3,7 +3,7 @@ html(lang="vi")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title VNUA FloraHub - Trao Gửi Yêu Thương
+    title VNUA FloraHub - Kho Ưu Đãi
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
     link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
     style.
@@ -41,7 +41,7 @@ html(lang="vi")
       .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
 
       /* --- BANNER SLIDER --- */
-      .hero-slider { position: relative; height: 70vh; min-height: 450px; width: 100%; overflow: hidden; background: #fce4ec; }
+      .hero-slider { position: relative; height: 60vh; min-height: 400px; width: 100%; overflow: hidden; }
       .slide { 
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; 
         transition: opacity 1s ease-in-out; display: flex; align-items: center; padding: 0 10%; 
@@ -50,46 +50,48 @@ html(lang="vi")
       .slide.active { opacity: 1; z-index: 2; }
       .hero-content { position: relative; z-index: 10; max-width: 500px; }
       .hero-content h1 { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--pink-main); margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
+
+      /* *** ĐIỀU CHỈNH KÍCH THƯỚC NÚT KHÁM PHÁ CHO NHỎ LẠI *** */
       .btn-hero { 
-        padding: 12px 35px; border-radius: 50px; background: var(--pink-main); color: white; 
-        font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s;
-        box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4);
+        padding: 8px 20px; /* Giảm padding */
+        font-size: 0.9rem; /* Giảm font-size */
+        border-radius: 50px; 
+        background: var(--pink-main); 
+        color: white; 
+        font-weight: 700; 
+        text-decoration: none; 
+        display: inline-block; 
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4); 
+        border: none; 
+        cursor: pointer; 
       }
-      .btn-hero:hover { transform: translateY(-3px); background: var(--pink-dark); }
+      .btn-hero:hover { background: var(--pink-dark); }
+      
+      /* Riêng nút trong voucher section thì full width */
+      #vouchers-section .btn-hero { width: 100%; }
 
-      /* --- PRODUCT CARD --- */
-      .product-card { background: var(--white); border-radius: 30px; padding: 20px; text-align: center; transition: 0.4s; border: 1px solid #fef0f2; }
-      .product-card:hover { transform: translateY(-10px); box-shadow: 0 12px 25px rgba(255, 133, 161, 0.15); }
-      .product-card img { width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px; }
-
-      /* --- VOUCHER TICKET STYLE --- */
-      .voucher-banner-container { padding: 60px 8%; display: flex; justify-content: center; background: white; }
-      .voucher-ticket {
-        display: flex; width: 100%; max-width: 950px; background: white; border-radius: 20px; 
-        overflow: hidden; box-shadow: 0 15px 40px rgba(255, 133, 161, 0.15); border: 1px solid #ffeef2;
+      /* --- VOUCHER CARD --- */
+      .voucher-card { 
+        background: var(--white); border-radius: 25px; padding: 0; overflow: hidden;
+        transition: 0.4s; border: 1px solid #fef0f2; display: flex; flex-direction: column;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
       }
-      .ticket-left {
-        flex: 2; padding: 40px; background: linear-gradient(135deg, #fff 0%, #fff0f3 100%);
-        display: flex; flex-direction: column; justify-content: center;
+      .voucher-card:hover { transform: translateY(-10px); box-shadow: 0 12px 25px rgba(255, 133, 161, 0.15); }
+      
+      .v-top {
+        background: linear-gradient(45deg, var(--pink-main), var(--pink-soft));
+        padding: 30px 20px; color: white; text-align: center; position: relative;
       }
-      .ticket-left h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--pink-dark); margin-bottom: 10px; }
-      .discount-val { font-size: 3.5rem; font-weight: 800; color: var(--pink-main); line-height: 1; }
-      .ticket-right {
-        flex: 1; background: var(--pink-main); color: white; display: flex; flex-direction: column; 
-        justify-content: center; align-items: center; padding: 30px; text-align: center; 
-        border-left: 2px dashed rgba(255, 255, 255, 0.5); position: relative;
+      .v-top i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.9; }
+      .v-top h3 { font-size: 2rem; font-weight: 800; margin: 0; }
+      
+      .v-bottom { padding: 20px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+      .v-code { 
+        background: #fdf2f4; border: 2px dashed var(--pink-main); color: var(--pink-dark);
+        padding: 10px; border-radius: 12px; font-family: monospace; font-size: 1.2rem;
+        font-weight: 800; margin-bottom: 15px; letter-spacing: 1px;
       }
-      .ticket-right::before, .ticket-right::after {
-        content: ""; position: absolute; width: 30px; height: 30px; background: #fff; border-radius: 50%; left: -15px;
-      }
-      .ticket-right::before { top: -15px; }
-      .ticket-right::after { bottom: -15px; }
-      .promo-code {
-        background: rgba(255, 255, 255, 0.2); border: 2px dashed white; padding: 10px 20px; 
-        border-radius: 10px; font-family: monospace; font-size: 1.5rem; font-weight: bold; 
-        margin-bottom: 15px; cursor: pointer; transition: 0.3s;
-      }
-      .promo-code:hover { background: white; color: var(--pink-main); }
 
       /* --- NÚT CHAT --- */
       .social-chat-wrapper { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
@@ -103,10 +105,10 @@ html(lang="vi")
       nav.navbar
         a.logo(href="/") FloraHub
         ul.nav-menu
-          li: a.nav-link.active(href="/") Trang chủ
+          li: a.nav-link(href="/") Trang chủ
           li: a.nav-link(href="/explore") Shop Hoa
           li: a.nav-link(href="/wiki") Cẩm nang
-          li: a.nav-link(href="/vouchers") Kho Vouchers
+          li: a.nav-link.active(href="/vouchers") Kho Vouchers
           li: a.nav-link(href="/blog") Tin tức
         .nav-right
           a.icon-btn(href="/cart")
@@ -137,38 +139,28 @@ html(lang="vi")
           .hero-content
             h1 Plant Library
             a.btn-hero(href="/wiki") Khám phá cẩm nang
-    section#products(style="padding: 60px 8%; background: white;")
-      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800;") Sản phẩm nổi bật
-      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
-        if flowers && flowers.length > 0
-          each flower in flowers
-            .product-card
-              img(src=(flower.image || 'https://via.placeholder.com/300x400'))
-              h3= flower.name
-              p(style="color: var(--pink-main); font-weight: 800;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
-              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
-                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px;") Chi tiết
-                form(action="/cart/add", method="POST")
-                  input(type="hidden", name="flowerId", value=flower._id.toString())
-                  button.btn-hero(type="submit" style="padding: 10px 20px;") <i class="fas fa-cart-plus"></i>
+    //- PHẦN HIỂN THỊ TẤT CẢ VOUCHER (THAY THẾ PHẦN PRODUCTS)
+    section#vouchers-section(style="padding: 80px 8%; background: white;")
+      h2(style="text-align: center; font-size: 2.5rem; margin-bottom: 10px; font-weight: 800; color: var(--pink-dark); font-family: 'Dancing Script', cursive;") Kho Voucher Của Bạn
+      p(style="text-align: center; color: #888; margin-bottom: 50px; font-weight: 500;") Chọn ngay ưu đãi tốt nhất cho đơn hàng của mình
 
-    //- --- BANNER VOUCHER 10% ---
-    section.voucher-banner-container
-      .voucher-ticket
-        .ticket-left
-          h2 Chào mừng bạn mới!
-          .discount-val GIẢM 10%
-          p Chỉ dành riêng cho đơn hàng đầu tiên khi bạn đăng nhập vào FloraHub.
-          small(style="color: #bbb; margin-top: 10px; display: block;") * Áp dụng cho đơn hàng từ 200.000đ.
-        
-        .ticket-right
-          p(style="margin-bottom: 10px; font-weight: 600;") MÃ GIẢM GIÁ:
-          .promo-code(onclick="copyVoucher('HELLOVNUA')") NEW2026
-          p(style="font-size: 0.8rem; opacity: 0.9;") Click để sao chép
-          if !session || !session.user
-            a.btn-hero(href="/login" style="background: white; color: var(--pink-main); margin-top: 15px;") Đăng nhập
-          else
-            a.btn-hero(href="/explore" style="background: white; color: var(--pink-main); margin-top: 15px;") Dùng ngay
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if vouchers && vouchers.length > 0
+          each v in vouchers
+            .voucher-card
+              .v-top
+                i.fas.fa-ticket-alt
+                h3= v.discountType === 'percent' ? v.discountValue + '%' : (v.discountValue/1000) + 'K'
+                p(style="font-size: 0.9rem; font-weight: 600; text-transform: uppercase;") Giảm giá
+              .v-bottom
+                div
+                  p(style="font-weight: 700; color: #444; margin-bottom: 5px;")= `Cho đơn từ ${v.minOrderValue.toLocaleString('vi-VN')}đ`
+                  p(style="font-size: 0.85rem; color: #999; margin-bottom: 15px;")= `HSD: ${new Date(v.expiryDate).toLocaleDateString('vi-VN')}`
+                .v-code= v.code
+                button.btn-hero(onclick=`copyVoucher('${v.code}')`) SAO CHÉP MÃ
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 50px;")
+            p(style="color: #bbb; font-style: italic;") Hiện tại chưa có mã giảm giá nào mới.
 
     footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
@@ -200,21 +192,22 @@ html(lang="vi")
       a.chat-btn.zalo(href="https://zalo.me/0398102869" target="_blank"): img(src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_Zalo.svg")
       a.chat-btn.messenger(href="#" target="_blank"): i.fab.fa-facebook-messenger
 
+
     script.
-      // Slider logic
+      // Slider logic đơn giản
       document.addEventListener('DOMContentLoaded', () => {
         const slides = document.querySelectorAll('.slide');
-        let current = 0;
         if(slides.length > 0) {
           slides[0].classList.add('active');
+          let current = 0;
           setInterval(() => {
             slides[current].classList.remove('active');
             current = (current + 1) % slides.length;
             slides[current].classList.add('active');
-          }, 4000); 
+          }, 4000);
         }
       });
-      // Copy voucher logic
+
       function copyVoucher(code) {
         navigator.clipboard.writeText(code);
         alert('Đã sao chép mã: ' + code);
