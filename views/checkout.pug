@@ -1,0 +1,148 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Xác nhận đơn hàng - FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #FF85A1;
+        --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3;
+        --pink-dark: #D63384;
+        --text-dark: #4A4A4A;
+        --white: #FFFFFF;
+        --green-success: #2ecc71;
+      }
+      body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); margin: 0; }
+      
+      .navbar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 15px 5%; background: rgba(255, 255, 255, 0.95); 
+        backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; 
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+      }
+      .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
+
+      .checkout-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+      .checkout-grid { display: grid; grid-template-columns: 1fr 400px; gap: 40px; }
+      
+      @media (max-width: 992px) {
+        .checkout-grid { grid-template-columns: 1fr; }
+      }
+
+      .card-custom { 
+        background: var(--white); border-radius: 30px; padding: 35px; 
+        box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1); border: 1px solid #fef0f2;
+      }
+
+      h2, h4 { font-weight: 800; color: var(--text-dark); margin-bottom: 25px; }
+      h2 i { color: var(--pink-main); margin-right: 15px; }
+
+      .form-group { margin-bottom: 22px; }
+      .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 0.9rem; color: #666; }
+      .form-control { 
+        width: 100%; padding: 14px 20px; border: 2px solid var(--pink-bg); 
+        border-radius: 15px; font-family: 'Quicksand'; font-size: 1rem;
+        transition: 0.3s; outline: none; box-sizing: border-box;
+      }
+      .form-control:focus { border-color: var(--pink-main); box-shadow: 0 0 0 4px rgba(255, 133, 161, 0.1); }
+
+      .order-summary { background: #fff9fa; border: 2px dashed var(--pink-soft); position: sticky; top: 100px; }
+      .item-line { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+      .item-info { flex: 1; }
+      .item-name { font-weight: 700; font-size: 0.95rem; display: block; }
+      .item-price { color: var(--pink-main); font-weight: 600; font-size: 0.85rem; }
+
+      .total-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--pink-bg); }
+      .voucher-badge { color: var(--green-success); font-weight: 700; font-size: 0.9rem; }
+      
+      .btn-submit { 
+        width: 100%; background: var(--pink-main); color: white; border: none;
+        padding: 18px; border-radius: 50px; font-weight: 800; font-size: 1rem;
+        cursor: pointer; transition: 0.4s; margin-top: 25px;
+        box-shadow: 0 8px 20px rgba(255, 133, 161, 0.3);
+        display: flex; justify-content: center; align-items: center; gap: 10px;
+      }
+      .btn-submit:hover { background: #ff7096; transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255, 133, 161, 0.4); }
+      
+      .back-link { display: inline-block; margin-top: 20px; color: #888; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+      .back-link:hover { color: var(--pink-main); }
+
+  body
+    header: nav.navbar: a.logo(href="/") FloraHub
+
+    .checkout-container
+      h2 <i class="fas fa-magic"></i> Hoàn tất đơn hàng của bạn
+
+      form.checkout-grid(action="/place-order" method="POST")
+        //- Bên trái: Thông tin nhận hoa
+        .card-custom
+          h4 <i class="fas fa-truck" style="margin-right: 10px; color: var(--pink-soft);"></i> Thông tin giao hàng
+          
+          .form-group
+            label Họ tên người nhận
+            input.form-control(name="customerName" required placeholder="Nhập tên người nhận hoa...")
+          
+          div(style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;")
+            .form-group
+              label Số điện thoại
+              input.form-control(name="phone" type="tel" pattern="[0-9]{10,11}" required placeholder="Để shipper gọi khi đến...")
+            .form-group
+              label Thời gian mong muốn
+              input.form-control(name="deliveryTime" placeholder="Ví dụ: Sáng mai, 2h chiều...")
+
+          .form-group
+            label Địa chỉ nhận hoa
+            input.form-control(name="address" required placeholder="Số nhà, tên đường, phường/xã...")
+
+          .form-group
+            label Lời nhắn gửi kèm hoa (nếu có)
+            textarea.form-control(name="note" rows="4" placeholder="Viết những lời yêu thương bạn muốn gửi gắm vào đây...")
+          
+          a.back-link(href="/cart") <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng để sửa
+
+        //- Bên phải: Tóm tắt đơn hàng
+        .card-custom.order-summary
+          h4 <i class="fas fa-shopping-bag" style="margin-right: 10px; color: var(--pink-soft);"></i> Tóm tắt đơn hàng
+          
+          .items-list
+            each item in cart
+              .item-line
+                div(style="width: 60px; height: 60px; background: #fff; border: 1px solid var(--pink-bg); border-radius: 12px; overflow: hidden;")
+                  img(src=item.image style="width:100%; height:100%; object-fit:cover;")
+                .item-info
+                  span.item-name #{item.name}
+                  span.item-price #{item.price.toLocaleString('vi-VN')} đ x #{item.qty}
+                span(style="font-weight: 700;") #{(item.price * item.qty).toLocaleString('vi-VN')} đ
+          
+          .total-section
+            div(style="display:flex; justify-content:space-between; margin-bottom: 12px; color: #888;")
+              span Tạm tính:
+              span #{total.toLocaleString('vi-VN')} đ
+            
+            //- HIỂN THỊ VOUCHER NẾU CÓ
+            if appliedVoucher
+              div(style="display:flex; justify-content:space-between; margin-bottom: 12px;")
+                span.voucher-badge <i class="fas fa-ticket-alt"></i> Mã giảm giá (#{appliedVoucher.code}):
+                span.voucher-badge - #{appliedVoucher.discountAmount.toLocaleString('vi-VN')} đ
+            
+            div(style="display:flex; justify-content:space-between; margin-bottom: 25px; color: #888;")
+              span Phí vận chuyển:
+              span(style="color: var(--green-success); font-weight: 600;") Miễn phí
+            
+            div(style="display:flex; justify-content:space-between; font-weight:800; font-size:1.5rem; color: var(--pink-dark); border-top: 1px solid #eee; padding-top: 15px;")
+              span Tổng cộng:
+              - const finalTotal = appliedVoucher ? (total - appliedVoucher.discountAmount) : total
+              span #{finalTotal.toLocaleString('vi-VN')} đ
+          
+          button.btn-submit(type="submit")
+            i.fas.fa-heart
+            span XÁC NHẬN ĐẶT HÀNG
+          
+          p(style="text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 20px; line-height: 1.4;") 
+            | Nhấn "Xác nhận" để FloraHub bắt đầu chuẩn bị 
+            br
+            | những bông hoa tươi nhất cho bạn.

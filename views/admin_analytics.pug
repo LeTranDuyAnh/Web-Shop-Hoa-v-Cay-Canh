@@ -1,0 +1,233 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Báo cáo tài chính - FloraHub Admin
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-dark: #C2185B;
+        --pink-bg: #F8BBD0;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+      }
+      
+      * { box-sizing: border-box; }
+      body { 
+        font-family: 'Quicksand', sans-serif; 
+        background-color: #fdf2f4; 
+        margin: 0; 
+        color: var(--text-dark);
+        overflow-x: hidden;
+      }
+      
+      .admin-layout { display: flex; min-height: 100vh; width: 100%; }
+
+      /* --- SIDEBAR CỐ ĐỊNH (FIXED) --- */
+      nav.admin-sidebar {
+        width: 280px;
+        min-width: 280px;
+        background: var(--white);
+        border-right: 2px solid var(--pink-bg);
+        padding: 30px 20px;
+        /* Khóa vị trí */
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+      }
+
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+      .admin-sidebar li { margin-bottom: 8px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
+      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+
+      .badge-pending {
+        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px;
+        font-size: 0.7rem; margin-left: auto; font-weight: bold;
+        animation: blink-animation 1.5s linear infinite;
+      }
+      @keyframes blink-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      /* --- MAIN CONTENT (ĐẨY LỀ ĐỂ KHÔNG BỊ SIDEBAR ĐÈ) --- */
+      .admin-main { 
+        flex-grow: 1; 
+        padding: 40px; 
+        background-color: #fce4ec;
+        margin-left: 280px; /* Quan trọng: Bằng chiều rộng Sidebar */
+        min-height: 100vh;
+      }
+
+      .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+      
+      .btn-reset { 
+        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
+        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
+        text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4);
+      }
+
+      /* --- THỐNG KÊ CARDS --- */
+      .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+      .stat-card {
+        background: white; padding: 25px; border-radius: 25px; 
+        display: flex; align-items: center; gap: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+      }
+      .icon-box { width: 60px; height: 60px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+      .revenue-box { background: #e3f2fd; color: #1976d2; }
+      .cost-box { background: #fff3e0; color: #ef6c00; }
+      .profit-box { background: #e8f5e9; color: #2e7d32; }
+      .stat-info h3 { font-size: 0.75rem; color: #aaa; margin: 0; text-transform: uppercase; font-weight: 700; }
+      .stat-info p { font-size: 1.5rem; font-weight: 800; margin: 5px 0 0; }
+
+      /* --- BẢNG DỮ LIỆU --- */
+      .table-container { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); margin-bottom: 30px; }
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+      .admin-table th { padding: 10px 15px; text-align: left; color: #bbb; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+      .admin-table td { padding: 15px; background: #fff; border-bottom: 1px solid #f9f9f9; }
+      .admin-table tr:hover td { background: #fff8f9; }
+      
+      .bar-container { background: #fdf2f4; height: 8px; border-radius: 10px; overflow: hidden; width: 100px; }
+      .bar-fill { background: var(--pink-main); height: 100%; border-radius: 10px; }
+
+      .customer-badge { background: #fce4ec; padding: 5px 12px; border-radius: 10px; font-weight: 700; color: var(--pink-dark); font-size: 0.8rem; }
+
+  body
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li: a(href="/admin") 
+            i.fas.fa-spa
+            | Quản lý hoa
+          li: a(href="/admin/library") 
+            i.fas.fa-book-medical
+            | Cẩm nang cây cảnh
+          li: a(href="/admin/users") 
+            i.fas.fa-user-shield
+            | Đội ngũ quản trị
+          li: a(href="/admin/orders") 
+            i.fas.fa-heart
+            | Đơn hàng mới
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li.active: a(href="/admin/analytics") 
+            i.fas.fa-chart-pie
+            | Doanh thu shop
+          li: a(href="/admin/blog/create") 
+            i.fas.fa-pen-nib
+            | Viết bài Blog  
+          li: a(href="/") 
+            i.fas.fa-external-link-alt
+            | Xem cửa hàng
+          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") 
+            i.fas.fa-power-off
+            | Đăng xuất
+
+      main.admin-main
+        header.admin-header
+          h2(style="margin:0; font-weight: 800; color: #444;") 
+            i.fas.fa-chart-line(style="color: var(--pink-main); margin-right: 12px;") 
+            | Báo cáo tài chính
+          a.btn-reset(href="/admin/clear-orders" onclick="return confirm('Xóa sạch dữ liệu để tính toán lại từ đầu?')") 
+            i.fas.fa-sync-alt
+            | Reset báo cáo
+
+        .stats-grid
+          .stat-card
+            .icon-box.revenue-box: i.fas.fa-coins
+            .stat-info
+              h3 Tổng doanh thu
+              p= stats.totalRevenue.toLocaleString('vi-VN') + ' đ'
+          .stat-card
+            .icon-box.cost-box: i.fas.fa-shopping-basket
+            .stat-info
+              h3 Tổng vốn nhập
+              p= stats.totalCost.toLocaleString('vi-VN') + ' đ'
+          .stat-card
+            .icon-box.profit-box: i.fas.fa-hand-holding-usd
+            .stat-info
+              h3 Lợi nhuận ròng
+              p(style="color: #2e7d32;")= stats.totalProfit.toLocaleString('vi-VN') + ' đ'
+
+        .data-section(style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;")
+          .table-container
+            h3(style="margin-top:0; font-size: 1rem; color: #555;") <i class="fas fa-trophy" style="color: #f1c40f;"></i> Top sản phẩm bán chạy
+            table.admin-table
+              thead
+                tr
+                  th Tên hoa
+                  th SL bán
+                  th Tỷ lệ
+              tbody
+                if stats.topFlowers && stats.topFlowers.length > 0
+                  - const maxQty = Math.max(...stats.topFlowers.map(f => f.qty))
+                  each flower in stats.topFlowers
+                    tr
+                      td: strong= flower.name
+                      td= flower.qty + ' chậu'
+                      td: .bar-container: .bar-fill(style=`width: ${(flower.qty/maxQty)*100}%`)
+                else
+                  tr: td(colspan="3", style="text-align:center; padding: 30px; color:#ccc") Chưa có dữ liệu
+
+          .table-container
+            h3(style="margin-top:0; font-size: 1rem; color: #555;") <i class="fas fa-history" style="color: #2ecc71;"></i> Doanh thu hàng ngày
+            table.admin-table
+              thead
+                tr
+                  th Ngày
+                  th Doanh thu
+              tbody
+                if stats.dailyReport && stats.dailyReport.length > 0
+                  each day in stats.dailyReport
+                    tr
+                      td= new Date(day.date).toLocaleDateString('vi-VN')
+                      td: strong= day.amount.toLocaleString('vi-VN') + ' đ'
+                else
+                  tr: td(colspan="2", style="text-align:center; padding: 30px; color:#ccc") Đang cập nhật...
+
+        //- DANH SÁCH KHÁCH HÀNG THÂN THIẾT
+        .table-container
+          h3(style="margin-top:0; font-size: 1.1rem; color: var(--pink-dark);") 
+            i.fas.fa-users(style="margin-right: 10px;")
+            | Khách hàng thân thiết trong tháng (#{new Date().getMonth() + 1}/#{new Date().getFullYear()})
+          table.admin-table
+            thead
+              tr
+                th Tên khách hàng
+                th Số điện thoại
+                th(style="text-align:center") Số đơn đã hoàn tất
+                th(style="text-align:right") Tổng chi tiêu
+            tbody
+              if stats.monthlyCustomers && stats.monthlyCustomers.length > 0
+                each user in stats.monthlyCustomers
+                  tr
+                    td: strong(style="color: #444;")= user.name
+                    td: span(style="color: #888; font-family: monospace;")= user.phone
+                    td(style="text-align:center")
+                      span.customer-badge #{user.orderCount} đơn hàng
+                    td(style="text-align:right; font-weight: 800; color: var(--pink-main);") 
+                      | #{user.totalSpent.toLocaleString('vi-VN')} đ
+              else
+                tr
+                  td(colspan="4", style="text-align: center; padding: 50px; color: #ccc;")
+                    i.fas.fa-user-slash(style="font-size: 2rem; display:block; margin-bottom:10px")
+                    | Chưa có dữ liệu khách hàng trong tháng này.
+
+        footer(style="text-align: center; padding: 20px 0; color: #bbb; font-size: 0.8rem;")
+          p &copy; 2026 VNUA FloraHub Admin. Báo cáo tự động hóa 100%.

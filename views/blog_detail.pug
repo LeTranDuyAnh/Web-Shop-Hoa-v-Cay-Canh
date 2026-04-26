@@ -1,0 +1,120 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title #{post.title} - FloraHub Blog
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-light: #fce4ec;
+        --text-dark: #2d3436;
+        --text-gray: #636e72;
+      }
+      body { 
+        font-family: 'Quicksand', sans-serif; 
+        line-height: 1.8; 
+        margin: 0; 
+        background: #fdf2f4; 
+        color: var(--text-dark); 
+      }
+      
+      .nav-simple {
+        background: #fff;
+        padding: 12px 50px;
+        border-bottom: 2px solid var(--pink-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .nav-simple .logo { font-weight: 800; color: var(--pink-main); text-decoration: none; font-size: 1.3rem; }
+
+      .main-container { 
+        max-width: 800px; /* Thu hẹp nhẹ để tập trung nội dung */
+        margin: 30px auto; 
+        background: #fff; 
+        padding: 40px; 
+        border-radius: 35px; 
+        box-shadow: 0 10px 30px rgba(233, 30, 99, 0.05);
+      }
+
+      .back-link { 
+        text-decoration: none; 
+        color: var(--pink-main); 
+        font-weight: 700; 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 8px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+      }
+
+      h1 { 
+        color: var(--text-dark); 
+        font-size: 2.2rem; 
+        font-weight: 800; 
+        line-height: 1.3;
+        margin: 10px 0 25px 0;
+      }
+      
+      /* CẤU HÌNH BANNER NHỎ GỌN */
+      .banner-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 35px;
+      }
+      .featured-image { 
+        width: 100%;
+        max-width: 650px;    /* Giới hạn chiều rộng banner */
+        height: 350px;       /* Cố định chiều cao vừa phải */
+        object-fit: cover;   /* Giữ tỉ lệ ảnh đẹp không bị méo */
+        border-radius: 20px; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      }
+
+      .content { 
+        font-size: 1.1rem; 
+        color: #333; 
+        text-align: justify;
+      }
+      .post-meta { color: var(--text-gray); font-size: 0.85rem; margin-bottom: 5px; }
+
+      .post-footer {
+        margin-top: 40px;
+        padding-top: 25px;
+        border-top: 1px solid var(--pink-light);
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+      }
+
+  body
+    nav.nav-simple
+      a.logo(href="/") FloraHub
+      a.back-link(href="/blog") #[i.fas.fa-chevron-left] Quay lại Blog
+
+    main.main-container
+      header
+        .post-meta
+          span #[i.far.fa-calendar-alt] #{new Date(post.createdAt).toLocaleDateString('vi-VN')}
+        h1= post.title
+      
+      if post.image
+        .banner-container
+          img.featured-image(src=post.image, alt=post.title)
+      
+      article.content
+        div!= post.content
+
+      footer.post-footer
+        div Cảm ơn bạn đã đọc bài viết!
+        .share-buttons(style="color: var(--pink-main); display: flex; gap: 15px;")
+          i.fab.fa-facebook-f
+          i.fab.fa-instagram
+          i.far.fa-heart

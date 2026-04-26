@@ -1,0 +1,208 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Quản trị Thư viện - FloraHub Wiki
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-dark: #C2185B;
+        --pink-bg: #F8BBD0;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+      }
+      
+      * { box-sizing: border-box; }
+
+      body {
+        font-family: 'Quicksand', sans-serif;
+        background-color: #fdf2f4;
+        margin: 0;
+        padding: 0;
+        color: var(--text-dark);
+      }
+
+      .admin-layout { 
+        display: flex; 
+        min-height: 100vh;
+        width: 100%;
+      }
+
+      /* --- SIDEBAR ĐỒNG BỘ --- */
+      nav.admin-sidebar {
+        width: 280px;
+        min-width: 280px;
+        background: var(--white);
+        border-right: 2px solid var(--pink-bg);
+        padding: 30px 20px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+      }
+      
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--pink-dark);
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+      .admin-sidebar li { margin-bottom: 8px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      
+      /* Active: Hồng đậm chữ trắng */
+      .admin-sidebar li.active a {
+        background: var(--pink-main);
+        color: white;
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+      }
+      
+      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+
+      /* Badge nhấp nháy */
+      .badge-pending {
+        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px;
+        font-size: 0.7rem; margin-left: auto; font-weight: bold;
+        animation: blink-animation 1.5s linear infinite;
+      }
+      @keyframes blink-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      /* --- MAIN CONTENT (TRÀN LỀ CHUẨN) --- */
+      .admin-main {
+        flex-grow: 1;
+        padding: 40px;
+        background-color: #fce4ec;
+      }
+      
+      .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+      
+      .btn-add { 
+        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
+        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); text-decoration: none; display: flex; align-items: center; gap: 8px;
+      }
+      .btn-add:hover { transform: translateY(-2px); background: var(--pink-main); color: white; }
+
+      /* --- TABLE CARD STYLE --- */
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+      .admin-table th { padding: 0 15px 10px; text-align: left; color: #aaa; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+      .admin-table td { padding: 15px; background: white; vertical-align: middle; transition: 0.3s; }
+      .admin-table tr:hover td { background: var(--pink-bg); }
+      .admin-table td:first-child { border-radius: 20px 0 0 20px; }
+      .admin-table td:last-child { border-radius: 0 20px 20px 0; }
+
+      .admin-table img { 
+        border-radius: 12px; 
+        border: 2px solid var(--pink-bg); 
+        object-fit: cover; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      }
+      
+      .family-badge { 
+        background: #fce4ec; color: var(--pink-dark); padding: 5px 12px; 
+        border-radius: 50px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--pink-bg); 
+      }
+      
+      .eco-tag { 
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 0.75rem; color: #666; font-weight: 600; 
+        background: #fdf2f4; padding: 4px 10px; border-radius: 8px; 
+        border: 1px solid var(--pink-bg);
+      }
+
+      .actions a { margin-left: 15px; transition: 0.2s; font-size: 1.1rem; }
+      .actions a:hover { transform: scale(1.2); }
+
+  body
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li: a(href="/admin") 
+            i.fas.fa-spa
+            | Quản lý hoa
+          li.active: a(href="/admin/library") 
+            i.fas.fa-book-medical
+            | Cẩm nang cây cảnh
+          li: a(href="/admin/users") 
+            i.fas.fa-user-shield
+            | Đội ngũ quản trị
+          li: a(href="/admin/orders") 
+            i.fas.fa-heart
+            | Đơn hàng mới
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li: a(href="/admin/analytics") <i class="fas fa-chart-pie"></i> Doanh thu shop
+          li: a(href="/admin/blog/create") 
+            i.fas.fa-pen-nib
+            | Viết bài Blog
+          li: a(href="/") <i class="fas fa-external-link-alt"></i> Xem cửa hàng
+          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") <i class="fas fa-power-off"></i> Đăng xuất
+
+      main.admin-main
+        header.admin-header
+          h2(style="margin:0; font-weight: 800; color: #444;") 
+            i.fas.fa-leaf(style="color: var(--pink-main); margin-right: 12px;") 
+            | Thư viện Wiki Thực vật
+          a.btn-add(href="/admin/library/add") 
+            i.fas.fa-plus-circle
+            | Thêm loài mới
+
+        table.admin-table
+          thead
+            tr
+              th Hình ảnh
+              th Tên thực vật
+              th Phân loại
+              th Chỉ số sinh thái
+              th Thao tác
+          tbody
+            if flora && flora.length > 0
+              each item in flora
+                - const tax = item.taxonomy || {}
+                - const eco = item.ecology || {}
+                tr
+                  td
+                    img(src=item.image || '/public/uploads/default-flower.jpg', width="65", height="65")
+                  td
+                    strong(style="color: #444; font-size: 1.05rem;")= item.common_name
+                    br
+                    small(style="color: var(--pink-main); font-style: italic; font-weight: 700;")= item.scientific_name
+                  td
+                    span.family-badge= tax.family || 'Flora Collection'
+                  td
+                    div(style="display: flex; flex-direction: column; gap: 6px;")
+                      span.eco-tag 
+                        i.fas.fa-vial(style="color: var(--pink-main)")
+                        | pH: #{eco.soil_ph || '--'}
+                      span.eco-tag 
+                        i.fas.fa-temperature-high(style="color: #ff9f43")
+                        | Temp: #{eco.temperature || '--'}
+                  td.actions
+                    a(href=`/admin/library/edit/${item._id}`, title="Chỉnh sửa", style="color: #f1c40f;")
+                      i.fas.fa-pen-nib
+                    a(href=`/admin/library/delete/${item._id}`, onclick="return confirm('Xóa loài này?')", style="color: #ffb8b8;")
+                      i.fas.fa-eraser
+            else
+              tr
+                td(colspan="5", style="text-align: center; padding: 80px; color: #ccc;") 
+                  i.fas.fa-book-open(style="font-size: 4rem; display: block; margin-bottom: 20px; color: var(--pink-bg);")
+                  p(style="font-size: 1.1rem; font-weight: 600;") Thư viện hiện đang trống dữ liệu.

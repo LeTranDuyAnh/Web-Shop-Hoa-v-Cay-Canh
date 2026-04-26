@@ -1,0 +1,207 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Chỉnh sửa: #{flower.name} - VNUA FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-dark: #C2185B;
+        --pink-bg: #FCE4EC;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+      }
+      body { 
+        background: #fdf2f4; 
+        font-family: 'Quicksand', sans-serif; 
+        padding: 50px 0; 
+        color: var(--text-dark);
+      }
+      .edit-container { 
+        max-width: 850px; 
+        margin: 0 auto; 
+        background: var(--white); 
+        padding: 45px; 
+        border-radius: 30px; 
+        box-shadow: 0 15px 35px rgba(194, 24, 91, 0.08); 
+      }
+      .edit-header { 
+        display: flex; 
+        align-items: center; 
+        gap: 20px; 
+        margin-bottom: 35px; 
+        border-bottom: 2px solid var(--pink-bg);
+        padding-bottom: 25px;
+      }
+      .edit-header a { 
+        color: #888; 
+        text-decoration: none; 
+        font-size: 1.4rem; 
+        transition: 0.3s;
+      }
+      .edit-header a:hover { color: var(--pink-main); transform: translateX(-5px); }
+      .edit-header h2 { font-weight: 800; color: var(--pink-dark); margin: 0; }
+      
+      .current-img-preview {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        background: #fff9fa;
+        padding: 20px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        border: 1px dashed var(--pink-bg);
+      }
+      .current-img-preview img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 15px;
+        border: 3px solid var(--white);
+        box-shadow: 0 8px 20px rgba(194, 24, 91, 0.15);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+      .full-width { grid-column: span 2; }
+      .triple-grid { 
+        grid-column: span 2; 
+        display: grid; 
+        grid-template-columns: 1fr 1fr 1fr; 
+        gap: 20px; 
+        background: #fdfdfd;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid #f0f0f0;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #555;
+        font-size: 0.9rem;
+      }
+      .form-group label i { color: var(--pink-main); margin-right: 8px; }
+
+      .form-group input, .form-group textarea, .form-group select {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #eee;
+        border-radius: 15px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: 0.3s;
+        box-sizing: border-box;
+        background: white;
+      }
+      .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        border-color: var(--pink-main);
+        outline: none;
+        box-shadow: 0 0 10px rgba(233, 30, 99, 0.05);
+      }
+      
+      .btn-group {
+        margin-top: 40px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+      .btn-save {
+        flex: 2;
+        background: var(--pink-dark);
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(194, 24, 91, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn-save:hover { 
+        background: var(--pink-main); 
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(194, 24, 91, 0.3);
+      }
+      .btn-cancel {
+        flex: 1;
+        background: #f5f5f5;
+        color: #888;
+        text-align: center;
+        padding: 16px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.3s;
+      }
+      .btn-cancel:hover { background: #eee; color: #555; }
+
+  body
+    .edit-container
+      header.edit-header
+        a(href="/admin") <i class="fas fa-chevron-left"></i>
+        h2 <i class="fas fa-pen-nib" style="font-size: 1.5rem; margin-right: 10px;"></i> Chỉnh sửa: #{flower.name}
+
+      form(action=`/admin/edit/${flower._id}`, method="POST", enctype="multipart/form-data")
+        
+        .current-img-preview
+          img(src=flower.image, alt=flower.name)
+          div
+            label(style="font-weight: 800; color: var(--pink-dark); display: block; margin-bottom: 5px;") Hình ảnh hiện tại
+            p(style="font-size: 0.85rem; color: #777; margin-bottom: 12px;") Chọn file mới nếu bạn muốn thay đổi ảnh minh họa
+            input(type="file", name="image", style="font-size: 0.85rem; color: var(--pink-main); font-weight: 600;")
+
+        .form-grid
+          .form-group
+            label <i class="fas fa-leaf"></i> Tên gọi phổ biến:
+            input(type="text", name="name", value=flower.name, placeholder="Ví dụ: Lan Hồ Điệp Tím", required)
+          
+          .form-group
+            label <i class="fas fa-layer-group"></i> Thể loại:
+            select(name="category", required)
+              option(value="Hoa cảnh", selected=flower.category === "Hoa cảnh") Hoa cảnh
+              option(value="Cây cảnh", selected=flower.category === "Cây cảnh") Cây cảnh
+              option(value="Hoa cưới", selected=flower.category === "Hoa cưới") Hoa cưới
+              option(value="Hoa sinh nhật", selected=flower.category === "Hoa sinh nhật") Hoa sinh nhật
+              option(value="Hoa sự kiện", selected=flower.category === "Hoa sự kiện") Hoa sự kiện
+
+          .form-group
+            label <i class="fas fa-microscope"></i> Tên khoa học (Scientific):
+            input(type="text", name="scientific_name", value=flower.scientific_name, placeholder="Phalaenopsis...")
+
+          .form-group
+            label <i class="fas fa-dna"></i> Thuộc họ thực vật (Family):
+            input(type="text", name="family", value=flower.family, placeholder="Ví dụ: Orchidaceae")
+
+          .triple-grid
+            .form-group
+              label <i class="fas fa-file-invoice-dollar"></i> Giá vốn:
+              input(type="number", name="cost_price", value=flower.cost_price || 0, required)
+            
+            .form-group
+              label <i class="fas fa-tags"></i> Giá bán lẻ:
+              input(type="number", name="price", value=flower.price, required)
+
+            .form-group
+              label <i class="fas fa-warehouse"></i> Số lượng tồn:
+              input(type="number", name="stock", value=flower.stock, required)
+          
+          .form-group.full-width
+            label <i class="fas fa-comment-dots"></i> Mô tả chi tiết sản phẩm:
+            textarea(name="description", rows="6", placeholder="Thông tin về đặc điểm, cách chăm sóc...")= flower.description
+
+        .btn-group
+          button.btn-save(type="submit") <i class="fas fa-save"></i> LƯU THAY ĐỔI
+          a.btn-cancel(href="/admin") HỦY BỎ

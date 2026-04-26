@@ -1,0 +1,176 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Đăng ký - VNUA FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63; 
+        --pink-soft: #F06292;
+        --pink-bg: #FCE4EC;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      
+      body {
+        font-family: 'Quicksand', sans-serif;
+        background: var(--pink-bg);
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(233, 30, 99, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(194, 24, 91, 0.1) 0px, transparent 50%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .flower-decor {
+        position: fixed;
+        color: var(--pink-main);
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.08;
+      }
+
+      .register-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .register-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        padding: 40px;
+        border-radius: 40px;
+        box-shadow: 0 20px 40px rgba(194, 24, 91, 0.1);
+        border: 2px solid white;
+        text-align: center;
+      }
+
+      .logo-area { margin-bottom: 25px; }
+      .logo-area h2 { 
+        font-family: 'Dancing Script', cursive;
+        font-size: 3.2rem; 
+        color: var(--pink-main);
+        margin-bottom: 5px;
+      }
+      .welcome-text {
+        color: #777;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .form-group { text-align: left; margin-bottom: 15px; }
+      .input-wrapper { position: relative; }
+      .input-wrapper i {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--pink-soft);
+        font-size: 0.9rem;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 14px 20px 14px 50px;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        background: white;
+        transition: 0.3s;
+        outline: none;
+        font-family: 'Quicksand', sans-serif;
+      }
+      .form-group input:focus {
+        border-color: var(--pink-main);
+        box-shadow: 0 0 15px rgba(233, 30, 99, 0.1);
+      }
+
+      .btn-register {
+        width: 100%;
+        padding: 15px;
+        background: var(--pink-main);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+        margin: 15px 0;
+        text-transform: uppercase;
+      }
+      .btn-register:hover {
+        background: #C2185B;
+        transform: translateY(-2px);
+      }
+
+      .login-link { margin-top: 20px; font-size: 0.9rem; color: #777; font-weight: 600; }
+      .login-link a { color: var(--pink-main); text-decoration: none; font-weight: 800; }
+
+      .error-msg {
+        color: #d32f2f;
+        background: #feebeb;
+        padding: 10px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+  body
+    i.fas.fa-leaf.flower-decor(style="top: 5%; left: 5%; font-size: 8rem; transform: rotate(-20deg);")
+    i.fas.fa-fan.flower-decor(style="bottom: 5%; right: 5%; font-size: 10rem; opacity: 0.05;")
+    i.fas.fa-spa.flower-decor(style="top: 30%; right: 5%; font-size: 6rem; opacity: 0.06;")
+    
+    .register-container
+      .register-card
+        .logo-area
+          h2 FloraHub
+          p.welcome-text Gia nhập cộng đồng yêu hoa cây cảnh
+        
+        if error
+          .error-msg
+            i.fas.fa-exclamation-circle(style="margin-right: 8px;")
+            span= error
+
+        form(action="/register", method="POST")
+          .form-group
+            .input-wrapper
+              input(type="text", name="username", placeholder="Tên đăng nhập", required)
+              i.fas.fa-user-tag
+          
+          .form-group
+            .input-wrapper
+              input(type="password", name="password", placeholder="Mật khẩu (tối thiểu 6 ký tự)", required)
+              i.fas.fa-key
+          
+          .form-group
+            .input-wrapper
+              input(type="text", name="fullName", placeholder="Họ và tên của bạn", required)
+              i.fas.fa-id-card
+          
+          .form-group
+            .input-wrapper
+              input(type="tel", name="phone", placeholder="Số điện thoại liên hệ", required)
+              i.fas.fa-phone-alt
+
+          .form-group
+            .input-wrapper
+              input(type="text", name="address", placeholder="Địa chỉ giao hàng mặc định", required)
+              i.fas.fa-map-marked-alt
+
+          button.btn-register(type="submit") ĐĂNG KÝ THÀNH VIÊN
+        
+        .login-link
+          p Bạn đã có tài khoản rồi? 
+          a(href="/login") Quay lại Đăng nhập

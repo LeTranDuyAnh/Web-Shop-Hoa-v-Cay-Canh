@@ -1,0 +1,246 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Quản trị FloraHub - Hệ thống quản lý chuyên nghiệp
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63; 
+        --pink-dark: #C2185B; 
+        --pink-bg: #F8BBD0; 
+        --text-dark: #2d3436; 
+        --white: #FFFFFF;
+      }
+      
+      * { box-sizing: border-box; }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; color: var(--text-dark); }
+      
+      .admin-layout { display: flex; min-height: 100vh; width: 100%; }
+
+      /* --- SIDEBAR ĐỒNG BỘ 280PX --- */
+      nav.admin-sidebar {
+        width: 280px; min-width: 280px; background: var(--white);
+        border-right: 2px solid var(--pink-bg); padding: 30px 20px;
+        height: 100vh; position: sticky; top: 0;
+      }
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+      .admin-sidebar li { margin-bottom: 8px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
+      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+
+      .badge-pending {
+        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px;
+        font-size: 0.7rem; margin-left: auto; font-weight: bold;
+        animation: blink-animation 1.5s linear infinite;
+      }
+      @keyframes blink-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      /* --- MAIN CONTENT --- */
+      .admin-main { flex-grow: 1; padding: 40px; background-color: #fce4ec; }
+      .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+      
+      .btn-add { 
+        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
+        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4); display: flex; align-items: center; gap: 8px;
+      }
+      .btn-add:hover { background: var(--pink-main); transform: translateY(-2px); }
+
+      /* Status Badge */
+      .stock-status { font-weight: 800; padding: 6px 14px; border-radius: 50px; font-size: 11px; text-transform: uppercase; }
+      .stock-low { background: #fff4e5; color: #ef6c00; border: 1px solid #ffe0b2; }
+      .stock-out { background: #feebeb; color: #d32f2f; border: 1px solid #ffcdd2; }
+      .stock-ok { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+
+      .category-badge { background: #f0f0f0; color: #666; padding: 4px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+
+      /* Form Style */
+      .modal-form { 
+        background: #fff; padding: 35px; border-radius: 30px; 
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08); margin-bottom: 40px; 
+        border: 2px solid var(--pink-bg);
+      }
+      
+      /* Table Style - Card Mode */
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+      .admin-table th { padding: 15px; text-align: left; color: #bbb; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+      .admin-table td { padding: 20px 15px; background: white; transition: 0.3s; vertical-align: middle; }
+      .admin-table tr:hover td { background: #fff8f9; }
+      .admin-table td:first-child { border-radius: 20px 0 0 20px; border-left: 5px solid var(--pink-bg); }
+      .admin-table td:last-child { border-radius: 0 20px 20px 0; }
+
+      .admin-table img { border-radius: 15px; height: 60px; width: 60px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+      
+      .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 13px; color: #555; }
+      .form-group input, .form-group select, .form-group textarea { 
+        width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #f0f0f0; 
+        border-radius: 15px; outline: none; font-family: inherit; transition: 0.3s; background: #fafafa;
+      }
+      .form-group input:focus, .form-group textarea:focus { border-color: var(--pink-main); background: white; }
+      
+      .action-icon { font-size: 1.2rem; transition: 0.3s; }
+      .action-icon:hover { transform: scale(1.2); }
+
+  body
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li.active: a(href="/admin") 
+            i.fas.fa-spa
+            | Quản lý hoa
+          li: a(href="/admin/library") 
+            i.fas.fa-book-medical
+            | Cẩm nang cây cảnh
+          li: a(href="/admin/users") 
+            i.fas.fa-user-shield
+            | Đội ngũ quản trị
+          li: a(href="/admin/orders") 
+            i.fas.fa-heart
+            | Đơn hàng mới
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li: a(href="/admin/analytics") 
+            i.fas.fa-chart-pie
+            | Doanh thu shop
+          li: a(href="/admin/blog/create") 
+            i.fas.fa-pen-nib
+            | Viết bài Blog
+          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher
+          li: a(href="/") 
+            i.fas.fa-external-link-alt
+            | Xem cửa hàng
+          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") 
+            i.fas.fa-power-off
+            | Đăng xuất
+
+      main.admin-main
+        header.admin-header
+          h2(style="margin:0; font-weight: 800; color: #444;") 
+            i.fas.fa-boxes(style="color: var(--pink-main); margin-right: 12px;") 
+            | Quản lý kho hoa
+          button.btn-add(onclick="toggleForm()") 
+            i.fas.fa-plus-circle
+            | Thêm sản phẩm mới
+
+        section#flower-form.modal-form(style="display:none")
+          form(action="/admin/add", method="POST", enctype="multipart/form-data")
+            h3(style="color: var(--pink-dark); margin-top:0; margin-bottom: 25px;") <i class="fas fa-magic"></i> Đưa hoa lên kệ
+            
+            .form-row(style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;")
+              .form-group
+                label Tên sản phẩm:
+                input(type="text", name="name", placeholder="Ví dụ: Hoa Hồng Leo Pháp", required)
+              .form-group
+                label Thể loại:
+                select(name="category", required)
+                  option(value="Hoa cảnh") Hoa cảnh
+                  option(value="Cây cảnh") Cây cảnh
+                  option(value="Hoa cưới") Hoa cưới
+                  option(value="Hoa sinh nhật") Hoa sinh nhật
+            
+            .form-row(style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;")
+              .form-group
+                label Giá vốn (đ):
+                input(type="number", name="cost_price", placeholder="0", required)
+              .form-group
+                label Giá bán (đ):
+                input(type="number", name="price", placeholder="0", required)
+              .form-group
+                label Số lượng kho:
+                input(type="number", name="stock", placeholder="0", required)
+            
+            .form-group
+              label Ảnh minh họa:
+              input(type="file", name="image", accept="image/*", required)
+            
+            .form-btns(style="display: flex; gap: 12px;")
+              button(type="submit" style="background: var(--pink-dark); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Xác nhận thêm
+              button(type="button", onclick="toggleForm()" style="background: #f5f5f5; color: #888; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Đóng lại
+
+        //- FORM BLOG MỚI (TƯƠNG TỰ FORM HOA CỦA BẠN)
+        section#blog-form.modal-form(style="display:none")
+          form(action="/admin/blog/add", method="POST")
+            h3(style="color: var(--pink-dark); margin-top:0; margin-bottom: 25px;") <i class="fas fa-edit"></i> Đăng bài viết chia sẻ
+            .form-group
+              label Tiêu đề bài viết:
+              input(type="text", name="title", placeholder="Nhập tiêu đề...", required)
+            .form-group
+              label Nội dung:
+              textarea(name="content", rows="8", placeholder="Viết nội dung bài viết vào đây...")
+            .form-btns(style="display: flex; gap: 12px;")
+              button(type="submit" style="background: var(--pink-dark); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Đăng bài ngay
+              button(type="button", onclick="toggleBlogForm()" style="background: #f5f5f5; color: #888; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Đóng lại
+
+        table.admin-table
+          thead
+            tr
+              th Hình ảnh
+              th Thông tin sản phẩm
+              th Thể loại
+              th Giá bán
+              th Trạng thái kho
+              th Thao tác
+          tbody
+            if flowers && flowers.length > 0
+              each flower in flowers
+                tr
+                  td: img(src=flower.image)
+                  td
+                    strong(style="color: #333; font-size: 1rem;")= flower.name
+                    div(style="color: #aaa; font-size: 11px; margin-top: 4px;") ID: #{flower._id.toString().slice(-6).toUpperCase()}
+                  td
+                    span.category-badge= flower.category || 'Phổ thông'
+                  td
+                    strong(style="color: var(--pink-dark); font-size: 1.1rem;")= (flower.price || 0).toLocaleString('vi-VN') + ' đ'
+                  td
+                    if !flower.stock || flower.stock <= 0
+                      span.stock-status.stock-out Cháy hàng
+                    else if flower.stock <= 5
+                      span.stock-status.stock-low Chỉ còn #{flower.stock}
+                    else
+                      span.stock-status.stock-ok Sẵn có: #{flower.stock}
+                  td
+                    div(style="display: flex; gap: 15px;")
+                      a(href=`/admin/edit/${flower._id}` style="color: #f1c40f;")
+                        i.fas.fa-edit.action-icon
+                      a(href=`/admin/delete/${flower._id}` onclick="return confirm('Bạn chắc chắn muốn xóa?')" style="color: #ff7675;")
+                        i.fas.fa-trash-alt.action-icon
+            else
+              tr
+                td(colspan="6", style="text-align: center; padding: 80px; background: white; border-radius: 20px;")
+                  i.fas.fa-box-open(style="font-size: 4rem; color: var(--pink-bg); margin-bottom: 20px; display: block;")
+                  p(style="color: #bbb; font-weight: 600;") Chưa có loại hoa nào trong kho.
+
+    script.
+      function toggleForm() {
+        const form = document.getElementById('flower-form');
+        form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+        if(form.style.display === 'block') {
+          document.getElementById('blog-form').style.display = 'none';
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      // Script cho Blog
+      function toggleBlogForm() {
+        const bForm = document.getElementById('blog-form');
+        bForm.style.display = (bForm.style.display === 'none' || bForm.style.display === '') ? 'block' : 'none';
+        if(bForm.style.display === 'block') {
+          document.getElementById('flower-form').style.display = 'none';
+          bForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }

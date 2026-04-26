@@ -1,0 +1,161 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Chỉnh sửa: #{item.common_name} - VNUA FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-dark: #C2185B;
+        --pink-bg: #F8BBD0;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+      }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; color: var(--text-dark); }
+      
+      .admin-layout { display: flex; min-height: 100vh; }
+
+      /* Sidebar Navigation */
+      nav.admin-sidebar { 
+        width: 260px; background: var(--white); border-right: 2px solid var(--pink-bg); 
+        padding: 30px 20px; position: sticky; top: 0; height: 100vh; box-sizing: border-box;
+      }
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; }
+      .admin-sidebar li { margin-bottom: 10px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 12px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      .admin-sidebar li.active a { background: var(--pink-bg); color: var(--pink-dark); }
+
+      /* Main Content Area */
+      .admin-main { flex: 1; padding: 40px; background-color: #fce4ec; }
+      
+      .edit-card {
+        background: white; padding: 40px; border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(194, 24, 91, 0.05);
+        max-width: 950px; margin: 0 auto;
+      }
+
+      .section-header { 
+        display: flex; align-items: center; gap: 10px;
+        color: var(--pink-dark); font-weight: 800; font-size: 1.1rem;
+        margin: 30px 0 20px; border-bottom: 2px solid var(--pink-bg); padding-bottom: 8px;
+      }
+
+      .form-label { font-weight: 700; color: #555; margin-bottom: 8px; font-size: 0.9rem; display: block; }
+      
+      .form-control {
+        width: 100%; padding: 12px 18px; border: 2px solid #eee; border-radius: 15px;
+        font-family: inherit; font-size: 0.95rem; transition: 0.3s; box-sizing: border-box;
+      }
+      .form-control:focus { border-color: var(--pink-main); outline: none; background-color: #fff9fa; }
+
+      .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; margin-bottom: 15px; }
+      .col-6 { grid-column: span 6; }
+      .col-4 { grid-column: span 4; }
+      .col-12 { grid-column: span 12; }
+
+      .image-preview-box {
+        display: flex; align-items: center; gap: 20px; background: #fff9fa;
+        padding: 20px; border-radius: 20px; border: 1px dashed var(--pink-bg); margin-bottom: 25px;
+      }
+      .image-preview-box img {
+        width: 100px; height: 100px; object-fit: cover; border-radius: 15px;
+        border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+
+      .btn-update {
+        background: var(--pink-dark); color: white; border: none;
+        padding: 15px 40px; border-radius: 50px; font-weight: 800;
+        cursor: pointer; transition: 0.3s; box-shadow: 0 8px 20px rgba(194, 24, 91, 0.2);
+      }
+      .btn-update:hover { background: var(--pink-main); transform: translateY(-2px); }
+      
+      .btn-back { color: #aaa; text-decoration: none; font-weight: 700; margin-right: 20px; }
+
+  body
+    // Gán biến an toàn
+    - const tax = item.taxonomy || {}
+    - const mor = item.morphology || {}
+    - const eco = item.ecology || {}
+    - const her = item.heritage || {}
+
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li: a(href="/admin") <i class="fas fa-spa"></i> Quản lý hoa
+          li.active: a(href="/admin/library") <i class="fas fa-book-medical"></i> Cẩm nang cây cảnh
+          li: a(href="/admin/orders") <i class="fas fa-heart"></i> Đơn hàng
+          li: a(href="/admin/analytics") <i class="fas fa-chart-line"></i> Doanh thu
+          li: a(href="/logout" style="margin-top: 40px; color: #ff7675;") <i class="fas fa-power-off"></i> Thoát
+
+      main.admin-main
+        .edit-card
+          h2(style="font-weight: 800; color: var(--pink-dark); text-align: center; margin-bottom: 5px;") 📝 Cập nhật Cẩm nang
+          p(style="text-align: center; color: #888; margin-bottom: 30px;") Chỉnh sửa dữ liệu thực vật cho: #{item.common_name}
+
+          form(action=`/admin/library/edit/${item._id}`, method="POST", enctype="multipart/form-data")
+            
+            .section-header <i class="fas fa-dna"></i> I. Định danh & Phân loại
+            .row
+              .col-6
+                label.form-label Tên thường gọi
+                input.form-control(name="common_name", value=item.common_name, required)
+              .col-6
+                label.form-label Tên khoa học (Latin)
+                input.form-control(name="scientific_name", value=item.scientific_name, required)
+              .col-4
+                label.form-label Họ (Family)
+                input.form-control(name="family", value=tax.family)
+              .col-4
+                label.form-label Chi (Genus)
+                input.form-control(name="genus", value=tax.genus)
+              .col-4
+                label.form-label Bộ (Order)
+                input.form-control(name="order", value=tax.order)
+
+            .section-header <i class="fas fa-leaf"></i> II. Đặc tính Sinh thái
+            .row
+              .col-6
+                label.form-label Mô tả hoa
+                textarea.form-control(name="flower_desc", rows="3")= mor.flower
+              .col-6
+                label.form-label Đặc điểm lá & thân
+                textarea.form-control(name="leaf_desc", rows="3")= mor.leaf
+              .col-4
+                label.form-label pH Đất lý tưởng
+                input.form-control(name="ph", value=eco.soil_ph)
+              .col-4
+                label.form-label Nhiệt độ thích hợp
+                input.form-control(name="temp", value=eco.temperature)
+              .col-4
+                label.form-label Nguồn gốc vùng miền
+                input.form-control(name="origin", value=eco.origin)
+
+            .section-header <i class="fas fa-history"></i> III. Giá trị & Hình ảnh
+            .row
+              .col-12.mb-3
+                label.form-label Ý nghĩa biểu tượng
+                textarea.form-control(name="symbolism", rows="2")= her.symbolism
+              .col-12.mb-3
+                label.form-label Công dụng & Ứng dụng
+                textarea.form-control(name="medicinal", rows="2")= her.medicinal
+
+            .image-preview-box
+              img(src=item.image, alt="Current image")
+              div(style="flex: 1;")
+                label.form-label(style="color: var(--pink-dark);") Thay đổi ảnh minh họa
+                input.form-control(type="file", name="image")
+                small(style="color: #aaa; margin-top: 5px; display: block;") Để trống nếu muốn giữ nguyên ảnh cũ
+
+            .text-end(style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;")
+              a.btn-back(href="/admin/library") Hủy bỏ
+              button.btn-update(type="submit") <i class="fas fa-save"></i> CẬP NHẬT DỮ LIỆU

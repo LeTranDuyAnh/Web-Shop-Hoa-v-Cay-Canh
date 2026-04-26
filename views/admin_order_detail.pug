@@ -1,0 +1,164 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    title Hóa đơn ##{order._id.toString().slice(-6).toUpperCase()} - FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #FF85A1;
+        --pink-dark: #E91E63;
+        --text-dark: #2d3436;
+        --gray-light: #f9f9f9;
+        --pink-bg: #fff0f3;
+      }
+      body { font-family: 'Quicksand', sans-serif; background: #f4f7f6; color: var(--text-dark); margin: 0; padding: 20px; }
+      .invoice-container { 
+        max-width: 850px; margin: auto; background: white; padding: 50px; 
+        border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-top: 8px solid var(--pink-main);
+        position: relative;
+      }
+      .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid var(--gray-light); }
+      .logo-area h1 { font-family: 'Dancing Script', cursive; color: var(--pink-main); margin: 0; font-size: 32px; }
+      .logo-area p { font-size: 0.85rem; color: #888; margin: 5px 0; }
+      .order-meta { text-align: right; }
+      .order-meta h2 { margin: 0; color: var(--text-dark); letter-spacing: 2px; font-size: 1.5rem; }
+      .order-id { color: var(--pink-main); font-weight: 700; margin-top: 5px; }
+      .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+      .section-title { 
+        font-weight: 800; text-transform: uppercase; color: #b2bec3; 
+        font-size: 11px; border-bottom: 1px solid var(--gray-light); 
+        margin-bottom: 12px; padding-bottom: 5px; letter-spacing: 1px;
+      }
+      .info-block strong { display: block; margin-bottom: 5px; color: var(--text-dark); font-size: 1.05rem; }
+      .info-block p { margin: 5px 0; font-size: 0.9rem; line-height: 1.5; color: #636e72; }
+      .user-tag { 
+        display: inline-block; padding: 3px 10px; background: var(--pink-bg); 
+        color: var(--pink-main); border-radius: 6px; font-size: 0.75rem; font-weight: 700; 
+      }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th { background: var(--gray-light); text-align: left; padding: 15px; font-size: 0.85rem; text-transform: uppercase; color: #636e72; }
+      td { padding: 15px; border-bottom: 1px solid var(--gray-light); font-size: 0.95rem; }
+      .total-box { margin-top: 40px; padding: 25px; background: var(--gray-light); border-radius: 15px; text-align: right; }
+      .total-label { font-weight: 600; color: #636e72; }
+      .total-amount { font-size: 32px; color: var(--pink-dark); font-weight: 800; display: block; margin-top: 8px; }
+      .badge { padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+      .status-pending { background: #ffeaa7; color: #d63031; }
+      .status-completed { background: #55efc4; color: #00b894; }
+      .btn-group { margin-top: 40px; display: flex; gap: 15px; justify-content: center; }
+      .btn { 
+        padding: 12px 25px; border-radius: 50px; text-decoration: none; 
+        font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px;
+        transition: 0.3s; cursor: pointer; border: none;
+      }
+      .btn-print { background: var(--text-dark); color: white; }
+      .btn-back { background: #dfe6e9; color: #636e72; }
+      .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+      @media print { 
+        .btn-group { display: none; } 
+        body { background: white; padding: 0; } 
+        .invoice-container { box-shadow: none; width: 100%; border-radius: 0; padding: 20px; border-top: none; } 
+      }
+
+  body
+    .invoice-container
+      .header
+        .logo-area
+          h1 FloraHub Admin
+          p Đơn vị cung cấp hoa nghệ thuật - VNUA
+          p 
+            i.fas.fa-globe(style="margin-right: 5px;")
+            | www.florahub.vnua
+        .order-meta
+          h2 HÓA ĐƠN CHI TIẾT
+          p.order-id ID: ##{order._id.toString().toUpperCase()}
+          p(style="font-size: 0.85rem; color: #636e72;") Ngày xuất: #{new Date().toLocaleString('vi-VN')}
+
+      .info-grid
+        .info-block
+          .section-title Tài khoản đặt hàng
+          
+          //- ƯU TIÊN 1: Hiển thị Username nếu có
+          if order.userName || (order.orderedBy && order.orderedBy.username)
+            strong(style="color: var(--pink-dark);")
+              i.fas.fa-user-circle(style="margin-right: 8px; color: var(--pink-main);")
+              | #{order.userName || order.orderedBy.username}
+            p: span.user-tag Thành viên FloraHub
+            if order.orderedBy && order.orderedBy.fullName
+              p(style="font-size: 0.8rem; font-style: italic; margin-top: 5px; color: #888;") Họ tên: #{order.orderedBy.fullName}
+          
+          //- ƯU TIÊN 2: Nếu username null nhưng có Họ tên (Trường hợp của bạn)
+          else if order.orderedBy && order.orderedBy.fullName
+            strong(style="color: var(--pink-dark);")
+              i.fas.fa-address-card(style="margin-right: 8px; color: var(--pink-main);")
+              | #{order.orderedBy.fullName}
+            p: span.user-tag Khách đã đăng ký
+            p(style="font-size: 0.75rem; color: #b2bec3;") (Chưa thiết lập username)
+
+          //- ƯU TIÊN 3: Chỉ có ID người dùng
+          else if order.userId
+            strong ID: #{order.userId.toString().slice(-8).toUpperCase()}
+            p: span.user-tag Thành viên hệ thống
+          
+          //- TRƯỜNG HỢP CUỐI: Khách vãng lai
+          else
+            strong 
+              i.fas.fa-user-secret(style="margin-right: 5px; color: #b2bec3;")
+              | Khách vãng lai
+            p: span.user-tag(style="background: #eee; color: #888;") Không có tài khoản
+
+        .info-block
+          .section-title Thông tin người nhận
+          strong= order.customer.name
+          p 
+            i.fas.fa-phone(style="width: 20px; color: #b2bec3;")
+            | #{order.customer.phone}
+          p 
+            i.fas.fa-map-marker-alt(style="width: 20px; color: #b2bec3;")
+            | #{order.customer.address}
+
+        .info-block
+          .section-title Trạng thái & Ghi chú
+          p
+            if order.status === 'pending'
+              span.badge.status-pending Đang chờ xử lý
+            else if order.status === 'completed'
+              span.badge.status-completed Đã hoàn thành
+            else
+              span.badge(style="background: #fab1a0; color: #d63031;") Đã hủy
+          
+          if order.customer.note
+            p(style="font-size: 0.8rem; color: #e67e22; margin-top: 10px;")
+              i.fas.fa-sticky-note(style="margin-right: 5px;")
+              | #{order.customer.note}
+
+      table
+        thead
+          tr
+            th Sản phẩm
+            th(style="text-align: center;") Số lượng
+            th(style="text-align: right;") Đơn giá
+            th(style="text-align: right;") Thành tiền
+        tbody
+          each item in order.items
+            tr
+              td(style="font-weight: 600;")= item.name
+              td(style="text-align: center;") x#{item.qty}
+              td(style="text-align: right;")= item.price.toLocaleString('vi-VN') + ' đ'
+              td(style="text-align: right; font-weight: 700; color: var(--text-dark);")= (item.price * item.qty).toLocaleString('vi-VN') + ' đ'
+      
+      .total-box
+        span.total-label Tổng thanh toán (Đã bao gồm VAT):
+        span.total-amount= order.totalAmount.toLocaleString('vi-VN') + ' đ'
+        p(style="margin: 15px 0 0; font-size: 0.75rem; color: #b2bec3; font-style: italic;") 
+          | Cảm ơn quý khách đã lựa chọn những đóa hoa từ VNUA FloraHub!
+
+      .btn-group
+        button.btn.btn-print(onclick="window.print()") 
+          i.fas.fa-print
+          | In hóa đơn
+        a.btn.btn-back(href="/admin/orders") 
+          i.fas.fa-arrow-left
+          | Quay lại quản lý đơn

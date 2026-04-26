@@ -1,0 +1,25 @@
+{
+  "name": "ttcn2",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/mongodb": "^10.0.0",
+    "@fastify/multipart": "^9.4.0",
+    "@fastify/session": "^11.1.1",
+    "@fastify/static": "^9.0.0",
+    "@fastify/view": "^11.1.1",
+    "bcrypt": "^6.0.0",
+    "fastify": "^5.7.4",
+    "pug": "^3.0.3"
+  }
+}

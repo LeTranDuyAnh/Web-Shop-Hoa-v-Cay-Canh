@@ -1,0 +1,195 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Đăng nhập - VNUA FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #FF85A1;
+        --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3;
+        --text-dark: #4A4A4A;
+        --white: #FFFFFF;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      
+      body {
+        font-family: 'Quicksand', sans-serif;
+        background: var(--pink-bg);
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(255, 133, 161, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(251, 177, 189, 0.1) 0px, transparent 50%);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .flower-decor {
+        position: absolute;
+        color: rgba(255, 133, 161, 0.06);
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .login-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 440px;
+        padding: 20px;
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        padding: 45px;
+        border-radius: 40px;
+        box-shadow: 0 20px 40px rgba(255, 133, 161, 0.1);
+        border: 2px solid white;
+        text-align: center;
+      }
+
+      .logo-area { margin-bottom: 30px; }
+      .logo-area h2 { 
+        font-family: 'Dancing Script', cursive;
+        font-size: 3.2rem; 
+        color: var(--pink-main);
+        margin-bottom: 5px;
+      }
+      .welcome-text {
+        color: #888;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        text-align: left;
+        margin-bottom: 20px;
+      }
+      .input-wrapper {
+        position: relative;
+      }
+      .input-wrapper i {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--pink-soft);
+      }
+      .form-group input {
+        width: 100%;
+        padding: 15px 20px 15px 55px;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        background: white;
+        transition: 0.3s;
+        outline: none;
+      }
+      .form-group input:focus {
+        border-color: var(--pink-main);
+        box-shadow: 0 0 10px rgba(255, 133, 161, 0.1);
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 16px;
+        background: var(--pink-main);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 8px 20px rgba(255, 133, 161, 0.2);
+        margin-bottom: 20px;
+      }
+      .btn-login:hover {
+        background: #ff7096;
+        transform: translateY(-2px);
+      }
+
+      .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .social-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #eee;
+        color: #666;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+      .social-btn:hover {
+        background: var(--pink-bg);
+        color: var(--pink-main);
+        border-color: var(--pink-soft);
+      }
+
+      .register-link {
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #777;
+      }
+      .register-link a {
+        color: var(--pink-main);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+  body
+    i.fas.fa-leaf.flower-decor(style="top: 10%; left: 5%; font-size: 8rem; transform: rotate(-20deg);")
+    i.fas.fa-fan.flower-decor(style="bottom: 10%; right: 5%; font-size: 10rem; opacity: 0.03;")
+    
+    .login-container
+      .login-card
+        .logo-area
+          h2 FloraHub
+          p.welcome-text Chào mừng bạn quay trở lại với vườn hoa!
+        
+        if error
+          div(style="color: #ff4757; background: #fff0f3; padding: 10px; border-radius: 15px; margin-bottom: 20px; font-size: 0.85rem;")
+            i.fas.fa-info-circle(style="margin-right: 5px;")
+            span= error
+
+        form(action="/login", method="POST")
+          .form-group
+            .input-wrapper
+              input(type="text", name="username", placeholder="Tên đăng nhập hoặc Email", required)
+              i.fas.fa-envelope
+          
+          .form-group
+            .input-wrapper
+              input(type="password", name="password", placeholder="Mật khẩu", required)
+              i.fas.fa-lock
+          
+          div(style="text-align: right; margin-bottom: 20px;")
+            a(href="#" style="font-size: 0.8rem; color: #aaa; text-decoration: none;") Quên mật khẩu?
+
+          button.btn-login(type="submit") Đăng Nhập Ngay
+        
+        p(style="font-size: 0.8rem; color: #ccc; position: relative;") 
+          span(style="background: white; padding: 0 10px; position: relative; z-index: 1;") Hoặc đăng nhập với
+          span(style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #eee;")
+
+        .social-login
+          a.social-btn(href="#") <i class="fab fa-facebook-f"></i>
+          a.social-btn(href="#") <i class="fab fa-google"></i>
+          a.social-btn(href="#") <i class="fab fa-apple"></i>
+
+        .register-link
+          p Bạn chưa có tài khoản? 
+          a(href="/register") Đăng ký ngay hôm nay!

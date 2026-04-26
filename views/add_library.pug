@@ -1,0 +1,177 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Thêm loài mới - VNUA FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-dark: #C2185B;
+        --pink-bg: #F8BBD0;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+      }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; color: var(--text-dark); }
+      
+      .admin-layout { display: flex; min-height: 100vh; }
+
+      /* Sidebar */
+      nav.admin-sidebar { width: 260px; background: var(--white); border-right: 2px solid var(--pink-bg); padding: 30px 20px; position: sticky; top: 0; height: 100vh; }
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; }
+      .admin-sidebar li { margin-bottom: 10px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 12px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      .admin-sidebar li.active a { background: var(--pink-bg); color: var(--pink-dark); font-weight: 700; }
+      .admin-sidebar a:hover { background: #fce4ec; color: var(--pink-main); }
+
+      /* Main Content */
+      .admin-main { flex: 1; padding: 40px; background-color: #fce4ec; }
+      
+      .form-card {
+        background: white;
+        padding: 40px;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(194, 24, 91, 0.05);
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .section-divider { 
+        border-bottom: 2px solid var(--pink-bg); 
+        margin: 35px 0 20px; 
+        padding-bottom: 8px; 
+        color: var(--pink-dark); 
+        font-weight: 800;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-label { font-weight: 700; color: #555; margin-bottom: 8px; font-size: 0.9rem; }
+      
+      .form-control {
+        border: 2px solid #eee;
+        border-radius: 15px;
+        padding: 12px 20px;
+        transition: 0.3s;
+        font-family: inherit;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .form-control:focus {
+        border-color: var(--pink-main);
+        outline: none;
+        background-color: #fff9fa;
+      }
+
+      textarea.form-control { border-radius: 20px; }
+
+      .row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+      .col-md-6 { flex: 0 0 calc(50% - 10px); }
+      .col-md-4 { flex: 0 0 calc(33.33% - 14px); }
+      .mb-3 { margin-bottom: 1rem; }
+
+      .btn-save {
+        background: var(--pink-dark);
+        color: white;
+        border: none;
+        padding: 15px 45px;
+        border-radius: 50px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3);
+      }
+      .btn-save:hover { background: var(--pink-main); transform: translateY(-2px); }
+      
+      .btn-cancel {
+        color: #888;
+        text-decoration: none;
+        font-weight: 700;
+        margin-right: 20px;
+      }
+
+  body
+    .admin-layout
+      // Sidebar đồng bộ
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li: a(href="/admin") <i class="fas fa-spa"></i> Quản lý hoa
+          li.active: a(href="/admin/library") <i class="fas fa-book-medical"></i> Cẩm nang cây cảnh
+          li: a(href="/admin/users") <i class="fas fa-user-shield"></i> Đội ngũ quản trị
+          li: a(href="/admin/orders") <i class="fas fa-heart"></i> Đơn hàng mới
+          li: a(href="/admin/analytics") <i class="fas fa-chart-pie"></i> Doanh thu shop
+          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") <i class="fas fa-power-off"></i> Đăng xuất
+
+      main.admin-main
+        .form-card
+          h2(style="font-weight: 800; color: var(--pink-dark); text-align: center; margin-bottom: 10px;") 🌿 Thêm Dữ liệu Thực vật học
+          p(style="text-align: center; color: #888; margin-bottom: 30px;") Cập nhật thông tin khoa học cho thư viện FloraHub
+
+          form(action="/admin/library/add", method="POST", enctype="multipart/form-data")
+            
+            .section-divider <i class="fas fa-fingerprint"></i> I. Định danh (Taxonomy)
+            .row
+              .col-md-6.mb-3
+                label.form-label Tên thường gọi
+                input.form-control(name="common_name", placeholder="Ví dụ: Lan Hồ Điệp", required)
+              .col-md-6.mb-3
+                label.form-label Tên khoa học
+                input.form-control(name="scientific_name", placeholder="Phalaenopsis amabilis", required)
+            .row
+              .col-md-4.mb-3
+                label.form-label Họ (Family)
+                input.form-control(name="family", placeholder="Orchidaceae")
+              .col-md-4.mb-3
+                label.form-label Chi (Genus)
+                input.form-control(name="genus", placeholder="Phalaenopsis")
+              .col-md-4.mb-3
+                label.form-label Bộ (Order)
+                input.form-control(name="order", placeholder="Asparagales")
+
+            .section-divider <i class="fas fa-microscope"></i> II. Hình thái & Sinh thái
+            .row
+              .col-md-6.mb-3
+                label.form-label Mô tả hoa
+                textarea.form-control(name="flower_desc", rows="3", placeholder="Mô tả màu sắc, hình dáng cánh hoa...")
+              .col-md-6.mb-3
+                label.form-label Đặc điểm lá/thân
+                textarea.form-control(name="leaf_desc", rows="3", placeholder="Đặc điểm rễ khí sinh, lá dày...")
+            .row
+              .col-md-4.mb-3
+                label.form-label pH Đất (Độ chua)
+                input.form-control(name="ph", placeholder="Ví dụ: 5.5 - 6.5")
+              .col-md-4.mb-3
+                label.form-label Nhiệt độ lý tưởng
+                input.form-control(name="temp", placeholder="Ví dụ: 18°C - 28°C")
+              .col-md-4.mb-3
+                label.form-label Nguồn gốc địa lý
+                input.form-control(name="origin", placeholder="Đông Nam Á, Úc...")
+
+            .section-divider <i class="fas fa-image"></i> III. Di sản & Hình ảnh
+            .mb-3
+              label.form-label Ý nghĩa biểu tượng
+              textarea.form-control(name="symbolism", rows="2", placeholder="Sự sang trọng, lòng biết ơn...")
+            .mb-3
+              label.form-label Công dụng y học / Ứng dụng
+              textarea.form-control(name="medicinal", rows="2", placeholder="Làm sạch không khí, dược liệu...")
+            .mb-4
+              label.form-label Tải lên hình ảnh minh họa
+              input.form-control(type="file", name="image", required)
+
+            .text-end(style="margin-top: 40px; border-top: 1px solid #f0f0f0; padding-top: 25px;")
+              a.btn-cancel(href="/admin/library") Hủy bỏ
+              button.btn-save(type="submit") <i class="fas fa-cloud-upload-alt"></i> LƯU DỮ LIỆU
+
+    footer(style="text-align: center; padding: 30px; color: #bbb; font-size: 0.85rem;")
+      p &copy; 2026 VNUA FloraHub | Quản trị viên thư viện thực vật

@@ -1,0 +1,251 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= entry.common_name + " | VNUA Flora Wiki"
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    //- Thêm Be Vietnam Pro để tiếng Việt hiển thị rõ nét hơn
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Quicksand:wght@500;700&display=swap", rel="stylesheet")
+    style.
+      :root { 
+        --pink-main: #FF85A1; 
+        --pink-dark: #E91E63; 
+        --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3;
+        --text-dark: #2D3436; /* Màu chữ đậm hơn để dễ đọc */
+        --shadow: 0 10px 30px rgba(255, 133, 161, 0.15);
+      }
+      body { 
+        background-color: var(--pink-bg); 
+        font-family: 'Be Vietnam Pro', sans-serif; 
+        color: var(--text-dark);
+        line-height: 1.6;
+      }
+      
+      /* --- NAVBAR SYNC --- */
+      .navbar { 
+        padding: 15px 5%; 
+        background: rgba(255, 255, 255, 0.98); 
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+      }
+      .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
+      .btn-back {
+        color: var(--pink-main);
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Quicksand', sans-serif;
+      }
+      .btn-back:hover { color: var(--pink-dark); transform: translateX(-5px); }
+
+      /* --- WIKI CONTAINER --- */
+      .wiki-container { 
+        background: white; 
+        border-radius: 40px; 
+        overflow: hidden; 
+        box-shadow: var(--shadow); 
+        margin-top: 30px; 
+        margin-bottom: 50px;
+        border: 1px solid rgba(255, 133, 161, 0.1);
+      }
+      .wiki-header { 
+        background: linear-gradient(135deg, #FF85A1 0%, #FBB1BD 100%); 
+        color: white; 
+        padding: 50px 40px; 
+      }
+      .wiki-header h1 { 
+        font-family: 'Dancing Script', cursive; 
+        font-size: 3.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1); 
+      }
+      .scientific-name {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.5rem;
+        font-style: italic;
+        opacity: 0.9;
+        font-weight: 500;
+      }
+
+      .taxonomy-badge { 
+        background: rgba(255,255,255,0.15); 
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3); 
+        border-radius: 20px; 
+        padding: 20px; 
+        margin-top: 25px; 
+        font-family: 'Quicksand', sans-serif;
+      }
+      
+      .wiki-image { 
+        width: 100%; 
+        border-radius: 30px; 
+        aspect-ratio: 4/3;
+        object-fit: cover; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
+        border: 6px solid white;
+      }
+
+      /* --- CONTENT SECTIONS --- */
+      .section-title { 
+        color: var(--pink-dark); 
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700; 
+        border-bottom: 2px dashed var(--pink-soft); 
+        padding-bottom: 12px; 
+        margin-bottom: 25px; 
+        display: flex; 
+        align-items: center; 
+      }
+      .info-card { 
+        border: none; 
+        border-radius: 20px; 
+        background: #FFF9FA; 
+        border-left: 6px solid var(--pink-main); 
+        padding: 25px;
+        height: 100%; 
+        transition: 0.3s ease;
+      }
+      .info-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(255, 133, 161, 0.1); }
+      .info-card h6 { font-weight: 700; color: #444; margin-bottom: 15px; }
+      .info-card p { font-size: 0.95rem; color: #555; line-height: 1.8; }
+
+      .ecology-item { 
+        text-align: center; 
+        padding: 20px; 
+        border-radius: 20px; 
+        background: var(--pink-bg); 
+        border: 1px solid #FFECF0;
+      }
+      .badge-custom {
+        background: white;
+        color: var(--pink-dark);
+        border: 1px solid var(--pink-soft);
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-weight: 700;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+  body
+    nav.navbar.sticky-top
+      .container
+        a.logo(href="/") FloraHub
+        a.btn-back(href="/wiki") 
+          i.fas.fa-arrow-left
+          | Trở lại Thư viện
+
+    .container
+      - const tax = entry.taxonomy || {}
+      - const mor = entry.morphology || {}
+      - const eco = entry.ecology || {}
+      - const her = entry.heritage || {}
+
+      .wiki-container
+        .wiki-header
+          .row.align-items-center
+            .col-md-7
+              h1= entry.common_name
+              p.scientific-name= entry.scientific_name
+              
+              .taxonomy-badge
+                .row.text-center
+                  .col-4
+                    small.d-block.text-uppercase(style="font-size: 0.7rem; font-weight:700; margin-bottom: 5px;") Họ
+                    span.fw-bold= tax.family || 'N/A'
+                  .col-4.border-start.border-end(style="border-color: rgba(255,255,255,0.3) !important")
+                    small.d-block.text-uppercase(style="font-size: 0.7rem; font-weight:700; margin-bottom: 5px;") Chi
+                    span.fw-bold= tax.genus || 'N/A'
+                  .col-4
+                    small.d-block.text-uppercase(style="font-size: 0.7rem; font-weight:700; margin-bottom: 5px;") Bộ
+                    span.fw-bold= tax.order || 'N/A'
+            
+            .col-md-5.mt-5.mt-md-0.text-center
+              img.wiki-image(src=entry.image || 'https://via.placeholder.com/600x450', alt=entry.common_name)
+
+        .p-4.p-md-5
+          .row.g-5
+            .col-lg-8
+              section.mb-5
+                h4.section-title 
+                  i.fas.fa-microscope.me-2
+                  | Đặc điểm hình thái
+                .row.g-4
+                  .col-md-6
+                    .info-card
+                      h6 #[i.fas.fa-fan.me-2.text-pink-main] Cấu tạo Hoa
+                      p= mor.flower || 'Dữ liệu về cấu tạo cánh hoa đang được cập nhật...'
+                  .col-md-6
+                    .info-card
+                      h6 #[i.fas.fa-leaf.me-2.text-pink-main] Thân & Lá
+                      p= mor.leaf || 'Dữ liệu về đặc điểm thân và lá đang được cập nhật...'
+
+              section.mb-5
+                h4.section-title 
+                  i.fas.fa-seedling.me-2
+                  | Chỉ số sinh thái
+                .row.g-3
+                  .col-md-4
+                    .ecology-item
+                      i.fas.fa-vial.fa-2x.text-pink-main
+                      h6.small.fw-bold.mt-3 Độ pH Đất
+                      span.badge-custom= eco.soil_ph || '5.5 - 7.0'
+                  .col-md-4
+                    .ecology-item
+                      i.fas.fa-temperature-high.fa-2x.text-pink-main
+                      h6.small.fw-bold.mt-3 Nhiệt độ
+                      span.badge-custom= eco.temperature || '20°C - 30°C'
+                  .col-md-4
+                    .ecology-item
+                      i.fas.fa-sun.fa-2x.text-pink-main
+                      h6.small.fw-bold.mt-3 Ánh sáng
+                      span.badge-custom= eco.light || 'Nắng trực tiếp'
+
+            .col-lg-4
+              aside
+                h4.section-title 
+                  i.fas.fa-scroll.me-2
+                  | Ý nghĩa & Di sản
+                .card.border-0.shadow-sm.p-4.mb-4(style="border-radius: 25px;")
+                  h6.fw-bold.text-pink-dark #[i.fas.fa-star.me-2] Biểu tượng
+                  p.small.text-muted.lh-lg= her.symbolism || 'Loài hoa này mang ý nghĩa về sự bền bỉ và vẻ đẹp thuần khiết.'
+                
+                .card.border-0.shadow-sm.p-4(style="border-radius: 25px;")
+                  h6.fw-bold.text-pink-dark #[i.fas.fa-medkit.me-2] Giá trị sử dụng
+                  p.small.text-muted.lh-lg= her.medicinal || 'Dùng trong trang trí nội thất, cảnh quan sân vườn và nghiên cứu sinh học.'
+
+                .mt-4.p-4(style="background: var(--pink-main); border-radius: 25px; color: white;")
+                  h6.fw-bold #[i.fas.fa-shopping-cart.me-2] Tìm mua hoa này?
+                  p.small Ghé thăm cửa hàng của chúng tôi để sở hữu những chậu hoa tươi nhất.
+                  a.btn.btn-light.w-100.fw-bold.mt-2(href="/explore" style="border-radius: 50px; color: var(--pink-main);") Shop Ngay
+
+    //- FOOTER ĐỒNG BỘ HOÀN TOÀN
+    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
+      div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
+        div
+          a.logo(href="/") FloraHub
+          p(style="margin-top: 20px; line-height: 1.8; color: #888; font-size: 0.9rem;") VNUA FloraHub mang đến những đóa hoa tươi thắm nhất, thay bạn gửi gắm yêu thương đến những người trân quý.
+        
+        div
+          h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
+          ul(style="list-style: none; line-height: 2;")
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Trang chủ
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Cẩm nang
+            li: a(href="/blog" style="text-decoration: none; color: #777;") Tin tức
+            li: a(href="/my-orders" style="text-decoration: none; color: #777;") Lịch sử đặt hàng
+            li: a(href="/track-order" style="text-decoration: none; color: #777;") Theo dõi đơn
+        
+        div
+          h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Liên Hệ
+          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2;")
+            li <i class="fas fa-map-marker-alt" style="color: var(--pink-main); margin-right: 10px;"></i> Trâu Quỳ, Gia Lâm, Hà Nội
+            li <i class="fas fa-phone-alt" style="color: var(--pink-main); margin-right: 10px;"></i> 0123 456 789
+      
+      div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
+        p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.

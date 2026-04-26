@@ -1,0 +1,219 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Quản lý Voucher - FloraAdmin
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63; 
+        --pink-dark: #C2185B; 
+        --pink-bg: #F8BBD0; 
+        --text-dark: #2d3436; 
+        --white: #FFFFFF;
+      }
+      
+      * { box-sizing: border-box; }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; color: var(--text-dark); }
+      
+      .admin-layout { display: flex; min-height: 100vh; width: 100%; }
+
+      /* --- SIDEBAR ĐỒNG BỘ 280PX --- */
+      nav.admin-sidebar {
+        width: 280px; min-width: 280px; background: var(--white);
+        border-right: 2px solid var(--pink-bg); padding: 30px 20px;
+        height: 100vh; position: sticky; top: 0;
+      }
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+      .admin-sidebar li { margin-bottom: 8px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
+      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+
+      .badge-pending {
+        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px;
+        font-size: 0.7rem; margin-left: auto; font-weight: bold;
+        animation: blink-animation 1.5s linear infinite;
+      }
+      @keyframes blink-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      /* --- MAIN CONTENT --- */
+      .admin-main { flex-grow: 1; padding: 40px; background-color: #fce4ec; }
+      .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+      
+      .card { 
+        background: white; padding: 30px; border-radius: 25px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; 
+        border: 2px solid var(--pink-bg);
+      }
+
+      /* Form Style */
+      .voucher-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+      .form-group { display: flex; flex-direction: column; gap: 8px; }
+      .form-group label { font-weight: 700; font-size: 13px; color: #555; }
+      .form-group input, .form-group select { 
+        width: 100%; padding: 14px; border: 2px solid #f0f0f0; 
+        border-radius: 15px; outline: none; font-family: inherit; transition: 0.3s; background: #fafafa;
+      }
+      .form-group input:focus { border-color: var(--pink-main); background: white; }
+
+      .btn-add { 
+        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
+        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4); display: flex; align-items: center; gap: 8px;
+        height: 48px; justify-content: center;
+      }
+      .btn-add:hover { background: var(--pink-main); transform: translateY(-2px); }
+
+      /* Table Style - Card Mode */
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+      .admin-table th { padding: 15px; text-align: left; color: #bbb; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+      .admin-table td { padding: 20px 15px; background: white; transition: 0.3s; vertical-align: middle; }
+      .admin-table td:first-child { border-radius: 20px 0 0 20px; border-left: 5px solid var(--pink-bg); }
+      .admin-table td:last-child { border-radius: 0 20px 20px 0; }
+
+      .code-badge { background: #fce4ec; color: var(--pink-dark); padding: 6px 12px; border-radius: 10px; font-weight: 800; font-family: monospace; font-size: 1rem; border: 1px dashed var(--pink-main); }
+      .action-icon { font-size: 1.2rem; transition: 0.3s; cursor: pointer; }
+      .action-icon:hover { transform: scale(1.2); }
+
+      /* Modal */
+      .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+      .modal-content { background: white; padding: 35px; border-radius: 30px; width: 450px; position: relative; border: 2px solid var(--pink-bg); }
+      .close-modal { position: absolute; right: 25px; top: 20px; font-size: 1.5rem; cursor: pointer; color: #ccc; }
+
+  body
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li: a(href="/admin") <i class="fas fa-spa"></i> Quản lý hoa
+          li: a(href="/admin/library") <i class="fas fa-book-medical"></i> Cẩm nang cây cảnh
+          li: a(href="/admin/users") <i class="fas fa-user-shield"></i> Đội ngũ quản trị
+          li: a(href="/admin/orders") 
+            i.fas.fa-heart
+            | Đơn hàng mới
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li: a(href="/admin/analytics") <i class="fas fa-chart-pie"></i> Doanh thu shop
+          li: a(href="/admin/blog/create") <i class="fas fa-pen-nib"></i> Viết bài Blog
+          li.active: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher
+          li: a(href="/") <i class="fas fa-external-link-alt"></i> Xem cửa hàng
+          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") <i class="fas fa-power-off"></i> Đăng xuất
+
+      main.admin-main
+        header.admin-header
+          h2(style="margin:0; font-weight: 800; color: #444;") 
+            i.fas.fa-tags(style="color: var(--pink-main); margin-right: 12px;") 
+            | Thiết lập mã giảm giá
+
+        .card
+          form(action="/admin/vouchers/add" method="POST").voucher-form
+            .form-group
+              label Mã Voucher:
+              input(name="code" placeholder="VÍ DỤ: FLORA50" required style="text-transform: uppercase;")
+            .form-group
+              label Loại giảm:
+              select(name="discountType")
+                option(value="percent") Phần trăm (%)
+                option(value="fixed") Tiền mặt (đ)
+            .form-group
+              label Giá trị:
+              input(type="number" name="discountValue" placeholder="0" required)
+            .form-group
+              label Đơn tối thiểu:
+              input(type="number" name="minOrderValue" value="0")
+            .form-group
+              label Ngày hết hạn:
+              input(type="date" name="expiryDate" required)
+            button.btn-add(type="submit") <i class="fas fa-plus-circle"></i> Thêm mã
+
+        h2(style="font-weight: 800; color: #444; margin-bottom: 20px;") Danh sách Voucher hiện có
+        table.admin-table
+          thead
+            tr
+              th Mã Code
+              th Mức giảm
+              th Điều kiện đơn
+              th Hết hạn
+              th Thao tác
+          tbody
+            if vouchers && vouchers.length > 0
+              each v in vouchers
+                tr
+                  td: span.code-badge= v.code
+                  td: strong(style="color: var(--pink-dark);")= v.discountType === 'percent' ? v.discountValue + '%' : v.discountValue.toLocaleString() + 'đ'
+                  td= 'Từ ' + v.minOrderValue.toLocaleString() + 'đ'
+                  td
+                    - var isExpired = new Date(v.expiryDate) < new Date()
+                    span(style=isExpired ? "color: #ff7675; font-weight: bold;" : "")= new Date(v.expiryDate).toLocaleDateString('vi-VN')
+                  td
+                    div(style="display: flex; gap: 15px;")
+                      i.fas.fa-edit.action-icon(style="color: #f1c40f;" onclick=`openEditModal(${JSON.stringify(v)})`)
+                      i.fas.fa-trash-alt.action-icon(style="color: #ff7675;" onclick=`deleteVoucher('${v._id}')`)
+            else
+              tr: td(colspan="5", style="text-align:center; padding: 50px; color: #bbb;") Chưa có mã giảm giá nào.
+
+    // Modal Chỉnh sửa
+    #editModal.modal
+      .modal-content
+        span.close-modal(onclick="closeModal()") &times;
+        h3(style="color: var(--pink-dark); margin-top:0;") <i class="fas fa-magic"></i> Chỉnh sửa mã
+        form#editForm(method="POST")
+          div(style="display:grid; gap:15px; margin-top:20px;")
+            .form-group
+              label Mã Voucher:
+              input#editCode(name="code" required style="text-transform: uppercase;")
+            .form-group
+              label Loại:
+              select#editType(name="discountType")
+                option(value="percent") Phần trăm (%)
+                option(value="fixed") Tiền mặt (đ)
+            .form-group
+              label Giá trị:
+              input#editValue(type="number" name="discountValue" required)
+            .form-group
+              label Đơn tối thiểu:
+              input#editMinOrder(type="number" name="minOrderValue")
+            .form-group
+              label Ngày hết hạn:
+              input#editExpiry(type="date" name="expiryDate" required)
+            button.btn-add(type="submit") Lưu thay đổi
+
+    script.
+      function openEditModal(v) {
+        document.getElementById('editForm').action = `/admin/vouchers/edit/${v._id}`;
+        document.getElementById('editCode').value = v.code;
+        document.getElementById('editType').value = v.discountType;
+        document.getElementById('editValue').value = v.discountValue;
+        document.getElementById('editMinOrder').value = v.minOrderValue;
+        const date = new Date(v.expiryDate).toISOString().split('T')[0];
+        document.getElementById('editExpiry').value = date;
+        document.getElementById('editModal').style.display = 'flex';
+      }
+
+      function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+      }
+
+      async function deleteVoucher(id) {
+        if(confirm('Bạn có chắc muốn xóa mã này?')) {
+          const res = await fetch(`/admin/vouchers/delete/${id}`, { method: 'DELETE' });
+          if(res.ok) window.location.reload();
+        }
+      }
+      
+      window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) closeModal();
+      }

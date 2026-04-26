@@ -1,0 +1,196 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Quản trị Blog FloraHub - VNUA
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63; 
+        --pink-dark: #C2185B; 
+        --pink-bg: #F8BBD0; 
+        --text-dark: #2d3436; 
+        --white: #FFFFFF;
+      }
+      
+      * { box-sizing: border-box; }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; color: var(--text-dark); }
+      
+      .admin-layout { display: flex; min-height: 100vh; width: 100%; }
+
+      /* --- SIDEBAR ĐỒNG BỘ 280PX --- */
+      nav.admin-sidebar {
+        width: 280px; min-width: 280px; background: var(--white);
+        border-right: 2px solid var(--pink-bg); padding: 30px 20px;
+        height: 100vh; position: sticky; top: 0;
+      }
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+      .admin-sidebar li { margin-bottom: 8px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
+      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+
+      /* --- MAIN CONTENT --- */
+      .admin-main { flex-grow: 1; padding: 40px; background-color: #fce4ec; }
+      .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+      
+      .btn-add { 
+        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
+        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4); display: flex; align-items: center; gap: 8px;
+      }
+      .btn-add:hover { background: var(--pink-main); transform: translateY(-2px); }
+
+      /* Form Style */
+      .modal-form { 
+        background: #fff; padding: 35px; border-radius: 30px; 
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08); margin-bottom: 40px; 
+        border: 2px solid var(--pink-bg);
+      }
+      
+      .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 13px; color: #555; }
+      .form-group input, .form-group textarea { 
+        width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #f0f0f0; 
+        border-radius: 15px; outline: none; font-family: inherit; transition: 0.3s; background: #fafafa;
+      }
+      .form-group input:focus, .form-group textarea:focus { border-color: var(--pink-main); background: white; }
+
+      /* Table Style - Card Mode (Đồng bộ với bảng hoa) */
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+      .admin-table th { padding: 15px; text-align: left; color: #bbb; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+      .admin-table td { padding: 20px 15px; background: white; transition: 0.3s; vertical-align: middle; }
+      .admin-table tr:hover td { background: #fff8f9; }
+      .admin-table td:first-child { border-radius: 20px 0 0 20px; border-left: 5px solid var(--pink-bg); }
+      .admin-table td:last-child { border-radius: 0 20px 20px 0; }
+
+      .admin-table img { border-radius: 12px; height: 65px; width: 65px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+      .action-icon { font-size: 1.2rem; transition: 0.3s; cursor: pointer; }
+      .action-icon:hover { transform: scale(1.2); }
+      .badge-pending { background: var(--pink-main); color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px; }
+
+  body
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li
+            a(href="/admin") 
+              i.fas.fa-spa
+              | Quản lý hoa
+          li
+            a(href="/admin/library") 
+              i.fas.fa-book-medical
+              | Cẩm nang cây cảnh
+          li
+            a(href="/admin/users") 
+              i.fas.fa-user-shield
+              | Đội ngũ quản trị
+          li: a(href="/admin/orders") 
+            i.fas.fa-heart
+            | Đơn hàng mới
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li
+            a(href="/admin/analytics") 
+              i.fas.fa-chart-pie
+              | Doanh thu shop
+          li.active
+            a(href="/admin/blog/create") 
+              i.fas.fa-pen-nib
+              | Viết bài Blog
+          li
+            a(href="/") 
+              i.fas.fa-external-link-alt
+              | Xem cửa hàng
+          li
+            a(href="/logout" style="color: #ff7675; margin-top: 50px;") 
+              i.fas.fa-power-off
+              | Đăng xuất
+
+      main.admin-main
+        header.admin-header
+          h2(style="margin:0; font-weight: 800; color: #444;") 
+            i.fas.fa-journal-whills(style="color: var(--pink-main); margin-right: 12px;") 
+            | Nội dung Blog
+          button.btn-add(onclick="toggleBlogForm()") 
+            i.fas.fa-plus-circle
+            | Viết bài mới
+
+        // Form viết bài (Mặc định ẩn, hiện khi bấm nút)
+        section#blog-form.modal-form(style="display:none")
+          form(action="/admin/blog/save", method="POST", enctype="multipart/form-data")
+            h3(style="color: var(--pink-dark); margin-top:0; margin-bottom: 25px;") 
+              i.fas.fa-magic
+              |  Soạn thảo bài viết
+            
+            .form-group
+              label Tiêu đề bài viết:
+              input(type="text", name="title", placeholder="Nhập tiêu đề thu hút khách hàng...", required)
+            
+            .form-group
+              label Hình ảnh bài viết:
+              input(type="file", name="image", accept="image/*", required)
+            
+            .form-group
+              label Nội dung bài viết:
+              textarea(name="content", rows="8", placeholder="Chia sẻ kiến thức về hoa tại đây...", required)
+            
+            .form-btns(style="display: flex; gap: 12px;")
+              button(type="submit" style="background: var(--pink-dark); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Xuất bản ngay
+              button(type="button", onclick="toggleBlogForm()" style="background: #f5f5f5; color: #888; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Hủy bỏ
+
+        table.admin-table
+          thead
+            tr
+              th Ảnh bìa
+              th Tiêu đề bài viết
+              th Ngày đăng
+              th Trạng thái
+              th Thao tác
+          tbody
+            if posts && posts.length > 0
+              each post in posts
+                tr
+                  td: img(src=post.image)
+                  td
+                    strong(style="color: #333; font-size: 0.95rem;")= post.title
+                    div(style="color: #aaa; font-size: 11px; margin-top: 4px;") Tác giả: Admin FloraHub
+                  td
+                    span(style="color: #777; font-size: 0.9rem;")= new Date(post.createdAt).toLocaleDateString('vi-VN')
+                  td
+                    span(style="background: #e8f5e9; color: #2e7d32; padding: 5px 12px; border-radius: 50px; font-size: 11px; font-weight: 700;") ĐÃ ĐĂNG
+                  td
+                    div(style="display: flex; gap: 15px;")
+                      a(href=`/admin/blog/edit/${post._id}` style="color: #f1c40f;")
+                        i.fas.fa-edit.action-icon
+                      a(href=`#` onclick=`deletePost('${post._id}')` style="color: #ff7675;")
+                        i.fas.fa-trash-alt.action-icon
+            else
+              tr
+                td(colspan="5", style="text-align: center; padding: 60px; background: white; border-radius: 20px;")
+                  p(style="color: #bbb;") Chưa có bài viết nào được đăng.
+
+    script.
+      function toggleBlogForm() {
+        const form = document.getElementById('blog-form');
+        form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+        if(form.style.display === 'block') {
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      function deletePost(id) {
+        if(confirm('Bạn có chắc chắn muốn xóa bài viết này không?')) {
+          fetch(`/admin/blog/delete/${id}`, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => { if(data.success) window.location.reload(); });
+        }
+      }

@@ -1,0 +1,222 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Giỏ hàng - FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #FF85A1;
+        --pink-dark: #E91E63;
+        --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3;
+        --text-dark: #4A4A4A;
+        --white: #FFFFFF;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; }
+      
+      .navbar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 15px 5%; background: rgba(255, 255, 255, 0.95); 
+        backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; 
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+      }
+      .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
+
+      .cart-container { 
+        max-width: 1100px; margin: 40px auto; padding: 40px; 
+        background: white; border-radius: 40px; flex: 1;
+        box-shadow: 0 20px 40px rgba(255, 133, 161, 0.1); 
+      }
+      
+      h2 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--pink-main); }
+
+      .cart-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+      .cart-table th { text-align: left; padding: 15px; color: #bbb; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+      .cart-table td { padding: 20px 15px; background: var(--pink-bg); border: none; vertical-align: middle; }
+      
+      .cart-table tr td:first-child { border-radius: 20px 0 0 20px; }
+      .cart-table tr td:last-child { border-radius: 0 20px 20px 0; }
+
+      .cart-img { width: 80px; height: 80px; object-fit: cover; border-radius: 15px; border: 3px solid white; }
+      .product-name { font-weight: 700; color: var(--text-dark); font-size: 1.1rem; }
+
+      .qty-control {
+        display: flex; align-items: center; background: white; 
+        border-radius: 50px; padding: 5px; width: fit-content;
+        box-shadow: 0 5px 15px rgba(255, 133, 161, 0.1);
+      }
+      .qty-btn {
+        width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+        color: var(--pink-main); text-decoration: none; transition: 0.3s;
+        border-radius: 50%; background: var(--pink-bg);
+      }
+      .qty-btn:hover { background: var(--pink-main); color: white; }
+      .qty-number { padding: 0 15px; font-weight: 700; color: var(--text-dark); }
+
+      .total-box { 
+        margin-top: 20px; padding: 30px; background: var(--pink-bg); 
+        border-radius: 30px; text-align: right; 
+      }
+      .total-price { color: var(--pink-main); font-size: 2rem; font-weight: 900; margin-left: 10px; }
+
+      .btn-action-group { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; }
+      
+      .checkout-btn { 
+        background: var(--pink-main); color: white; padding: 18px 50px; 
+        border-radius: 50px; text-decoration: none; font-weight: 800; 
+        font-size: 1.1rem; transition: 0.3s; box-shadow: 0 10px 20px rgba(255, 133, 161, 0.3);
+        display: inline-flex; align-items: center; gap: 10px;
+      }
+      .checkout-btn:hover { transform: translateY(-5px); background: var(--pink-dark); }
+      
+      .back-link { color: #bbb; text-decoration: none; font-weight: 700; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+      .back-link:hover { color: var(--pink-soft); }
+
+      .btn-clear-cart { color: #ffb8b8; text-decoration: none; font-size: 0.85rem; transition: 0.3s; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+      .btn-clear-cart:hover { color: #ff4757; }
+
+      /* Voucher input style */
+      #voucherInput::placeholder { color: #ccc; font-weight: 400; }
+
+  body
+    header
+      nav.navbar
+        a.logo(href="/") FloraHub
+        a.back-link(href="/explore")
+          i.fas.fa-chevron-left
+          span Quay lại cửa hàng
+
+    main.cart-container
+      div(style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid var(--pink-bg); padding-bottom: 20px;")
+        h2 Giỏ hàng của bạn
+        if cart && cart.length > 0
+          a.btn-clear-cart(href="/cart/clear", onclick="return confirm('Xóa toàn bộ giỏ hàng?')")
+            i.fas.fa-trash-restore
+            span Làm trống giỏ hàng
+
+      if cart && cart.length > 0
+        table.cart-table
+          thead
+            tr
+              th Sản phẩm
+              th Giá
+              th Số lượng
+              th Tổng tiền
+              th
+          tbody
+            each item in cart
+              tr
+                td
+                  div(style="display:flex; align-items:center; gap:20px;")
+                    img.cart-img(src=item.image || '/public/uploads/default-flower.jpg')
+                    span.product-name= item.name
+                td(style="font-weight: 600;")= item.price.toLocaleString('vi-VN') + ' đ'
+                td
+                  .qty-control
+                    a.qty-btn(href=`/cart/decrease/${item.id}`)
+                      i.fas.fa-minus
+                    span.qty-number= item.qty
+                    a.qty-btn(href=`/cart/increase/${item.id}`)
+                      i.fas.fa-plus
+                td(style="color: var(--pink-main); font-weight: 800; font-size: 1.1rem;") #{(item.price * item.qty).toLocaleString('vi-VN')} đ
+                td
+                  a(href=`/cart/remove/${item.id}`, style="color:#ffb8b8; transition: 0.3s", onmouseover="this.style.color='#ff4757'", onmouseout="this.style.color='#ffb8b8'")
+                    i.fas.fa-times-circle.fa-lg
+        
+        //- --- PHẦN VOUCHER ---
+        .voucher-section(style="margin-top: 30px; padding: 25px; background: #fff; border-radius: 30px; border: 2px dashed var(--pink-soft); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;")
+          div(style="display: flex; align-items: center; gap: 15px;")
+            i.fas.fa-ticket-alt(style="font-size: 1.8rem; color: var(--pink-main);")
+            div
+              h4(style="font-weight: 700; color: var(--text-dark);") Bạn có mã ưu đãi?
+              p(style="font-size: 0.85rem; color: #bbb;") Nhập mã để FloraHub giảm giá cho bạn nhé!
+          
+          div(style="display: flex; gap: 10px; flex: 1; max-width: 400px;")
+            input#voucherInput(type="text" placeholder="Nhập mã ưu đãi..." style="flex: 1; padding: 12px 25px; border-radius: 50px; border: 2px solid #f0f0f0; outline: none; font-family: 'Quicksand'; font-weight: 600; font-size: 0.95rem;")
+            button#applyBtn(onclick="applyVoucher()" style="background: var(--pink-main); color: white; border: none; padding: 0 30px; border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;") Áp dụng
+        
+        p#voucherMsg(style="margin: 12px 0 0 25px; font-size: 0.9rem; font-weight: 700; display: none;")
+
+        //- --- TỔNG TIỀN CHI TIẾT ---
+        .total-box
+          div(style="display: flex; flex-direction: column; gap: 12px;")
+            div(style="display: flex; justify-content: flex-end; gap: 30px; align-items: center;")
+              span(style="color: #999; font-weight: 600; font-size: 1rem;") Tạm tính:
+              span(style="font-weight: 700; color: var(--text-dark); font-size: 1.1rem;") #{total.toLocaleString('vi-VN')} đ
+            
+            if appliedVoucher
+              div(style="display: flex; justify-content: flex-end; gap: 30px; align-items: center; color: #2e7d32;")
+                span(style="font-weight: 600;") Giảm giá (#{appliedVoucher.code}):
+                span(style="font-weight: 700;") - #{appliedVoucher.discountAmount.toLocaleString('vi-VN')} đ
+              div(style="display: flex; justify-content: flex-end;")
+                a(href="/cart/remove-voucher" style="font-size: 0.75rem; color: var(--pink-dark); text-decoration: none; font-weight: 800; border-bottom: 1px solid;") Gỡ mã giảm giá
+
+            div(style="display: flex; justify-content: flex-end; gap: 30px; align-items: center; border-top: 2px solid #fff; padding-top: 20px; margin-top: 10px;")
+              span(style="font-weight: 800; font-size: 1.4rem; color: var(--text-dark);") Tổng thanh toán:
+              - const finalTotal = appliedVoucher ? (total - appliedVoucher.discountAmount) : total
+              span.total-price #{finalTotal.toLocaleString('vi-VN')} đ
+        
+        .btn-action-group
+          a.back-link(href="/explore")
+            i.fas.fa-shopping-bag
+            span Tiếp tục mua hoa
+          a.checkout-btn(href="/checkout")
+            span TIẾN HÀNH ĐẶT HÀNG
+            i.fas.fa-arrow-right
+      else
+        div(style="text-align:center; padding: 100px 0;")
+          i.fas.fa-shopping-basket.fa-4x(style="color: #ffe0e6; margin-bottom:25px;")
+          p(style="font-size: 1.2rem; color: #bbb; font-weight: 600;") Giỏ hàng của bạn đang trống...
+          br
+          a.checkout-btn(href="/explore" style="padding: 15px 40px;") Xem các mẫu hoa mới nhất
+
+    footer(style="text-align: center; padding: 40px; color: #bbb; font-size: 0.8rem; background: #fff; margin-top: auto;")
+      p &copy; 2026 VNUA FloraHub. Trao hoa tươi - Gửi yêu thương.
+
+    script.
+      async function applyVoucher() {
+        const codeInput = document.getElementById('voucherInput');
+        const code = codeInput.value.trim();
+        const msgEl = document.getElementById('voucherMsg');
+        const btn = document.getElementById('applyBtn');
+        
+        if(!code) return;
+        
+        // Trạng thái Loading
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+        
+        try {
+          const response = await fetch('/cart/apply-voucher', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ voucherCode: code })
+          });
+          
+          const result = await response.json();
+          
+          msgEl.style.display = 'block';
+          msgEl.innerText = result.msg;
+          
+          if(result.success) {
+            msgEl.style.color = '#2e7d32';
+            // Tải lại trang để cập nhật giá sau khi áp dụng thành công
+            setTimeout(() => window.location.reload(), 800);
+          } else {
+            msgEl.style.color = '#E91E63';
+            btn.disabled = false;
+            btn.innerText = 'Áp dụng';
+          }
+        } catch (err) {
+          console.error("Lỗi áp dụng voucher:", err);
+          msgEl.style.display = 'block';
+          msgEl.innerText = "Có lỗi xảy ra, vui lòng thử lại.";
+          msgEl.style.color = '#E91E63';
+          btn.disabled = false;
+          btn.innerText = 'Áp dụng';
+        }
+      }

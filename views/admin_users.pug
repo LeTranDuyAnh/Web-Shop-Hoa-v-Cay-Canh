@@ -1,0 +1,199 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Quản trị Đội ngũ - FloraHub System
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #E91E63;
+        --pink-dark: #C2185B;
+        --pink-bg: #F8BBD0;
+        --text-dark: #2d3436;
+        --white: #FFFFFF;
+        --success: #2ecc71;
+      }
+      
+      * { box-sizing: border-box; }
+
+      body {
+        font-family: 'Quicksand', sans-serif;
+        background-color: #fdf2f4;
+        margin: 0;
+        padding: 0;
+        color: var(--text-dark);
+      }
+
+      .admin-layout { 
+        display: flex; 
+        min-height: 100vh;
+        width: 100%;
+      }
+
+      /* --- SIDEBAR CHUẨN --- */
+      nav.admin-sidebar {
+        width: 280px;
+        min-width: 280px;
+        background: var(--white);
+        border-right: 2px solid var(--pink-bg);
+        padding: 30px 20px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+      }
+      
+      .logo {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--pink-dark);
+        margin-bottom: 40px;
+        text-align: center;
+      }
+      .logo span { color: var(--pink-main); font-weight: 400; }
+      
+      .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+      .admin-sidebar li { margin-bottom: 8px; }
+      .admin-sidebar a { 
+        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
+        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
+      }
+      
+      /* Active menu: Hồng đậm chữ trắng */
+      .admin-sidebar li.active a {
+        background: var(--pink-main);
+        color: white;
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
+      }
+      
+      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+
+      /* --- CSS THÔNG BÁO NHẤP NHÁY (QUAN TRỌNG) --- */
+      .badge-pending {
+        background: var(--pink-dark);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        margin-left: auto; /* Đẩy sang bên phải */
+        font-weight: bold;
+        animation: blink-animation 1.5s linear infinite;
+        box-shadow: 0 2px 5px rgba(194, 24, 91, 0.4);
+      }
+
+      @keyframes blink-animation {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+
+      /* --- NỘI DUNG CHÍNH --- */
+      .admin-main {
+        flex-grow: 1;
+        padding: 40px;
+        background-color: #fce4ec;
+      }
+      
+      .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+      
+      .btn-add { 
+        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
+        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); display: flex; align-items: center; gap: 8px;
+      }
+      .btn-add:hover { transform: translateY(-2px); background: var(--pink-main); }
+
+      /* --- TABLE --- */
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+      .admin-table th { padding: 0 15px 10px; text-align: left; color: #aaa; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+      .admin-table td { padding: 20px 15px; background: white; vertical-align: middle; }
+      .admin-table tr:hover td { background: var(--pink-bg); }
+      .admin-table td:first-child { border-radius: 20px 0 0 20px; }
+      .admin-table td:last-child { border-radius: 0 20px 20px 0; }
+
+      .role-badge { 
+        background: #fce4ec; color: var(--pink-dark); padding: 6px 14px; 
+        border-radius: 50px; font-size: 0.75rem; font-weight: 800; 
+      }
+      .status-online {
+        display: inline-flex; align-items: center; gap: 6px; color: var(--success); font-weight: 700; font-size: 0.85rem;
+      }
+      .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); }
+      
+      .actions a { margin-left: 15px; transition: 0.2s; font-size: 1.1rem; }
+      .actions a:hover { transform: scale(1.2); }
+
+  body
+    .admin-layout
+      nav.admin-sidebar
+        .logo Flora<span>Admin</span>
+        ul
+          li: a(href="/admin") 
+            i.fas.fa-spa
+            | Quản lý hoa
+          li: a(href="/admin/library") 
+            i.fas.fa-book-medical
+            | Cẩm nang cây cảnh
+          li.active: a(href="/admin/users") 
+            i.fas.fa-user-shield
+            | Đội ngũ quản trị
+          li: a(href="/admin/orders") 
+            i.fas.fa-heart
+            | Đơn hàng mới
+            //- ĐOẠN NÀY HIỆN THÔNG BÁO ĐƠN HÀNG (GIỐNG TRANG KIA)
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li: a(href="/admin/analytics") <i class="fas fa-chart-pie"></i> Doanh thu shop
+          li: a(href="/admin/blog/create") 
+            i.fas.fa-pen-nib
+            | Viết bài Blog
+          li: a(href="/") <i class="fas fa-external-link-alt"></i> Xem cửa hàng
+          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") <i class="fas fa-power-off"></i> Đăng xuất
+
+      main.admin-main
+        header.admin-header
+          h2(style="margin:0; font-weight: 800; color: #444;") 
+            i.fas.fa-users(style="color: var(--pink-main); margin-right: 12px;") 
+            | Đội ngũ quản trị viên
+          button.btn-add(onclick="toggleForm()") 
+            i.fas.fa-plus-circle
+            | Thêm Admin mới
+
+        table.admin-table
+          thead
+            tr
+              th Tài khoản
+              th Họ và tên
+              th Vai trò
+              th Trạng thái
+              th Thao tác
+          tbody
+            if users && users.length > 0
+              each user in users
+                tr
+                  td: strong(style="color: var(--pink-main);") @#{user.username}
+                  td(style="font-weight: 600;")= user.fullName
+                  td: span.role-badge= user.role.toUpperCase()
+                  td
+                    .status-online
+                      .status-dot
+                      | Trực tuyến
+                  td.actions
+                    a(href=`/admin/users/detail/${user._id}` style="color: var(--pink-main);")
+                      i.fas.fa-eye
+                    a(href=`/admin/users/delete/${user._id}` style="color: #ffb8b8;" onclick="return confirm('Xóa tài khoản?')")
+                      i.fas.fa-trash-alt
+            else
+              tr
+                td(colspan="5" style="text-align: center; padding: 50px; color: #bbb;") Danh sách đang trống.
+
+    script.
+      function toggleForm() {
+        // Code mở form thêm người dùng của bạn ở đây
+      }

@@ -1,0 +1,206 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Thư viện Thực vật - VNUA FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #FF85A1;
+        --pink-dark: #E91E63;
+        --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3;
+        --text-dark: #4A4A4A;
+        --white: #FFFFFF;
+        --shadow: 0 10px 30px rgba(255, 133, 161, 0.15);
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); overflow-x: hidden; }
+      
+      /* --- NAVBAR --- */
+      .navbar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 12px 5%; background: rgba(255, 255, 255, 0.98); 
+        position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+      }
+      .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
+      .nav-menu { display: flex; list-style: none; gap: 15px; align-items: center; }
+      .nav-link { 
+        text-decoration: none; color: var(--text-dark); font-weight: 700; 
+        font-size: 0.9rem; padding: 8px 20px; transition: 0.3s; border-radius: 50px;
+      }
+      .nav-link.active { background: var(--pink-main); color: white; box-shadow: 0 4px 10px rgba(255, 133, 161, 0.3); }
+      .nav-link:not(.active):hover { color: var(--pink-main); }
+      
+      .nav-right { display: flex; align-items: center; gap: 15px; }
+      .icon-btn { color: var(--pink-main); font-size: 1.2rem; text-decoration: none; position: relative; transition: 0.3s; }
+      .cart-count { background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; position: absolute; top: -8px; right: -8px; border: 2px solid white; }
+      .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; transition: 0.3s; }
+      .btn-exit:hover { background: #333; transform: translateY(-2px); }
+
+      /* --- NÚT BẤM ĐỒNG BỘ HOME --- */
+      .btn-hero, .btn-wiki { 
+        padding: 12px 35px; border-radius: 50px; background: var(--pink-main); color: white; 
+        font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4); border: none; cursor: pointer;
+        font-family: 'Quicksand', sans-serif;
+      }
+      .btn-hero:hover, .btn-wiki:hover { transform: translateY(-3px); background: var(--pink-dark); box-shadow: 0 6px 20px rgba(255, 133, 161, 0.6); }
+
+      /* --- BANNER SLIDER --- */
+      .hero-slider { position: relative; height: 70vh; min-height: 450px; width: 100%; overflow: hidden; background: #fce4ec; }
+      .slide { 
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; 
+        transition: opacity 1s ease-in-out; display: flex; align-items: center; padding: 0 10%; 
+        background-size: cover; background-position: center; z-index: 1;
+      }
+      .slide.active { opacity: 1; z-index: 2; }
+      .hero-content { position: relative; z-index: 10; max-width: 600px; }
+      .hero-content h1 { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--pink-main); margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
+      .hero-content p { font-size: 1.1rem; font-weight: 600; color: #555; margin-bottom: 25px; }
+
+      /* --- SEARCH BOX --- */
+      .search-wrapper { max-width: 700px; margin: -35px auto 50px; padding: 0 20px; position: relative; z-index: 100; }
+      .search-box {
+        background: white; display: flex; align-items: center; padding: 5px 25px;
+        border-radius: 100px; box-shadow: 0 15px 45px rgba(255, 133, 161, 0.2);
+        border: 2px solid var(--pink-bg);
+      }
+      .search-box input { border: none; outline: none; padding: 18px; width: 100%; font-size: 1.1rem; font-family: 'Quicksand'; }
+      .search-box i { color: var(--pink-main); font-size: 1.3rem; }
+
+      /* --- WIKI CONTENT --- */
+      section.content { padding: 60px 8% 100px; background: white; border-radius: 60px 60px 0 0; margin-top: -40px; position: relative; z-index: 5; }
+      .wiki-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 35px; }
+      .card-wiki { background: var(--white); border-radius: 35px; overflow: hidden; transition: 0.4s ease; box-shadow: var(--shadow); border: 1px solid #fef0f2; height: 100%; display: flex; flex-direction: column; }
+      .card-wiki:hover { transform: translateY(-10px); }
+      .wiki-img-wrapper { height: 240px; overflow: hidden; }
+      .wiki-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+      .card-wiki:hover .wiki-img { transform: scale(1.1); }
+      .card-body { padding: 30px 20px; text-align: center; flex-grow: 1; }
+      .scientific { color: #bbb; font-style: italic; font-size: 0.85rem; margin-bottom: 20px; display: block; }
+
+  body
+    header
+      nav.navbar
+        a.logo(href="/") FloraHub
+        ul.nav-menu
+          li: a.nav-link(href="/") Trang chủ
+          li: a.nav-link(href="/explore") Shop Hoa
+          li: a.nav-link.active(href="/wiki") Cẩm nang
+          li: a.nav-link(href="/blog") Tin tức
+        .nav-right
+          a.icon-btn(href="/cart")
+            i.fas.fa-shopping-basket
+            if (typeof cartCount !== 'undefined' && cartCount > 0)
+              span.cart-count= cartCount
+          if session && session.user
+            a.icon-btn(href="/profile"): i.fas.fa-user-circle
+            a.btn-exit(href="/logout") Thoát
+          else
+            a.nav-link(href="/login" style="padding: 8px 15px") Đăng nhập
+
+    main
+      section.hero-slider
+        .slide.active(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=1600');")
+          .hero-content
+            h1 Bloom with Love
+            p Những bó hoa thiết kế thủ công tinh tế dành cho bạn trân quý.
+            a.btn-hero(href="/explore") Ghé Thăm Shop Ngay
+            
+        .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80&w=1600');")
+          .hero-content
+            h1 Botanical Wiki
+            p #[i.fas.fa-leaf] Khám phá thư viện với #[span#resultCount #{flora ? flora.length : 0}] loài thực vật.
+            a.btn-hero(href="#floraGrid") Xem Cẩm Nang
+        
+        .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?auto=format&fit=crop&q=80&w=1600');")
+          .hero-content
+            h1 Plant Library
+            a.btn-hero(href="/wiki") Khám phá cẩm nang
+
+
+      .search-wrapper
+        .search-box
+          i.fas.fa-search
+          input#searchInput(type="text", placeholder="Tìm tên hoa hoặc họ thực vật...")
+
+      section.content
+        #floraGrid.wiki-grid
+          if flora && flora.length > 0
+            each item in flora
+              .flower-item
+                article.card-wiki
+                  .wiki-img-wrapper
+                    img.wiki-img(src=item.image || 'https://via.placeholder.com/400x300')
+                  .card-body
+                    h3(style="font-size: 1.4rem; margin-bottom: 5px; font-weight: 700;")= item.common_name
+                    span.scientific= item.scientific_name
+                    
+                    div(style="background: var(--pink-bg); padding: 12px; border-radius: 20px; margin-bottom: 25px; display: flex; justify-content: space-around; font-size: 0.8rem; color: #666;")
+                      span #[i.fas.fa-tint(style="color:#7fb3d5; margin-right: 5px;")] pH: #{item.ecology ? item.ecology.soil_ph : 'N/A'}
+                      span #[i.fas.fa-sun(style="color:#f1c40f; margin-right: 5px;")] Sáng: #{item.ecology ? item.ecology.light : 'N/A'}
+
+                    a.btn-wiki(href=`/wiki/${item._id}`) Đọc tài liệu
+          else
+            div(style="text-align:center; grid-column: 1/-1; padding: 100px 0;")
+              i.fas.fa-feather(style="font-size: 3rem; color: var(--pink-soft); opacity: 0.5;")
+              p(style="margin-top:20px; color: #aaa;") Đang cập nhật thư viện...
+
+    //- FOOTER ĐẦY ĐỦ 3 CỘT (ĐỒNG BỘ TRANG HOME)
+    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
+      div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
+        div
+          a.logo(href="/") FloraHub
+          p(style="margin-top: 20px; line-height: 1.8; color: #888; font-size: 0.9rem;") VNUA FloraHub mang đến những đóa hoa tươi thắm nhất, thay bạn gửi gắm yêu thương đến những người trân quý.
+        
+        div
+          h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
+          ul(style="list-style: none; line-height: 2;")
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Trang chủ
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Cẩm nang
+            li: a(href="/blog" style="text-decoration: none; color: #777;") Tin tức
+            li: a(href="/my-orders" style="text-decoration: none; color: #777;") Lịch sử đặt hàng
+            li: a(href="/track-order" style="text-decoration: none; color: #777;") Theo dõi đơn
+        
+        div
+          h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Liên Hệ
+          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2;")
+            li <i class="fas fa-map-marker-alt" style="color: var(--pink-main); margin-right: 10px;"></i> Trâu Quỳ, Gia Lâm, Hà Nội
+            li <i class="fas fa-phone-alt" style="color: var(--pink-main); margin-right: 10px;"></i> 0123 456 789
+      
+      div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
+        p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
+
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        // Slider Logic
+        const slides = document.querySelectorAll('.slide');
+        let current = 0;
+        if(slides.length > 0) {
+          setInterval(() => {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+          }, 5000); 
+        }
+
+        // Search Logic
+        const searchInput = document.getElementById('searchInput');
+        const items = document.querySelectorAll('.flower-item');
+        const countDisp = document.getElementById('resultCount');
+        
+        searchInput.addEventListener('input', (e) => {
+          const val = e.target.value.toLowerCase();
+          let count = 0;
+          items.forEach(el => {
+            const match = el.innerText.toLowerCase().includes(val);
+            el.style.display = match ? "" : "none";
+            if(match) count++;
+          });
+          if(countDisp) countDisp.innerText = count;
+        });
+      });

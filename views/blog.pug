@@ -1,0 +1,160 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Góc Chia Sẻ - FloraHub Blog
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
+    style.
+      :root {
+        --pink-main: #FF85A1;
+        --pink-dark: #E91E63;
+        --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3;
+        --text-dark: #4A4A4A;
+        --white: #FFFFFF;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Quicksand', sans-serif; background: #fdf2f4; color: var(--text-dark); overflow-x: hidden; }
+      
+      /* --- NAVBAR --- */
+      .navbar { 
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 12px 5%; background: rgba(255, 255, 255, 0.98); 
+        position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+      }
+      .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
+      
+      .nav-menu { display: flex; list-style: none; gap: 15px; align-items: center; }
+      .nav-link { 
+        text-decoration: none; color: var(--text-dark); font-weight: 700; 
+        font-size: 0.9rem; padding: 8px 20px; transition: 0.3s; border-radius: 50px;
+      }
+      .nav-link.active { background: var(--pink-main); color: white; box-shadow: 0 4px 10px rgba(255, 133, 161, 0.3); }
+      .nav-link:not(.active):hover { color: var(--pink-main); }
+
+      .nav-right { display: flex; align-items: center; gap: 15px; }
+      .icon-btn { color: var(--pink-main); font-size: 1.2rem; text-decoration: none; position: relative; transition: 0.3s; }
+      .cart-count { 
+        background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; 
+        font-size: 0.65rem; position: absolute; top: -8px; right: -8px; border: 2px solid white; 
+      }
+      .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
+      /* --- BANNER: HIỆN ẢNH FULL MÀN --- */
+      .hero-slider { position: relative; height: 60vh; min-height: 400px; width: 100%; overflow: hidden; background: #fce4ec; }
+      .slide { 
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; 
+        transition: opacity 1s ease-in-out; display: flex; align-items: center; padding: 0 10%; 
+        background-size: cover; background-position: center; z-index: 1;
+      }
+      .slide.active { opacity: 1; z-index: 2; }
+      .hero-content { position: relative; z-index: 10; max-width: 550px; }
+      .hero-content h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--pink-main); margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
+      .hero-content p { font-weight: 600; color: #555; margin-bottom: 20px; }
+      .btn-hero { padding: 12px 30px; border-radius: 50px; background: var(--pink-main); color: white; font-weight: 700; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(255, 133, 161, 0.3); }
+
+      /* --- BLOG GRID --- */
+      .blog-container { padding: 80px 8%; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; background: white; border-radius: 60px 60px 0 0; margin-top: -40px; position: relative; z-index: 5; }
+      .blog-card { background: white; border-radius: 30px; overflow: hidden; transition: 0.4s; border: 1px solid #f8f8f8; box-shadow: 0 5px 15px rgba(0,0,0,0.02); display: flex; flex-direction: column; height: 100%; }
+      .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(255,133,161,0.1); }
+      .blog-img-wrapper { width: 100%; height: 220px; overflow: hidden; }
+      .blog-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+      .blog-card:hover .blog-img { transform: scale(1.08); }
+      .blog-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+      .blog-tag { color: var(--pink-main); font-weight: 800; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 10px; display: block; }
+      .blog-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; color: #333; text-decoration: none; }
+      .blog-desc { color: #777; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; }
+      .blog-footer { padding-top: 15px; border-top: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #aaa; }
+      .btn-read { color: var(--pink-main); text-decoration: none; font-weight: 700; }
+
+  body
+    header
+      nav.navbar
+        .nav-left
+          a.logo(href="/") FloraHub
+        .nav-center
+          ul.nav-menu
+            li: a.nav-link(href="/") Trang chủ
+            li: a.nav-link(href="/explore") Shop Hoa
+            li: a.nav-link(href="/wiki") Cẩm nang
+            li: a.nav-link.active(href="/blog") Tin tức
+        .nav-right
+          a.icon-btn(href="/cart")
+            i.fas.fa-shopping-basket
+            if (typeof cartCount !== 'undefined' && cartCount > 0)
+              span(style="background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.6rem; position: absolute; top: -8px; right: -8px; border: 2px solid white;")= cartCount
+          if session && session.user
+            a.icon-btn(href="/profile" style="margin-left: 10px;"): i.fas.fa-user-circle
+            a.btn-exit(href="/logout" style="margin-left: 10px;") Thoát
+          else
+            a.nav-link(href="/login" style="padding: 7px 15px; font-size: 0.85rem;") Đăng nhập
+
+    main
+      section.hero-slider
+        .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80&w=1600');")
+          .hero-content
+            h1 Flora Insights
+            p Khám phá thế giới hoa tươi và những câu chuyện truyền cảm hứng.
+            a.btn-hero(href="/explore") Xem Shop Ngay
+        
+        .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=1600');")
+          .hero-content
+            h1 Sweet Moments
+            p Trao gửi chân tình qua từng sắc hoa rực rỡ từ VNUA.
+            a.btn-hero(href="/blog") Đọc Tin Mới
+
+      section.blog-container
+        if posts && posts.length > 0
+          each post in posts
+            article.blog-card
+              .blog-img-wrapper
+                img.blog-img(src=post.image || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=800')
+              .blog-content
+                span.blog-tag= post.category || 'Kiến thức'
+                a.blog-title(href=`/blog/${post.slug || post._id}`)= post.title
+                p.blog-desc= post.summary || (post.content ? post.content.substring(0, 100).replace(/<[^>]*>?/gm, '') + '...' : 'Nhấn để đọc thêm bài viết này...')
+                .blog-footer
+                  span <i class="far fa-calendar-alt"></i> #{new Date(post.createdAt || Date.now()).toLocaleDateString('vi-VN')}
+                  a.btn-read(href=`/blog/${post.slug || post._id}`) Đọc tiếp
+        else
+          .no-posts(style="text-align:center; grid-column: 1/-1; padding: 60px 0;")
+            p(style="color: #bbb;") Đang cập nhật những bài viết mới nhất...
+
+    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
+      div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
+        div
+          a.logo(href="/") FloraHub
+          p(style="margin-top: 20px; line-height: 1.8; color: #888; font-size: 0.9rem;") VNUA FloraHub mang đến những đóa hoa tươi thắm nhất, thay bạn gửi gắm yêu thương đến những người trân quý.
+        
+        div
+          h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
+          ul(style="list-style: none; line-height: 2;")
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Trang chủ
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
+            li: a(href="/explore" style="text-decoration: none; color: #777;") Cẩm nang
+            li: a(href="/blog" style="text-decoration: none; color: #777;") Tin tức
+            li: a(href="/my-orders" style="text-decoration: none; color: #777;") Lịch sử đặt hàng
+            li: a(href="/track-order" style="text-decoration: none; color: #777;") Theo dõi đơn
+        
+        div
+          h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Liên Hệ
+          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2;")
+            li <i class="fas fa-map-marker-alt" style="color: var(--pink-main); margin-right: 10px;"></i> Trâu Quỳ, Gia Lâm, Hà Nội
+            li <i class="fas fa-phone-alt" style="color: var(--pink-main); margin-right: 10px;"></i> 0123 456 789
+      
+      div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
+        p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        const slides = document.querySelectorAll('.slide');
+        let current = 0;
+        if(slides.length > 0) {
+          slides[0].classList.add('active');
+          setInterval(() => {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+          }, 4000);
+        }
+      });
