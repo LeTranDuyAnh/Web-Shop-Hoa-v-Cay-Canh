@@ -17,184 +17,168 @@ html(lang="vi")
       }
       
       * { box-sizing: border-box; }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; padding: 0; color: var(--text-dark); }
+      .admin-layout { display: flex; min-height: 100vh; width: 100%; }
 
-      body {
-        font-family: 'Quicksand', sans-serif;
-        background-color: #fdf2f4;
-        margin: 0;
-        padding: 0;
-        color: var(--text-dark);
-      }
-
-      .admin-layout { 
-        display: flex; 
-        min-height: 100vh;
-        width: 100%;
-      }
-
-      /* --- SIDEBAR CHUẨN --- */
+      /* --- SIDEBAR --- */
       nav.admin-sidebar {
-        width: 280px;
-        min-width: 280px;
-        background: var(--white);
-        border-right: 2px solid var(--pink-bg);
-        padding: 30px 20px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
+        width: 280px; min-width: 280px; background: var(--white);
+        border-right: 2px solid var(--pink-bg); padding: 30px 20px;
+        height: 100vh; position: sticky; top: 0;
       }
-      
-      .logo {
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: var(--pink-dark);
-        margin-bottom: 40px;
-        text-align: center;
-      }
+      .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
       .logo span { color: var(--pink-main); font-weight: 400; }
-      
       .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
       .admin-sidebar li { margin-bottom: 8px; }
-      .admin-sidebar a { 
-        display: flex; align-items: center; gap: 12px; padding: 14px 20px; 
-        text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
-      }
-      
-      /* Active menu: Hồng đậm chữ trắng */
-      .admin-sidebar li.active a {
-        background: var(--pink-main);
-        color: white;
-        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2);
-      }
-      
-      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
+      .admin-sidebar a { display: flex; align-items: center; gap: 12px; padding: 14px 20px; text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s; }
+      .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
+      .badge-pending { background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: auto; font-weight: bold; animation: blink-animation 1.5s linear infinite; }
 
-      /* --- CSS THÔNG BÁO NHẤP NHÁY (QUAN TRỌNG) --- */
-      .badge-pending {
-        background: var(--pink-dark);
-        color: white;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        margin-left: auto; /* Đẩy sang bên phải */
-        font-weight: bold;
-        animation: blink-animation 1.5s linear infinite;
-        box-shadow: 0 2px 5px rgba(194, 24, 91, 0.4);
-      }
+      @keyframes blink-animation { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 
-      @keyframes blink-animation {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.1); opacity: 0.8; }
-        100% { transform: scale(1); opacity: 1; }
-      }
+      /* --- MAIN CONTENT --- */
+      .admin-main { flex-grow: 1; padding: 40px; background-color: #fce4ec; }
+      .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+      
+      .btn-add { background: var(--pink-dark); color: white; border: none; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+      .btn-add:hover { background: var(--pink-main); transform: translateY(-2px); }
 
-      /* --- NỘI DUNG CHÍNH --- */
-      .admin-main {
-        flex-grow: 1;
-        padding: 40px;
-        background-color: #fce4ec;
-      }
-      
-      .admin-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 40px;
-      }
-      
-      .btn-add { 
-        background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
-        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
-        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); display: flex; align-items: center; gap: 8px;
-      }
-      .btn-add:hover { transform: translateY(-2px); background: var(--pink-main); }
+      /* --- SECTION TITLES --- */
+      .section-divider { margin: 40px 0 15px; display: flex; align-items: center; gap: 10px; color: var(--pink-dark); font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+      .section-divider i { font-size: 1.2rem; }
 
       /* --- TABLE --- */
-      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
-      .admin-table th { padding: 0 15px 10px; text-align: left; color: #aaa; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
-      .admin-table td { padding: 20px 15px; background: white; vertical-align: middle; }
-      .admin-table tr:hover td { background: var(--pink-bg); }
-      .admin-table td:first-child { border-radius: 20px 0 0 20px; }
+      .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; margin-bottom: 20px; }
+      .admin-table th { padding: 0 15px 10px; text-align: left; color: #aaa; text-transform: uppercase; font-size: 0.75rem; }
+      .admin-table td { padding: 18px 15px; background: white; vertical-align: middle; }
+      .admin-table tr:hover td { background: #fff9fb; }
+      .admin-table td:first-child { border-radius: 20px 0 0 20px; border-left: 4px solid transparent; }
+      .admin-table tr.row-admin td:first-child { border-left-color: var(--pink-main); }
       .admin-table td:last-child { border-radius: 0 20px 20px 0; }
 
-      .role-badge { 
-        background: #fce4ec; color: var(--pink-dark); padding: 6px 14px; 
-        border-radius: 50px; font-size: 0.75rem; font-weight: 800; 
-      }
-      .status-online {
-        display: inline-flex; align-items: center; gap: 6px; color: var(--success); font-weight: 700; font-size: 0.85rem;
-      }
+      /* --- BADGES --- */
+      .role-badge { background: #eee; color: #666; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; }
+      .role-admin { background: #ffebee; color: var(--pink-dark); }
+      .rank-badge { padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; color: white; }
+      .rank-vip { background: linear-gradient(45deg, #FFD700, #FFA000); }
+      .rank-normal { background: #b2bec3; }
+
+      .status-online { display: inline-flex; align-items: center; gap: 6px; color: var(--success); font-weight: 700; font-size: 0.8rem; }
       .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 5px var(--success); }
-      
-      .actions a { margin-left: 15px; transition: 0.2s; font-size: 1.1rem; }
-      .actions a:hover { transform: scale(1.2); }
+      .actions a { margin-left: 12px; transition: 0.2s; font-size: 1rem; text-decoration: none; }
+
+      /* --- MODAL --- */
+      .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+      .modal-content { background: white; padding: 30px; border-radius: 25px; width: 400px; position: relative; }
+      .form-group { margin-bottom: 15px; }
+      .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+      .form-group input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px; }
+      .btn-submit { width: 100%; background: var(--pink-main); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
   body
+    //- MODAL THÊM ADMIN (Giữ nguyên tính năng của bạn)
+    .modal-overlay#modalAdd
+      .modal-content
+        i.fas.fa-times(style="position:absolute; top:20px; right:20px; cursor:pointer; color:#ccc" onclick="toggleForm()")
+        h3(style="color: var(--pink-dark); margin-top:0") <i class="fas fa-user-plus"></i> Thêm Admin mới
+        form(action="/admin/users/add" method="POST")
+          .form-group
+            label Tài khoản (@)
+            input(type="text" name="username" required)
+          .form-group
+            label Họ và tên
+            input(type="text" name="fullName" required)
+          .form-group
+            label Mật khẩu
+            input(type="password" name="password" required)
+          button.btn-submit(type="submit") Xác nhận thêm
+
     .admin-layout
       nav.admin-sidebar
         .logo Flora<span>Admin</span>
         ul
-          li: a(href="/admin") 
-            i.fas.fa-spa
-            | Quản lý hoa
-          li: a(href="/admin/library") 
-            i.fas.fa-book-medical
-            | Cẩm nang cây cảnh
-          li.active: a(href="/admin/users") 
-            i.fas.fa-user-shield
-            | Đội ngũ quản trị
+          li: a(href="/admin") <i class="fas fa-spa"></i> Quản lý hoa
+          li: a(href="/admin/library") <i class="fas fa-book-medical"></i> Cẩm nang
+          li.active: a(href="/admin/users") <i class="fas fa-user-shield"></i> Đội ngũ & Khách
           li: a(href="/admin/orders") 
             i.fas.fa-heart
-            | Đơn hàng mới
-            //- ĐOẠN NÀY HIỆN THÔNG BÁO ĐƠN HÀNG (GIỐNG TRANG KIA)
+            | Đơn hàng
             if pendingCount > 0
               span.badge-pending #{pendingCount}
-          li: a(href="/admin/analytics") <i class="fas fa-chart-pie"></i> Doanh thu shop
-          li: a(href="/admin/blog/create") 
-            i.fas.fa-pen-nib
-            | Viết bài Blog
-          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher  
-          li: a(href="/") <i class="fas fa-external-link-alt"></i> Xem cửa hàng
           li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") <i class="fas fa-power-off"></i> Đăng xuất
 
       main.admin-main
         header.admin-header
-          h2(style="margin:0; font-weight: 800; color: #444;") 
-            i.fas.fa-users(style="color: var(--pink-main); margin-right: 12px;") 
-            | Đội ngũ quản trị viên
+          h2(style="margin:0; font-weight: 800; color: #444;") Quản lý người dùng
           button.btn-add(onclick="toggleForm()") 
             i.fas.fa-plus-circle
             | Thêm Admin mới
 
+        //- PHẦN 1: ĐỘI NGŨ QUẢN TRỊ
+        .section-divider
+          i.fas.fa-user-shield
+          | Đội ngũ quản trị viên
         table.admin-table
           thead
             tr
               th Tài khoản
               th Họ và tên
-              th Vai trò
               th Trạng thái
               th Thao tác
           tbody
-            if users && users.length > 0
-              each user in users
-                tr
+            - var admins = users.filter(u => u.role === 'admin')
+            if admins.length > 0
+              each user in admins
+                tr.row-admin
                   td: strong(style="color: var(--pink-main);") @#{user.username}
                   td(style="font-weight: 600;")= user.fullName
-                  td: span.role-badge= user.role.toUpperCase()
                   td
                     .status-online
                       .status-dot
-                      | Trực tuyến
+                      | Đang trực
                   td.actions
                     a(href=`/admin/users/detail/${user._id}` style="color: var(--pink-main);")
                       i.fas.fa-eye
-                    a(href=`/admin/users/delete/${user._id}` style="color: #ffb8b8;" onclick="return confirm('Xóa tài khoản?')")
+                    a(href=`/admin/users/delete/${user._id}` style="color: #ffb8b8;" onclick="return confirm('Xóa tài khoản Admin?')")
                       i.fas.fa-trash-alt
             else
-              tr
-                td(colspan="5" style="text-align: center; padding: 50px; color: #bbb;") Danh sách đang trống.
+              tr: td(colspan="4" style="text-align:center; color:#ccc") Chưa có Admin nào.
+
+        //- PHẦN 2: KHÁCH HÀNG
+        .section-divider
+          i.fas.fa-users
+          | Danh sách khách hàng
+        table.admin-table
+          thead
+            tr
+              th Khách hàng
+              th Thứ hạng
+              th Điểm tích lũy
+              th Thao tác
+          tbody
+            - var customers = users.filter(u => u.role !== 'admin')
+            if customers.length > 0
+              each user in customers
+                tr
+                  td
+                    div(style="font-weight: 600;")= user.fullName || user.username
+                    small(style="color:#aaa") ID: ##{user._id.toString().slice(-6)}
+                  td
+                    if user.points >= 100
+                      span.rank-badge.rank-vip VIP
+                    else
+                      span.rank-badge.rank-normal Thành viên
+                  td(style="font-weight: 700; color: var(--pink-dark)") #{user.points || 0} pts
+                  td.actions
+                    a(href=`/admin/users/detail/${user._id}` style="color: var(--pink-main);")
+                      i.fas.fa-eye
+                    a(href=`/admin/users/delete/${user._id}` style="color: #ffb8b8;" onclick="return confirm('Xóa khách hàng này?')")
+                      i.fas.fa-trash-alt
+            else
+              tr: td(colspan="4" style="text-align:center; color:#ccc") Chưa có khách hàng đăng ký.
 
     script.
       function toggleForm() {
-        // Code mở form thêm người dùng của bạn ở đây
+        const modal = document.getElementById('modalAdd');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
       }

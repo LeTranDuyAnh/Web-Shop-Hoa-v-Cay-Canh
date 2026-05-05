@@ -2,25 +2,45 @@ doctype html
 html(lang="vi")
   head
     meta(charset="UTF-8")
-    title Chi tiết quản trị viên - FloraHub
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Chi tiết người dùng - FloraHub Admin
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
     link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap", rel="stylesheet")
     style.
-      :root { --pink-main: #E91E63; --pink-dark: #C2185B; --pink-bg: #F8BBD0; }
+      :root { 
+        --pink-main: #E91E63; 
+        --pink-dark: #C2185B; 
+        --pink-bg: #F8BBD0; 
+      }
       body { font-family: 'Quicksand', sans-serif; background: #fdf2f4; margin: 0; padding: 40px; color: #2d3436; }
       .container { max-width: 1000px; margin: auto; }
       .card { background: white; border-radius: 25px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 2px solid var(--pink-bg); }
       .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #fce4ec; padding-bottom: 20px; }
+      
+      /* Rank Section */
+      .rank-display {
+        display: flex; align-items: center; gap: 20px; padding: 20px; border-radius: 20px; 
+        background: #fff; border: 1px solid #f0f0f0; margin-bottom: 30px;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+      }
+      .rank-icon { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #fff; }
+      .rank-diamond { background: linear-gradient(135deg, #4FC3F7, #1565C0); }
+      .rank-gold { background: linear-gradient(135deg, #FFD700, #FFA000); }
+      .rank-bronze { background: linear-gradient(135deg, #A1887F, #795548); }
+      .rank-none { background: #eee; color: #aaa; }
+
       .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 40px; }
-      .info-item label { color: #aaa; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
-      .info-item p { font-weight: 700; margin: 8px 0; color: var(--pink-dark); font-size: 1.1rem; }
-      .badge { background: var(--pink-bg); color: var(--pink-dark); padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; }
+      .info-item label { color: #aaa; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+      .info-item p { font-weight: 700; margin: 8px 0; color: #2d3436; font-size: 1.05rem; }
+      
+      .badge { background: var(--pink-bg); color: var(--pink-dark); padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; }
       .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-      .table th { text-align: left; padding: 12px; color: #bbb; border-bottom: 2px solid #fce4ec; }
-      .table td { padding: 15px 12px; border-bottom: 1px solid #eee; }
+      .table th { text-align: left; padding: 12px; color: #bbb; border-bottom: 2px solid #fce4ec; font-size: 0.8rem; }
+      .table td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
       .btn-back { text-decoration: none; color: #888; font-weight: 700; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
       .btn-back:hover { color: var(--pink-main); }
       .status-done { color: #2ecc71; font-weight: 700; }
+      .status-pending { color: #f1c40f; font-weight: 700; }
 
   body
     .container
@@ -29,11 +49,31 @@ html(lang="vi")
           div
             h1(style="margin:0; color: var(--pink-dark);") 
               i.fas.fa-id-badge(style="margin-right: 15px;")
-              | Hồ sơ: #{user.fullName}
+              | Hồ sơ: #{user.fullName || user.username}
             p(style="color: #999; margin-top: 5px;") ID: #{user._id}
           a.btn-back(href="/admin/users") 
             i.fas.fa-arrow-left
             | Quay lại danh sách
+
+        //- PHẦN HIỂN THỊ HẠNG (RANK)
+        - var rClass = 'rank-none'
+        - var rIcon = 'fa-user'
+        if user.rank === 'Hạng Kim cương'
+          - rClass = 'rank-diamond', rIcon = 'fa-gem'
+        else if user.rank === 'Hạng Vàng'
+          - rClass = 'rank-gold', rIcon = 'fa-medal'
+        else if user.rank === 'Hạng Đồng'
+          - rClass = 'rank-bronze', rIcon = 'fa-award'
+
+        .rank-display
+          .rank-icon(class=rClass)
+            i.fas(class=rIcon)
+          div
+            span(style="font-size: 0.75rem; color: #aaa; font-weight: 800; text-transform: uppercase;") Phân hạng thành viên
+            h3(style="margin: 2px 0; color: #333; font-size: 1.4rem;")= user.rank || 'Chưa xác định'
+            p(style="margin: 0; color: var(--pink-main); font-weight: 700; font-size: 0.9rem;") 
+              i.fas.fa-star(style="margin-right: 5px;")
+              | #{user.points || 0} Flora Points tích lũy
 
         .info-grid
           .info-item
@@ -49,7 +89,9 @@ html(lang="vi")
             label Địa chỉ
             p= user.address || "Chưa cập nhật"
 
-        h3(style="color: var(--pink-main); border-left: 5px solid var(--pink-main); padding-left: 15px;") <i class="fas fa-shopping-bag"></i> Lịch sử đơn hàng đã xử lý
+        h3(style="color: var(--pink-main); border-left: 5px solid var(--pink-main); padding-left: 15px; margin-top: 40px;") 
+          i.fas.fa-shopping-bag(style="margin-right: 10px;")
+          | Lịch sử đơn hàng
         
         if orders && orders.length > 0
           table.table
@@ -63,12 +105,16 @@ html(lang="vi")
             tbody
               each order in orders
                 tr
-                  td(style="font-weight:700")= "#" + order._id.toString().slice(-6)
+                  td(style="font-weight:700; color: #555;")= "#" + order._id.toString().slice(-6).toUpperCase()
                   td= new Date(order.createdAt).toLocaleDateString('vi-VN')
                   td= order.customer ? order.customer.name : "N/A"
-                  td(style="color: var(--pink-main); font-weight:700")= order.totalAmount.toLocaleString() + "đ"
-                  td: span.status-done= order.status === 'completed' ? 'Hoàn thành' : 'Đang xử lý'
+                  td(style="color: var(--pink-dark); font-weight:700")= order.totalAmount.toLocaleString('vi-VN') + " đ"
+                  td
+                    if order.status === 'completed'
+                      span.status-done Hoàn thành
+                    else
+                      span.status-pending Đang xử lý
         else
           .empty(style="text-align: center; padding: 50px; color: #ccc;")
-            i.fas.fa-box-open(style="font-size: 3rem; margin-bottom: 15px;")
-            p Người dùng này chưa có dữ liệu đơn hàng.
+            i.fas.fa-box-open(style="font-size: 3rem; margin-bottom: 15px; display: block;")
+            p Người dùng này chưa có đơn hàng nào trong hệ thống.

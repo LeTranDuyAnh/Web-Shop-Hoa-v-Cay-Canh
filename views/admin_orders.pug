@@ -71,6 +71,13 @@ html(lang="vi")
       .bill-row strong { text-align: right; word-wrap: break-word; max-width: 70%; }
       .bill-items { background: #fff9fa; border-radius: 15px; padding: 15px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
 
+      /* Loyalty Tooltip */
+      .loyalty-tag {
+        display: inline-flex; align-items: center; gap: 4px;
+        background: #e8f5e9; color: #2e7d32; padding: 2px 8px;
+        border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 5px;
+      }
+
   body
     .admin-layout
       nav.admin-sidebar
@@ -128,6 +135,11 @@ html(lang="vi")
                   
                   td(width="15%")
                     strong(style="color: var(--pink-dark); font-size: 1.1rem;")= (order.totalAmount || 0).toLocaleString('vi-VN') + ' đ'
+                    if order.status !== 'cancelled'
+                      br
+                      .loyalty-tag
+                        i.fas.fa-leaf
+                        | +#{Math.floor((order.totalAmount || 0) / 10000)} điểm
                   
                   td(width="10%")
                     - var stClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : (order.status === 'cancelled' ? 'status-cancelled' : 'status-completed'))
@@ -214,7 +226,6 @@ html(lang="vi")
         const itemsContainer = document.getElementById('modal-items-list');
         itemsContainer.innerHTML = '<h4 style="margin-top:0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">Sản phẩm & Khuyến mãi:</h4>';
         
-        // 1. Hiện các món đã mua
         if (order.items) {
           order.items.forEach(item => {
             const itemRow = document.createElement('div');
@@ -224,7 +235,6 @@ html(lang="vi")
           });
         }
 
-        // 2. Hiện Voucher nếu có
         if (order.appliedVoucher) {
           const voucherRow = document.createElement('div');
           voucherRow.className = 'bill-row';
@@ -234,7 +244,6 @@ html(lang="vi")
           itemsContainer.appendChild(voucherRow);
         }
 
-        // 3. Hiện lời nhắn nếu có
         if (cus.note) {
           const noteBox = document.createElement('div');
           noteBox.style.marginTop = '15px';

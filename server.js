@@ -179,18 +179,42 @@ fastify.get('/explore', async (request, reply) => {
 fastify.get('/admin/users', async (request, reply) => {
   const db = fastify.mongo.db;
   
-  // 1. Lấy danh sách users
-  const users = await db.collection('users').find().toArray();
-  
-  // 2. ĐẾM SỐ ĐƠN HÀNG CHƯA XỬ LÝ (Để hiện badge nhấp nháy ở Sidebar)
-  // Giả sử đơn hàng chưa xử lý có status là 'pending'
-  const pendingCount = await db.collection('orders').countDocuments({ status: 'pending' });
+  try {
+    // 1. Lấy toàn bộ danh sách users
+    const allUsers = await db.collection('users').find().toArray();
+    
+    // 2. Phân loại và tính toán rank ngay tại Backend
+    const processedUsers = allUsers.map(u => {
+      let rank = 'Khách mới';
+      const pts = u.points || 0;
+      
+      // Áp dụng logic mốc điểm 1 - 51 - 501
+      if (pts >= 501) rank = 'Hạng Kim cương';
+      else if (pts >= 51) rank = 'Hạng Vàng';
+      else if (pts >= 1) rank = 'Hạng Đồng';
+      
+      return { ...u, rank };
+    });
 
-  // 3. Gửi cả users và pendingCount sang giao diện
-  return reply.view('admin_users.pug', { 
-    users, 
-    pendingCount // <--- Quan trọng: Có cái này thì badge mới hiện số 2, 3...
-  });
+    // 3. Tách danh sách để đếm tổng số lượng
+    const adminList = processedUsers.filter(u => u.role === 'admin');
+    const customerList = processedUsers.filter(u => u.role !== 'admin');
+
+    // 4. Đếm số đơn hàng chưa xử lý cho Sidebar
+    const pendingCount = await db.collection('orders').countDocuments({ status: 'pending' });
+
+    // 5. Render và gửi dữ liệu
+    return reply.view('admin_users.pug', { 
+      users: processedUsers, // Danh sách tổng để Pug tự loop hoặc dùng adminList/customerList
+      totalAdmins: adminList.length,
+      totalCustomers: customerList.length,
+      pendingCount: pendingCount
+    });
+
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.redirect('/admin');
+  }
 });
 
 const bcrypt = require('bcrypt');
@@ -840,31 +864,63 @@ fastify.get('/admin/orders', async (request, reply) => {
 fastify.post('/admin/orders/update-status/:id', async (request, reply) => {
   const { ObjectId } = fastify.mongo;
   const { status, reason } = request.body;
+  const orderId = request.params.id;
   
   try {
+    const orderColl = fastify.mongo.db.collection('orders');
+    const userColl = fastify.mongo.db.collection('users');
+
+    // 1. Lấy thông tin đơn hàng trước khi update
+    const order = await orderColl.findOne({ _id: new ObjectId(orderId) });
+    if (!order) return reply.code(404).send("Không tìm thấy đơn hàng");
+
     const updateData = { 
       status: status,
-      updatedAt: new Date() // Thêm thời gian cập nhật để theo dõi lịch sử
+      updatedAt: new Date()
     };
+    if (reason) updateData.adminFeedback = reason;
 
-    if (reason) {
-      updateData.adminFeedback = reason; 
-    }
-
-    // Nếu trạng thái là hoàn tất, bạn có thể lưu thêm thời gian hoàn thành cụ thể
+    // 2. XỬ LÝ LOGIC KHI HOÀN TẤT ĐƠN HÀNG
     if (status === 'completed') {
       updateData.completedAt = new Date();
+
+      // Chỉ cộng điểm nếu đơn hàng chưa từng được "completed" trước đó (tránh cộng trùng)
+      if (order.status !== 'completed' && order.userId) {
+        const pointsEarned = Math.floor(order.totalAmount / 10000); // 10k = 1 điểm
+        
+        // Cập nhật điểm và tổng chi tiêu cho User
+        await userColl.updateOne(
+          { _id: new ObjectId(order.userId) },
+          { 
+            $inc: { 
+              points: pointsEarned, 
+              totalSpent: order.totalAmount 
+            } 
+          }
+        );
+
+        // Kiểm tra và Nâng hạng thành viên
+        const updatedUser = await userColl.findOne({ _id: new ObjectId(order.userId) });
+        let newRank = 'Thành viên Bạc';
+        if (updatedUser.totalSpent >= 5000000) newRank = 'Thành viên Kim cương';
+        else if (updatedUser.totalSpent >= 2000000) newRank = 'Thành viên Vàng';
+
+        if (updatedUser.rank !== newRank) {
+          await userColl.updateOne(
+            { _id: new ObjectId(order.userId) },
+            { $set: { rank: newRank } }
+          );
+        }
+      }
     }
 
-    await fastify.mongo.db.collection('orders').updateOne(
-      { _id: new ObjectId(request.params.id) },
-      { $set: updateData }
-    );
+    // 3. Cập nhật trạng thái đơn hàng
+    await orderColl.updateOne({ _id: new ObjectId(orderId) }, { $set: updateData });
 
     return reply.redirect('/admin/orders');
   } catch (err) {
     fastify.log.error(err);
-    return reply.code(500).send("Lỗi cập nhật trạng thái đơn hàng");
+    return reply.code(500).send("Lỗi hệ thống");
   }
 });
 
@@ -1087,24 +1143,14 @@ fastify.get('/profile', async (request, reply) => {
   if (!sessionUser) return reply.redirect('/login');
 
   try {
-    // Dòng này để bạn kiểm tra trong màn hình đen (CMD/Terminal)
-    console.log("ID đang tìm là:", sessionUser._id || sessionUser.id);
-
-    // Dùng biến id linh hoạt (thử cả _id và id)
     const currentId = sessionUser._id || sessionUser.id;
     
-    // 1. Sửa 'users' thành tên bảng chính xác của bạn trong MongoDB
+    // 1. Lấy thông tin user mới nhất từ Database
     const userFromDb = await fastify.mongo.db.collection('users').findOne({ 
       _id: new fastify.mongo.ObjectId(currentId) 
     });
 
-    if (userFromDb) {
-      console.log("Đã tìm thấy user trong DB:", userFromDb.fullName);
-    } else {
-      console.log("KHÔNG tìm thấy user trong DB!");
-    }
-
-    // 2. Lấy đơn hàng (đảm bảo userId trong DB là String hoặc ObjectId)
+    // 2. Lấy danh sách đơn hàng của user đó
     const orders = await fastify.mongo.db.collection('orders')
       .find({ 
         $or: [
@@ -1115,8 +1161,21 @@ fastify.get('/profile', async (request, reply) => {
       .sort({ createdAt: -1 })
       .toArray();
 
+    // 3. Logic phân hạng dựa trên Flora Points (1-51-501)
+    let pts = 0;
+    let rank = 'Khách mới';
+
+    if (userFromDb) {
+      pts = userFromDb.points || 0;
+      if (pts >= 501) rank = 'Hạng Kim cương';
+      else if (pts >= 51) rank = 'Hạng Vàng';
+      else if (pts >= 1) rank = 'Hạng Đồng';
+    }
+
+    const userData = userFromDb ? { ...userFromDb, points: pts, rank: rank } : { ...sessionUser, points: 0, rank: 'Khách mới' };
+
     return reply.view('profile.pug', { 
-      user: userFromDb || sessionUser, // Ưu tiên DB, hỏng thì dùng session
+      user: userData,
       orders: orders || [], 
       session: request.session 
     });
@@ -1133,7 +1192,7 @@ fastify.get('/admin/users/detail/:id', async (request, reply) => {
   try {
     const userId = request.params.id;
 
-    // 1. Tìm thông tin người dùng trong collection 'users'
+    // 1. Tìm người dùng
     const user = await fastify.mongo.db.collection('users').findOne({ 
       _id: new ObjectId(userId) 
     });
@@ -1142,14 +1201,23 @@ fastify.get('/admin/users/detail/:id', async (request, reply) => {
       return reply.redirect('/admin/users?error=notfound');
     }
 
-    // 2. Tìm danh sách đơn hàng của người dùng này trong collection 'orders'
-    // Lưu ý: userId trong đơn hàng thường lưu dưới dạng ObjectId
+    // 2. Logic phân hạng dựa trên điểm (1-51-501)
+    const pts = user.points || 0;
+    let currentRank = 'Khách mới';
+    if (pts >= 501) currentRank = 'Hạng Kim cương';
+    else if (pts >= 51) currentRank = 'Hạng Vàng';
+    else if (pts >= 1) currentRank = 'Hạng Đồng';
+
+    // Gán rank vào object user để gửi sang Pug
+    user.rank = currentRank;
+    user.points = pts;
+
+    // 3. Tìm danh sách đơn hàng
     const orders = await fastify.mongo.db.collection('orders')
       .find({ userId: new ObjectId(userId) })
       .sort({ createdAt: -1 })
       .toArray();
 
-    // 3. Render giao diện (Đảm bảo file admin_user_detail.pug tồn tại trong thư mục views)
     return reply.view('admin_user_detail.pug', { 
       user: user, 
       orders: orders 

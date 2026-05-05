@@ -14,11 +14,12 @@ html(lang="vi")
         --pink-bg: #FFF0F3;
         --text-dark: #4A4A4A;
         --white: #FFFFFF;
+        --gray-out: #b2bec3;
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); overflow-x: hidden; }
       
-      /* --- NAVBAR (Đồng bộ Home) --- */
+      /* --- NAVBAR --- */
       .navbar { 
         display: flex; justify-content: space-between; align-items: center; 
         padding: 12px 5%; background: rgba(255, 255, 255, 0.98); 
@@ -32,12 +33,13 @@ html(lang="vi")
       }
       .nav-link.active { background: var(--pink-main); color: white; box-shadow: 0 4px 10px rgba(255, 133, 161, 0.3); }
       .nav-link:not(.active):hover { color: var(--pink-main); }
+      
       .nav-right { display: flex; align-items: center; gap: 15px; }
       .icon-btn { color: var(--pink-main); font-size: 1.2rem; text-decoration: none; position: relative; transition: 0.3s; }
       .cart-count { background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; position: absolute; top: -8px; right: -8px; border: 2px solid white; }
       .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
 
-      /* --- BANNER (Kích thước chuẩn trang Home: 70vh) --- */
+     /* --- BANNER (Kích thước chuẩn trang Home: 70vh) --- */
       .hero-slider { position: relative; height: 70vh; min-height: 450px; width: 100%; overflow: hidden; background: #fce4ec; }
       .slide { 
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; 
@@ -49,7 +51,7 @@ html(lang="vi")
       .hero-content h1 { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--pink-main); margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
       .hero-content p { font-size: 1.1rem; font-weight: 600; color: #555; }
 
-      /* --- SEARCH BOX NỔI --- */
+      /* --- SEARCH BOX --- */
       .search-container { max-width: 600px; margin: -35px auto 50px; padding: 0 20px; position: relative; z-index: 100; }
       .search-box {
         background: white; display: flex; align-items: center; padding: 5px 25px;
@@ -62,25 +64,34 @@ html(lang="vi")
       /* --- PRODUCT SECTION --- */
       section.content { 
         padding: 60px 8% 100px; background: white; border-radius: 60px 60px 0 0; 
-        margin-top: -40px; position: relative; z-index: 5; 
+        margin-top: -40px; position: relative; z-index: 5; min-height: 500px;
       }
       .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
       
       .product-card { 
         background: var(--white); border-radius: 30px; padding: 20px; 
         text-align: center; transition: 0.4s; border: 1px solid #fef0f2;
+        position: relative; overflow: hidden;
       }
       .product-card:hover { transform: translateY(-10px); box-shadow: 0 12px 25px rgba(255, 133, 161, 0.15); }
       .product-card img { width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px; }
+
+      /* --- SOLD OUT STATE --- */
+      .sold-out-card { filter: grayscale(0.8); opacity: 0.7; }
+      .sold-out-badge {
+        position: absolute; top: 20px; left: 20px; background: #636e72; color: white;
+        padding: 6px 15px; border-radius: 50px; font-weight: 800; font-size: 0.75rem; z-index: 5;
+      }
       
-      /* --- BUTTONS (Đồng bộ Home) --- */
+      /* --- BUTTONS --- */
       .btn-hero { 
         padding: 10px 25px; border-radius: 50px; background: var(--pink-main); color: white; 
         font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s;
         box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4); border: none; cursor: pointer;
       }
-      .btn-hero:hover { transform: translateY(-3px); background: var(--pink-dark); }
+      .btn-hero:hover:not(:disabled) { transform: translateY(-3px); background: var(--pink-dark); }
       .btn-detail { background: #f8f9fa; color: #777; box-shadow: none; }
+      .btn-disabled { background: var(--gray-out) !important; cursor: not-allowed !important; box-shadow: none !important; }
 
   body
     header
@@ -95,7 +106,7 @@ html(lang="vi")
         .nav-right
           a.icon-btn(href="/cart")
             i.fas.fa-shopping-basket
-            if (typeof cartCount !== 'undefined' && cartCount > 0)
+            if cartCount > 0
               span.cart-count= cartCount
           
           if session && session.user
@@ -125,29 +136,40 @@ html(lang="vi")
         .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?auto=format&fit=crop&q=80&w=1600');")
           .hero-content
             h1 Plant Library
-            a.btn-hero(href="/wiki") Khám phá cẩm nang    
-
+            a.btn-hero(href="/wiki") Khám phá cẩm nang  
       .search-container
         .search-box
           i.fas.fa-search
-          input#flowerSearch(type="text", placeholder="Tìm tên hoa bạn muốn...", onkeyup="filterFlowers()")
+          input#flowerSearch(type="text", placeholder="Tìm tên hoa...", onkeyup="filterFlowers()")
 
       section.content
         #flowerGrid.grid-container
           if flowers && flowers.length > 0
             each flower in flowers
-              .product-card.flower-item
+              //- KIỂM TRA SỐ LƯỢNG DỰA TRÊN TRƯỜNG 'STOCK'
+              - var isOut = (flower.stock <= 0)
+              
+              .product-card.flower-item(class=(isOut ? "sold-out-card" : ""))
+                if isOut
+                  span.sold-out-badge HẾT HÀNG
+
                 img(src=(flower.image || 'https://via.placeholder.com/300x400?text=FloraHub'))
                 .card-body
                   h3(style="margin-bottom: 10px; font-weight: 700;")= flower.name
                   p(style="color: var(--pink-main); font-weight: 800; font-size: 1.3rem; margin-bottom: 15px;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+                  
                   .card-footer(style="display: flex; gap: 10px; justify-content: center;")
                     a.btn-hero.btn-detail(href=`/flower/${flower._id}`) Chi tiết
-                    form(action="/cart/add", method="POST")
-                      input(type="hidden", name="flowerId", value=flower._id.toString())
-                      button.btn-hero(type="submit") #[i.fas.fa-cart-plus]
+                    
+                    if !isOut
+                      form(action="/cart/add", method="POST")
+                        input(type="hidden", name="flowerId", value=flower._id.toString())
+                        button.btn-hero(type="submit" title="Thêm vào giỏ") #[i.fas.fa-cart-plus]
+                    else
+                      button.btn-hero.btn-disabled(disabled title="Sản phẩm đã hết hàng")
+                        i.fas.fa-ban
           else
-            p(style="text-align: center; grid-column: 1/-1; color: #999;") Đang cập nhật hoa mới...
+            p(style="text-align: center; grid-column: 1/-1; color: #999; padding: 50px;") Hiện tại không tìm thấy hoa nào phù hợp...
 
     footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
@@ -158,9 +180,9 @@ html(lang="vi")
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
           ul(style="list-style: none; line-height: 2;")
-            li: a(href="/explore" style="text-decoration: none; color: #777;") Trang chủ
+            li: a(href="/" style="text-decoration: none; color: #777;") Trang chủ
             li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
-            li: a(href="/explore" style="text-decoration: none; color: #777;") Cẩm nang
+            li: a(href="/wiki" style="text-decoration: none; color: #777;") Cẩm nang
             li: a(href="/vouchers" style="text-decoration: none; color: #777;") Kho vouchers
             li: a(href="/blog" style="text-decoration: none; color: #777;") Tin tức
             li: a(href="/my-orders" style="text-decoration: none; color: #777;") Lịch sử đặt hàng
@@ -174,6 +196,10 @@ html(lang="vi")
       
       div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
         p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
+
+    .social-chat-wrapper
+      a.chat-btn.zalo(href="https://zalo.me/0398102869" target="_blank"): img(src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_Zalo.svg")
+      a.chat-btn.messenger(href="#" target="_blank"): i.fab.fa-facebook-messenger
 
     script.
       document.addEventListener('DOMContentLoaded', () => {

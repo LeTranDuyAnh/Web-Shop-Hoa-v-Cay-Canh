@@ -82,25 +82,32 @@ html(lang="vi")
           p Bạn chưa có đơn hàng nào.
 
     //- GIỮ NGUYÊN FOOTER
-    footer(style="background: white; padding: 60px 8% 40px; border-top: 1px solid #eee; margin-top: 50px;")
+    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
         div
-          a(href="/" style="font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--pink-main); text-decoration: none;") FloraHub
+          a.logo(href="/") FloraHub
           p(style="margin-top: 20px; line-height: 1.8; color: #888; font-size: 0.9rem;") VNUA FloraHub mang đến những đóa hoa tươi thắm nhất, thay bạn gửi gắm yêu thương đến những người trân quý.
         
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
-          ul(style="list-style: none; line-height: 2; padding: 0;")
+          ul(style="list-style: none; line-height: 2;")
             li: a(href="/" style="text-decoration: none; color: #777;") Trang chủ
             li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
-            li: a(href="/vouchers" style="text-decoration: none; color: #777;") Kho Vouchers
+            li: a(href="/wiki" style="text-decoration: none; color: #777;") Cẩm nang
+            li: a(href="/vouchers" style="text-decoration: none; color: #777;") Kho vouchers
+            li: a(href="/blog" style="text-decoration: none; color: #777;") Tin tức
             li: a(href="/my-orders" style="text-decoration: none; color: #777;") Lịch sử đặt hàng
+            li: a(href="/track-order" style="text-decoration: none; color: #777;") Theo dõi đơn
         
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Liên Hệ
-          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2; padding: 0;")
+          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2;")
             li <i class="fas fa-map-marker-alt" style="color: var(--pink-main); margin-right: 10px;"></i> Trâu Quỳ, Gia Lâm, Hà Nội
             li <i class="fas fa-phone-alt" style="color: var(--pink-main); margin-right: 10px;"></i> 0123 456 789
       
       div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
         p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
+
+    .social-chat-wrapper
+      a.chat-btn.zalo(href="https://zalo.me/0398102869" target="_blank"): img(src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_Zalo.svg")
+      a.chat-btn.messenger(href="#" target="_blank"): i.fab.fa-facebook-messenger
