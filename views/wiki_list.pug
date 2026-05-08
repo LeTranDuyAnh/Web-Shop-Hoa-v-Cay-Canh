@@ -98,11 +98,12 @@ html(lang="vi")
             if (typeof cartCount !== 'undefined' && cartCount > 0)
               span.cart-count= cartCount
           if session && session.user
-            a.icon-btn(href="/profile"): i.fas.fa-user-circle
+            if session.user.role === 'admin'
+              a.icon-btn(href="/admin" title="Quản trị"): i.fas.fa-user-shield
+            a.icon-btn(href="/profile" title="Tài khoản"): i.fas.fa-user-circle
             a.btn-exit(href="/logout") Thoát
           else
             a.nav-link(href="/login" style="padding: 8px 15px") Đăng nhập
-
     main
       section.hero-slider
         .slide.active(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=1600');")

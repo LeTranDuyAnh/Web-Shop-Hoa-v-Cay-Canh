@@ -148,11 +148,16 @@ html(lang="vi")
               .form-group
                 label Thể loại:
                 select(name="category", required)
-                  option(value="Hoa cảnh") Hoa cảnh
-                  option(value="Cây cảnh") Cây cảnh
-                  option(value="Hoa cưới") Hoa cưới
-                  option(value="Hoa sinh nhật") Hoa sinh nhật
-            
+                  //- Nhóm Hoa
+                  option(value="Hoa cảnh", selected=(flower && flower.category === "Hoa cảnh")) Hoa cảnh
+                  option(value="Hoa đám cưới", selected=(flower && flower.category === "Hoa đám cưới")) Hoa đám cưới
+                  option(value="Hoa sinh nhật", selected=(flower && flower.category === "Hoa sinh nhật")) Hoa sinh nhật
+                  option(value="Hoa sự kiện", selected=(flower && flower.category === "Hoa sự kiện")) Hoa sự kiện
+                  option(value="Hoa khai trương", selected=(flower && flower.category === "Hoa khai trương")) Hoa khai trương
+                  option(value="Hoa chủ đề", selected=(flower && flower.category === "Hoa chủ đề")) Hoa chủ đề
+                  option(value="Hoa theo mùa", selected=(flower && flower.category === "Hoa theo mùa")) Hoa theo mùa
+                  option(value="Cây cảnh", selected=(flower && flower.category === "Cây cảnh")) Cây cảnh
+                  option(value="Cây cảnh trang trí", selected=(flower && flower.category === "Cây cảnh trang trí")) Cây cảnh trang trí
             .form-row(style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;")
               .form-group
                 label Giá vốn (đ):

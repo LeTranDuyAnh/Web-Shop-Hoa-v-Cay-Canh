@@ -27,21 +27,43 @@ fastify.register(require('@fastify/formbody'));
 // Route chính để hiển thị trang Home
 fastify.get('/', async (request, reply) => {
   try {
-    const collection = fastify.mongo.db.collection('flowers');
-    const flowers = await collection.find({}).sort({ _id: -1 }).limit(8).toArray();
-    
-    const cart = request.session.cart || [];
-    const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);  
-    
-    // BẮT BUỘC TRUYỀN THÊM session: request.session
+    const col = fastify.mongo.db.collection('flowers');
+    const limit = 8;
+    const sort = { _id: -1 };
+
+    // Truy vấn song song tất cả các danh mục để tối ưu tốc độ
+    const [
+      flowers,
+      ornamentalPlants,
+      weddingFlowers,
+      birthdayFlowers,
+      eventFlowers,
+      grandOpeningFlowers, // Khai trương
+      themedFlowers,       // Chủ đề
+      seasonalFlowers,     // Theo mùa
+      decorPlants          // Cây trang trí
+    ] = await Promise.all([
+      col.find({}).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Cây cảnh" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Hoa đám cưới" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Hoa sinh nhật" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Hoa sự kiện" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Hoa khai trương" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Hoa chủ đề" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Hoa theo mùa" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Cây cảnh trang trí" }).sort(sort).limit(limit).toArray()
+    ]);
+
     return reply.view('home.pug', { 
-      flowers, 
-      cartCount, 
+      flowers, ornamentalPlants, weddingFlowers, birthdayFlowers, 
+      eventFlowers, grandOpeningFlowers, themedFlowers, 
+      seasonalFlowers, decorPlants,
+      cartCount: (request.session.cart || []).reduce((sum, item) => sum + item.qty, 0),
       session: request.session 
     });
   } catch (err) {
     fastify.log.error(err);
-    return reply.code(500).send("Lỗi trang chủ");
+    return reply.code(500).send("Lỗi tải trang chủ");
   }
 });
 
@@ -173,8 +195,6 @@ fastify.get('/explore', async (request, reply) => {
   }
 });
 
-
-// Route: Hiển thị danh sách Admin
 // Route: Hiển thị danh sách Admin
 fastify.get('/admin/users', async (request, reply) => {
   const db = fastify.mongo.db;
@@ -1580,13 +1600,21 @@ fastify.get('/cart/remove-voucher', async (request, reply) => {
 fastify.get('/vouchers', async (request, reply) => {
     try {
         const now = new Date();
-        // Lấy các mã còn hạn và trạng thái đang hoạt động
         const vouchers = await fastify.mongo.db.collection('vouchers').find({ 
             expiryDate: { $gte: now },
             status: 'active'
         }).sort({ expiryDate: 1 }).toArray();
-        
-        return reply.view('vouchers_client.pug', { vouchers });
+
+        // --- COPY LOGIC TỪ BLOG SANG ĐỂ ĐỒNG BỘ NAVBAR ---
+        const cart = request.session.get('cart') || [];
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+        const user = request.session.get('user');
+
+        return reply.view('vouchers_client.pug', { 
+            vouchers, 
+            cartCount: totalItems, 
+            session: { user: user } 
+        });
     } catch (err) {
         console.error('[Client Voucher Error]', err);
         reply.status(500).send('Không thể tải kho voucher');

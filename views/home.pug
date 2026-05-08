@@ -113,12 +113,14 @@ html(lang="vi")
             i.fas.fa-shopping-basket
             if typeof cartCount !== 'undefined' && cartCount > 0
               span.cart-count= cartCount
+        
           if session && session.user
-            a.icon-btn(href="/profile"): i.fas.fa-user-circle
+            if session.user.role === 'admin'
+              a.icon-btn(href="/admin" title="Quản trị"): i.fas.fa-user-shield
+            a.icon-btn(href="/profile" title="Tài khoản"): i.fas.fa-user-circle
             a.btn-exit(href="/logout") Thoát
           else
             a.nav-link(href="/login" style="padding: 8px 15px") Đăng nhập
-
     section.hero-slider
       .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=1600');")
         .hero-content
@@ -151,7 +153,256 @@ html(lang="vi")
                 form(action="/cart/add", method="POST")
                   input(type="hidden", name="flowerId", value=flower._id.toString())
                   button.btn-hero(type="submit" style="padding: 10px 20px;") <i class="fas fa-cart-plus"></i>
+    section#products(style="padding: 60px 8%; background: white;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: var(--text-dark);") 
+        i.fas.fa-leaf(style="color: #2ecc71; margin-right: 15px;")
+        | Cây Bonsai Nghệ Thuật
 
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if ornamentalPlants && ornamentalPlants.length > 0
+          each plant in ornamentalPlants
+            - var isOut = (plant.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #fef0f2; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(plant.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; color: #333;")= plant.name
+              p(style="color: var(--pink-main); font-weight: 800; font-size: 1.2rem;")= (plant.price ? plant.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${plant._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.9rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=plant._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: var(--pink-main); color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            i.fas.fa-seedling(style="font-size: 3rem; margin-bottom: 10px;")
+            p Hiện đang cập nhật các mẫu Bonsai mới...
+    //- PHẦN HOA ĐÁM CƯỚI
+    section#wedding-flowers(style="padding: 60px 8%; background: #fffafb;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #d63384;") 
+        i.fas.fa-heart(style="margin-right: 15px;")
+        | Hoa Đám Cưới Lung Linh
+
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if weddingFlowers && weddingFlowers.length > 0
+          each flower in weddingFlowers
+            - var isOut = (flower.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #fce4ec; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(flower.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= flower.name
+              p(style="color: #d63384; font-weight: 800; font-size: 1.2rem;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=flower._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #d63384; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            p Đang cập nhật các mẫu hoa cưới mới nhất...     
+    //- PHẦN HOA SINH NHẬT
+    section#birthday-flowers(style="padding: 60px 8%; background: #fffcf0;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #ff9f43;") 
+        i.fas.fa-birthday-cake(style="margin-right: 15px;")
+        | Hoa Sinh Nhật Tươi Thắm
+
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if birthdayFlowers && birthdayFlowers.length > 0
+          each flower in birthdayFlowers
+            - var isOut = (flower.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #fff5e6; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(flower.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= flower.name
+              p(style="color: #ff9f43; font-weight: 800; font-size: 1.2rem;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=flower._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #ff9f43; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            p Đang cập nhật những mẫu hoa chúc mừng sinh nhật mới nhất...  
+    //- PHẦN HOA SỰ KIỆN
+    section#event-flowers(style="padding: 60px 8%; background: #f4f7f6;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #2c3e50;") 
+        i.fas.fa-microphone-alt(style="margin-right: 15px;")
+        | Hoa Sự Kiện & Hội Nghị
+
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if eventFlowers && eventFlowers.length > 0
+          each flower in eventFlowers
+            - var isOut = (flower.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #d1d8e0; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(flower.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= flower.name
+              p(style="color: #2c3e50; font-weight: 800; font-size: 1.2rem;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=flower._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #2c3e50; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            p Đang thiết kế các mẫu hoa sự kiện đẳng cấp...
+    //- PHẦN HOA KHAI TRƯƠNG
+    section#grand-opening(style="padding: 60px 8%; background: #fff5f5;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #e74c3c;") 
+        i.fas.fa-store(style="margin-right: 15px;")
+        | Hoa Khai Trương Hồng Phát
+
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if grandOpeningFlowers && grandOpeningFlowers.length > 0
+          each flower in grandOpeningFlowers
+            - var isOut = (flower.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #ffe5e5; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(flower.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= flower.name
+              p(style="color: #e74c3c; font-weight: 800; font-size: 1.2rem;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=flower._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #e74c3c; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            p Đang cập nhật những mẫu hoa khai trương mới nhất...
+    //- PHẦN CÂY CẢNH TRANG TRÍ
+    section#decor-plants(style="padding: 60px 8%; background: #f0fff4;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #27ae60;") 
+        i.fas.fa-couch(style="margin-right: 15px;")
+        | Cây Cảnh Trang Trí Không Gian
+
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if decorPlants && decorPlants.length > 0
+          each plant in decorPlants
+            - var isOut = (plant.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #e2f9e1; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(plant.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= plant.name
+              p(style="color: #27ae60; font-weight: 800; font-size: 1.2rem;")= (plant.price ? plant.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${plant._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=plant._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #27ae60; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            p Đang cập nhật những mẫu cây cảnh trang trí mới nhất...
+
+    //- PHẦN HOA THEO MÙA
+    section#seasonal(style="padding: 60px 8%; background: #f0f7ff;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #3498db;") 
+        i.fas.fa-cloud-sun(style="margin-right: 15px;")
+        | Hoa Theo Mùa Rực Rỡ
+
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if seasonalFlowers && seasonalFlowers.length > 0
+          each flower in seasonalFlowers
+            - var isOut = (flower.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #e1f0ff; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(flower.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= flower.name
+              p(style="color: #3498db; font-weight: 800; font-size: 1.2rem;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=flower._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #3498db; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            p Đang cập nhật những mẫu hoa theo mùa mới nhất...
+    //- PHẦN HOA CHỦ ĐỀ (Tông tím lãng mạn & tinh tế)
+    section#themed-flowers(style="padding: 60px 8%; background: #f8f0ff;")
+      h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #8e44ad;") 
+        i.fas.fa-star(style="margin-right: 15px;")
+        | Hoa Thiết Kế Theo Chủ Đề
+      
+      .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
+        if themedFlowers && themedFlowers.length > 0
+          each flower in themedFlowers
+            - var isOut = (flower.stock <= 0)
+            .product-card(style=`background: white; border-radius: 30px; padding: 20px; text-align: center; border: 1px solid #f3e5f5; transition: 0.3s; position: relative; ${isOut ? 'filter: grayscale(0.8); opacity: 0.7;' : ''}`)
+              if isOut
+                span(style="position: absolute; top: 20px; left: 20px; background: #636e72; color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 5;") HẾT HÀNG
+              
+              img(src=(flower.image || 'https://via.placeholder.com/300x400') style="width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px;")
+              h3(style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; color: #333;")= flower.name
+              p(style="color: #8e44ad; font-weight: 800; font-size: 1.2rem;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+              
+              div(style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;")
+                a.btn-hero(href=`/flower/${flower._id}` style="background: #f8f9fa; color: #777; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem;") Chi tiết
+                if !isOut
+                  form(action="/cart/add", method="POST")
+                    input(type="hidden", name="flowerId", value=flower._id.toString())
+                    button.btn-hero(type="submit" style="padding: 10px 20px; background: #8e44ad; color: white; border-radius: 50px; border: none; cursor: pointer; font-weight: 700;") 
+                      i.fas.fa-cart-plus
+                else
+                  button.btn-hero(disabled style="padding: 10px 20px; background: #ccc; color: white; border-radius: 50px; border: none; cursor: not-allowed;") 
+                    i.fas.fa-ban
+        else
+          div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
+            i.fas.fa-magic(style="font-size: 3rem; margin-bottom: 10px;")
+            p FloraHub đang chuẩn bị những mẫu hoa theo chủ đề mới nhất...                           
     //- --- BANNER VOUCHER 10% ---
     section.voucher-banner-container
       .voucher-ticket

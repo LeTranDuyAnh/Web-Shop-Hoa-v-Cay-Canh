@@ -25,6 +25,7 @@ html(lang="vi")
         position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
       }
       .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
+      
       .nav-menu { display: flex; list-style: none; gap: 15px; align-items: center; }
       .nav-link { 
         text-decoration: none; color: var(--text-dark); font-weight: 700; 
@@ -32,6 +33,7 @@ html(lang="vi")
       }
       .nav-link.active { background: var(--pink-main); color: white; box-shadow: 0 4px 10px rgba(255, 133, 161, 0.3); }
       .nav-link:not(.active):hover { color: var(--pink-main); }
+
       .nav-right { display: flex; align-items: center; gap: 15px; }
       .icon-btn { color: var(--pink-main); font-size: 1.2rem; text-decoration: none; position: relative; transition: 0.3s; }
       .cart-count { 
@@ -103,24 +105,27 @@ html(lang="vi")
   body
     header
       nav.navbar
-        a.logo(href="/") FloraHub
-        ul.nav-menu
-          li: a.nav-link(href="/") Trang chủ
-          li: a.nav-link(href="/explore") Shop Hoa
-          li: a.nav-link(href="/wiki") Cẩm nang
-          li: a.nav-link.active(href="/vouchers") Kho Vouchers
-          li: a.nav-link(href="/blog") Tin tức
+        .nav-left
+          a.logo(href="/") FloraHub
+        .nav-center
+          ul.nav-menu
+            li: a.nav-link(href="/") Trang chủ
+            li: a.nav-link(href="/explore") Shop Hoa
+            li: a.nav-link(href="/wiki") Cẩm nang
+            li: a.nav-link.active(href="/vouchers") Kho Vouchers
+            li: a.nav-link(href="/blog") Tin tức
         .nav-right
           a.icon-btn(href="/cart")
             i.fas.fa-shopping-basket
-            if typeof cartCount !== 'undefined' && cartCount > 0
-              span.cart-count= cartCount
+            if (typeof cartCount !== 'undefined' && cartCount > 0)
+              span(style="background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.6rem; position: absolute; top: -8px; right: -8px; border: 2px solid white;")= cartCount
           if session && session.user
-            a.icon-btn(href="/profile"): i.fas.fa-user-circle
+            if session.user.role === 'admin'
+              a.icon-btn(href="/admin" title="Quản trị"): i.fas.fa-user-shield
+            a.icon-btn(href="/profile" title="Tài khoản"): i.fas.fa-user-circle
             a.btn-exit(href="/logout") Thoát
           else
             a.nav-link(href="/login" style="padding: 8px 15px") Đăng nhập
-
     section.hero-slider
       .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=1600');")
         .hero-content

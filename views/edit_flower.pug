@@ -173,10 +173,13 @@ html(lang="vi")
             select(name="category", required)
               option(value="Hoa cảnh", selected=flower.category === "Hoa cảnh") Hoa cảnh
               option(value="Cây cảnh", selected=flower.category === "Cây cảnh") Cây cảnh
-              option(value="Hoa cưới", selected=flower.category === "Hoa cưới") Hoa cưới
+              option(value="Cây cảnh trang trí", selected=flower.category === "Cây cảnh trang trí") Cây cảnh trang trí
+              option(value="Hoa đám cưới", selected=flower.category === "Hoa đám cưới") Hoa đám cưới
               option(value="Hoa sinh nhật", selected=flower.category === "Hoa sinh nhật") Hoa sinh nhật
               option(value="Hoa sự kiện", selected=flower.category === "Hoa sự kiện") Hoa sự kiện
-
+              option(value="Hoa khai trương", selected=flower.category === "Hoa khai trương") Hoa khai trương
+              option(value="Hoa chủ đề", selected=flower.category === "Hoa chủ đề") Hoa chủ đề
+              option(value="Hoa theo mùa", selected=flower.category === "Hoa theo mùa") Hoa theo mùa
           .form-group
             label <i class="fas fa-microscope"></i> Tên khoa học (Scientific):
             input(type="text", name="scientific_name", value=flower.scientific_name, placeholder="Phalaenopsis...")

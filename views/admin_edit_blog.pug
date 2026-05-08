@@ -72,21 +72,40 @@ html(lang="vi")
       nav.admin-sidebar
         .logo Flora<span>Admin</span>
         ul
-          li: a(href="/admin") 
-            i.fas.fa-spa
-            |  Quản lý hoa
+          li
+            a(href="/admin") 
+              i.fas.fa-spa
+              | Quản lý hoa
+          li
+            a(href="/admin/library") 
+              i.fas.fa-book-medical
+              | Cẩm nang cây cảnh
+          li
+            a(href="/admin/users") 
+              i.fas.fa-user-shield
+              | Đội ngũ quản trị
           li: a(href="/admin/orders") 
             i.fas.fa-heart
-            |  Đơn hàng mới
-          li.active: a(href="/admin/blog/create") 
-            i.fas.fa-pen-nib
-            |  Quản lý Blog
-          li: a(href="/") 
-            i.fas.fa-external-link-alt
-            |  Xem cửa hàng
-          li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") 
-            i.fas.fa-power-off
-            |  Đăng xuất
+            | Đơn hàng mới
+            if pendingCount > 0
+              span.badge-pending #{pendingCount}
+          li
+            a(href="/admin/analytics") 
+              i.fas.fa-chart-pie
+              | Doanh thu shop
+          li.active
+            a(href="/admin/blog/create") 
+              i.fas.fa-pen-nib
+              | Viết bài Blog
+          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher    
+          li
+            a(href="/") 
+              i.fas.fa-external-link-alt
+              | Xem cửa hàng
+          li
+            a(href="/logout" style="color: #ff7675; margin-top: 50px;") 
+              i.fas.fa-power-off
+              | Đăng xuất
 
       main.admin-main
         header.admin-header(style="margin-bottom: 30px;")
