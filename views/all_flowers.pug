@@ -17,7 +17,7 @@ html(lang="vi")
         --gray-out: #b2bec3;
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); overflow-x: hidden; }
+      body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); overflow-x: hidden; scroll-behavior: smooth; }
       
       /* --- NAVBAR --- */
       .navbar { 
@@ -39,7 +39,7 @@ html(lang="vi")
       .cart-count { background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; position: absolute; top: -8px; right: -8px; border: 2px solid white; }
       .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
 
-     /* --- BANNER (Kích thước chuẩn trang Home: 70vh) --- */
+      /* --- BANNER --- */
       .hero-slider { position: relative; height: 70vh; min-height: 450px; width: 100%; overflow: hidden; background: #fce4ec; }
       .slide { 
         position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; 
@@ -52,7 +52,7 @@ html(lang="vi")
       .hero-content p { font-size: 1.1rem; font-weight: 600; color: #555; }
 
       /* --- SEARCH BOX --- */
-      .search-container { max-width: 600px; margin: -35px auto 50px; padding: 0 20px; position: relative; z-index: 100; }
+      .search-container { max-width: 600px; margin: -35px auto 30px; padding: 0 20px; position: relative; z-index: 100; }
       .search-box {
         background: white; display: flex; align-items: center; padding: 5px 25px;
         border-radius: 100px; box-shadow: 0 15px 35px rgba(255, 133, 161, 0.2);
@@ -61,37 +61,63 @@ html(lang="vi")
       .search-box input { border: none; outline: none; padding: 15px; width: 100%; font-family: 'Quicksand'; font-size: 1rem; }
       .search-box i { color: var(--pink-main); font-size: 1.2rem; }
 
+      /* --- CATEGORY QUICK FILTER --- */
+      .category-nav { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; padding: 0 5%; position: relative; z-index: 10; }
+      .filter-chip { 
+        padding: 8px 18px; background: white; border: 2px solid var(--pink-soft); border-radius: 50px; 
+        color: var(--pink-dark); text-decoration: none; font-weight: 700; font-size: 0.85rem; transition: 0.3s;
+      }
+      .filter-chip:hover { background: var(--pink-bg); transform: translateY(-2px); }
+      .filter-chip.active { background: var(--pink-main); color: white; border-color: var(--pink-main); box-shadow: 0 5px 12px rgba(255, 133, 161, 0.3); }
+
       /* --- PRODUCT SECTION --- */
       section.content { 
         padding: 60px 8% 100px; background: white; border-radius: 60px 60px 0 0; 
         margin-top: -40px; position: relative; z-index: 5; min-height: 500px;
       }
-      .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+      .category-block { margin-bottom: 60px; scroll-margin-top: 100px; }
+      .category-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+      .category-header h2 { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-dark); white-space: nowrap; }
+      .category-header .line { height: 2px; background: linear-gradient(to right, var(--pink-soft), transparent); width: 100%; }
+
+      .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
       
       .product-card { 
-        background: var(--white); border-radius: 30px; padding: 20px; 
+        background: var(--white); border-radius: 25px; padding: 15px; 
         text-align: center; transition: 0.4s; border: 1px solid #fef0f2;
-        position: relative; overflow: hidden;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
       }
       .product-card:hover { transform: translateY(-10px); box-shadow: 0 12px 25px rgba(255, 133, 161, 0.15); }
-      .product-card img { width: 100%; height: 260px; object-fit: cover; border-radius: 25px; margin-bottom: 15px; }
+      .product-card img { width: 100%; height: 240px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; }
+
+      .card-body h3 { 
+        margin-bottom: 8px; font-weight: 700; font-size: 1rem; color: #333;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
+        overflow: hidden; min-height: 2.5rem;
+      }
 
       /* --- SOLD OUT STATE --- */
       .sold-out-card { filter: grayscale(0.8); opacity: 0.7; }
       .sold-out-badge {
-        position: absolute; top: 20px; left: 20px; background: #636e72; color: white;
-        padding: 6px 15px; border-radius: 50px; font-weight: 800; font-size: 0.75rem; z-index: 5;
+        position: absolute; top: 15px; left: 15px; background: #636e72; color: white;
+        padding: 5px 12px; border-radius: 50px; font-weight: 800; font-size: 0.7rem; z-index: 5;
       }
       
       /* --- BUTTONS --- */
       .btn-hero { 
-        padding: 10px 25px; border-radius: 50px; background: var(--pink-main); color: white; 
+        padding: 10px 20px; border-radius: 50px; background: var(--pink-main); color: white; 
         font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s;
-        box-shadow: 0 4px 15px rgba(255, 133, 161, 0.4); border: none; cursor: pointer;
+        box-shadow: 0 4px 12px rgba(255, 133, 161, 0.3); border: none; cursor: pointer; font-size: 0.9rem;
       }
-      .btn-hero:hover:not(:disabled) { transform: translateY(-3px); background: var(--pink-dark); }
+      .btn-hero:hover:not(:disabled) { transform: translateY(-2px); background: var(--pink-dark); }
       .btn-detail { background: #f8f9fa; color: #777; box-shadow: none; }
       .btn-disabled { background: var(--gray-out) !important; cursor: not-allowed !important; box-shadow: none !important; }
+
+      .social-chat-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 999; display: flex; flex-direction: column; gap: 15px; }
+      .chat-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s; }
+      .chat-btn.zalo { background: #0084ff; }
+      .chat-btn.messenger { background: #00c6ff; }
+      .chat-btn img { width: 100%; border-radius: 50%; }
 
   body
     header
@@ -124,52 +150,65 @@ html(lang="vi")
             h1 Bloom with Love
             p Những bó hoa thiết kế thủ công tinh tế nhất dành cho phái đẹp.
             br
-            a.btn-hero(href="/explore") Ghé Thăm Shop Ngay
+            a.btn-hero(href="#flowerSearch") Ghé Thăm Shop Ngay
             
         .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&q=80&w=1600');")
           .hero-content
             h1 Sweet Moments
             p Trao gửi chân tình qua từng sắc hoa rực rỡ và dịu dàng.
             br
-            a.btn-hero(href="/explore") Khám phá cửa hàng
+            a.btn-hero(href="#flowerSearch") Khám phá cửa hàng
 
         .slide(style="background-image: linear-gradient(to right, rgba(255,240,243,0.8), rgba(255,240,243,0.2)), url('https://images.unsplash.com/photo-1464851707681-f9d5fdaccea8?auto=format&fit=crop&q=80&w=1600');")
           .hero-content
             h1 Plant Library
+            p Tìm hiểu cách chăm sóc hoa qua cẩm nang của chúng tôi.
+            br
             a.btn-hero(href="/wiki") Khám phá cẩm nang  
+
       .search-container
         .search-box
           i.fas.fa-search
-          input#flowerSearch(type="text", placeholder="Tìm tên hoa...", onkeyup="filterFlowers()")
+          input#flowerSearch(type="text", placeholder="Tìm tên hoa trong cửa hàng...", onkeyup="filterFlowers()")
+
+      if groupedFlowers && Object.keys(groupedFlowers).length > 1
+        .category-nav
+          a.filter-chip.active(href="javascript:void(0)" onclick="scrollToCat('all')") Tất cả
+          each categoryName in Object.keys(groupedFlowers)
+            a.filter-chip(href=`#cat-${categoryName.replace(/\s+/g, '-')}` onclick=`scrollToCat('cat-${categoryName.replace(/\\s+/g, '-')}')`)= categoryName
 
       section.content
-        #flowerGrid.grid-container
-          if flowers && flowers.length > 0
-            each flower in flowers
-              //- KIỂM TRA SỐ LƯỢNG DỰA TRÊN TRƯỜNG 'STOCK'
-              - var isOut = (flower.stock <= 0)
+        if groupedFlowers && Object.keys(groupedFlowers).length > 0
+          each categoryName in Object.keys(groupedFlowers)
+            .category-block(id=`cat-${categoryName.replace(/\s+/g, '-')}`)
+              .category-header
+                h2= categoryName
+                .line
               
-              .product-card.flower-item(class=(isOut ? "sold-out-card" : ""))
-                if isOut
-                  span.sold-out-badge HẾT HÀNG
+              .grid-container
+                each flower in groupedFlowers[categoryName]
+                  - var isOut = (flower.stock <= 0)
+                  .product-card.flower-item(class=(isOut ? "sold-out-card" : ""))
+                    if isOut
+                      span.sold-out-badge HẾT HÀNG
 
-                img(src=(flower.image || 'https://via.placeholder.com/300x400?text=FloraHub'))
-                .card-body
-                  h3(style="margin-bottom: 10px; font-weight: 700;")= flower.name
-                  p(style="color: var(--pink-main); font-weight: 800; font-size: 1.3rem; margin-bottom: 15px;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
-                  
-                  .card-footer(style="display: flex; gap: 10px; justify-content: center;")
-                    a.btn-hero.btn-detail(href=`/flower/${flower._id}`) Chi tiết
-                    
-                    if !isOut
-                      form(action="/cart/add", method="POST")
-                        input(type="hidden", name="flowerId", value=flower._id.toString())
-                        button.btn-hero(type="submit" title="Thêm vào giỏ") #[i.fas.fa-cart-plus]
-                    else
-                      button.btn-hero.btn-disabled(disabled title="Sản phẩm đã hết hàng")
-                        i.fas.fa-ban
-          else
-            p(style="text-align: center; grid-column: 1/-1; color: #999; padding: 50px;") Hiện tại không tìm thấy hoa nào phù hợp...
+                    img(src=(flower.image || 'https://via.placeholder.com/300x400?text=FloraHub'))
+                    .card-body
+                      h3= flower.name
+                      p(style="color: var(--pink-main); font-weight: 800; font-size: 1.2rem; margin-bottom: 15px;")= (flower.price ? flower.price.toLocaleString('vi-VN') + ' đ' : 'Liên hệ')
+                      
+                      .card-footer(style="display: flex; gap: 8px; justify-content: center;")
+                        a.btn-hero.btn-detail(href=`/flower/${flower._id}`) Chi tiết
+                        if !isOut
+                          form(action="/cart/add", method="POST")
+                            input(type="hidden", name="flowerId", value=flower._id.toString())
+                            button.btn-hero(type="submit" title="Thêm vào giỏ") #[i.fas.fa-cart-plus]
+                        else
+                          button.btn-hero.btn-disabled(disabled) #[i.fas.fa-ban]
+        else
+          div(style="text-align: center; padding: 100px 0;")
+            i.fas.fa-seedling(style="font-size: 3rem; color: var(--pink-soft); margin-bottom: 20px;")
+            p(style="color: #999;") Hiện tại chưa có sản phẩm nào trong danh mục này.
 
     footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
@@ -214,12 +253,39 @@ html(lang="vi")
           }, 4000); 
         }
       });
+
       function filterFlowers() {
         const input = document.getElementById('flowerSearch');
         const filter = input.value.toLowerCase();
-        const items = document.getElementsByClassName('flower-item');
-        for (let i = 0; i < items.length; i++) {
-          let name = items[i].querySelector('h3').innerText.toLowerCase();
-          items[i].style.display = name.includes(filter) ? "" : "none";
+        const blocks = document.querySelectorAll('.category-block');
+        
+        blocks.forEach(block => {
+          const items = block.querySelectorAll('.flower-item');
+          let hasVisibleItem = false;
+          
+          items.forEach(item => {
+            let name = item.querySelector('h3').innerText.toLowerCase();
+            if (name.includes(filter)) {
+              item.style.display = "";
+              hasVisibleItem = true;
+            } else {
+              item.style.display = "none";
+            }
+          });
+          
+          block.style.display = hasVisibleItem ? "" : "none";
+        });
+      }
+
+      function scrollToCat(id) {
+        if(id === 'all') {
+          window.scrollTo({ top: document.querySelector('.search-container').offsetTop - 20, behavior: 'smooth' });
+        } else {
+          const el = document.getElementById(id);
+          if(el) el.scrollIntoView({ behavior: 'smooth' });
         }
+        
+        // Cập nhật trạng thái active cho chip
+        document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+        event.currentTarget.classList.add('active');
       }

@@ -44,7 +44,7 @@ fastify.get('/', async (request, reply) => {
       decorPlants          // Cây trang trí
     ] = await Promise.all([
       col.find({}).sort(sort).limit(limit).toArray(),
-      col.find({ category: "Cây cảnh" }).sort(sort).limit(limit).toArray(),
+      col.find({ category: "Bonsai" }).sort(sort).limit(limit).toArray(),
       col.find({ category: "Hoa đám cưới" }).sort(sort).limit(limit).toArray(),
       col.find({ category: "Hoa sinh nhật" }).sort(sort).limit(limit).toArray(),
       col.find({ category: "Hoa sự kiện" }).sort(sort).limit(limit).toArray(),
@@ -177,17 +177,23 @@ fastify.get('/explore', async (request, reply) => {
 
     const flowers = await collection.find(filter).sort({ _id: -1 }).toArray();
 
-    // --- LOGIC GIỎ HÀNG Ở ĐÂY ---
-    // Lấy giỏ hàng từ session (nếu chưa có thì để mảng rỗng)
+    // --- LOGIC NHÓM THEO LOẠI ---
+    const groupedFlowers = flowers.reduce((acc, flower) => {
+      const cat = flower.category || 'Khác';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(flower);
+      return acc;
+    }, {});
+
+    // --- LOGIC GIỎ HÀNG ---
     const cart = request.session.get('cart') || [];
-    // Tính tổng số lượng sản phẩm trong giỏ
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
     return reply.view('all_flowers.pug', { 
-      flowers, 
+      groupedFlowers, // <--- Gửi object đã nhóm thay vì mảng phẳng
       currentCategory: category || 'Tất cả',
-      cartCount: totalItems, // <--- PHẢI CÓ DÒNG NÀY
-      session: { user: request.session.get('user') } // Để hiện nút Admin/Thoát
+      cartCount: totalItems,
+      session: { user: request.session.get('user') }
     });
   } catch (err) {
     fastify.log.error(err);
@@ -1620,6 +1626,9 @@ fastify.get('/vouchers', async (request, reply) => {
         reply.status(500).send('Không thể tải kho voucher');
     }
 });
+
+
+
 
 // Khởi động Server
 const start = async () => {
