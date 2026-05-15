@@ -20,7 +20,7 @@ html(lang="vi")
       
       .admin-layout { display: flex; min-height: 100vh; width: 100%; }
 
-      /* --- SIDEBAR ĐỒNG BỘ 280PX --- */
+      /* --- SIDEBAR --- */
       nav.admin-sidebar {
         width: 280px; min-width: 280px; background: var(--white);
         border-right: 2px solid var(--pink-bg); padding: 30px 20px;
@@ -36,17 +36,22 @@ html(lang="vi")
         text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s;
       }
       .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
-      .admin-sidebar a:hover:not(.active) { background: #fce4ec; color: var(--pink-main); }
 
-      .badge-pending {
-        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px;
-        font-size: 0.7rem; margin-left: auto; font-weight: bold;
-        animation: blink-animation 1.5s linear infinite;
+      /* --- STATS --- */
+      .stat-card {
+        background: white; padding: 20px; border-radius: 20px; 
+        border-left: 5px solid var(--pink-main); box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       }
-      @keyframes blink-animation {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+
+      /* --- CATEGORY SECTION --- */
+      .category-section { margin-bottom: 50px; }
+      .category-title {
+        display: flex; align-items: center; gap: 15px;
+        margin-bottom: 20px; padding: 12px 25px;
+        background: white; color: var(--pink-dark);
+        border-radius: 20px; width: fit-content;
+        border: 2px solid var(--pink-bg);
+        box-shadow: 0 4px 10px rgba(194, 24, 91, 0.05);
       }
 
       /* --- MAIN CONTENT --- */
@@ -55,46 +60,52 @@ html(lang="vi")
       
       .btn-add { 
         background: var(--pink-dark); color: white; border: none; padding: 12px 25px; 
-        border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
-        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.4); display: flex; align-items: center; gap: 8px;
+        border-radius: 50px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); transition: 0.3s;
       }
-      .btn-add:hover { background: var(--pink-main); transform: translateY(-2px); }
+      .btn-add:hover { transform: translateY(-2px); background: var(--pink-main); }
 
-      /* Status Badge */
-      .stock-status { font-weight: 800; padding: 6px 14px; border-radius: 50px; font-size: 11px; text-transform: uppercase; }
-      .stock-low { background: #fff4e5; color: #ef6c00; border: 1px solid #ffe0b2; }
-      .stock-out { background: #feebeb; color: #d32f2f; border: 1px solid #ffcdd2; }
-      .stock-ok { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-
-      .category-badge { background: #f0f0f0; color: #666; padding: 4px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-
-      /* Form Style */
-      .modal-form { 
-        background: #fff; padding: 35px; border-radius: 30px; 
-        box-shadow: 0 15px 40px rgba(0,0,0,0.08); margin-bottom: 40px; 
-        border: 2px solid var(--pink-bg);
-      }
-      
-      /* Table Style - Card Mode */
+      /* --- TABLE STYLE --- */
       .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
       .admin-table th { padding: 15px; text-align: left; color: #bbb; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
-      .admin-table td { padding: 20px 15px; background: white; transition: 0.3s; vertical-align: middle; }
+      .admin-table td { padding: 15px; background: white; vertical-align: middle; transition: 0.3s; }
       .admin-table tr:hover td { background: #fff8f9; }
       .admin-table td:first-child { border-radius: 20px 0 0 20px; border-left: 5px solid var(--pink-bg); }
       .admin-table td:last-child { border-radius: 0 20px 20px 0; }
-
       .admin-table img { border-radius: 15px; height: 60px; width: 60px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-      
-      .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 13px; color: #555; }
-      .form-group input, .form-group select, .form-group textarea { 
-        width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #f0f0f0; 
-        border-radius: 15px; outline: none; font-family: inherit; transition: 0.3s; background: #fafafa;
-      }
-      .form-group input:focus, .form-group textarea:focus { border-color: var(--pink-main); background: white; }
-      
-      .action-icon { font-size: 1.2rem; transition: 0.3s; }
-      .action-icon:hover { transform: scale(1.2); }
 
+      .stock-status { font-weight: 800; padding: 6px 14px; border-radius: 50px; font-size: 11px; text-transform: uppercase; }
+      .stock-low { background: #fff4e5; color: #ef6c00; }
+      .stock-out { background: #feebeb; color: #d32f2f; }
+      .stock-ok { background: #e8f5e9; color: #2e7d32; }
+
+      .modal-form { 
+        background: #fff; padding: 35px; border-radius: 30px; 
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08); margin-bottom: 40px; border: 2px solid var(--pink-bg);
+      }
+      .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 13px; color: #555; }
+      .form-group input, .form-group select, .form-group textarea { 
+        width: 100%; padding: 14px; margin-bottom: 20px; border: 2px solid #f0f0f0; border-radius: 15px; outline: none; background: #fafafa;
+      }
+      .form-group input:focus { border-color: var(--pink-main); background: white; }
+      /* Style cho huy hiệu thông báo đơn hàng */
+      .badge-pending {
+        background-color: #C2185B; /* Màu đỏ nổi bật */
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 50px;
+        margin-left: auto; /* Đẩy huy hiệu về phía bên phải của menu item */
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+        animation: pulse 1.5s infinite; /* Hiệu ứng nhấp nháy cho thêm phần sinh động */
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
   body
     .admin-layout
       nav.admin-sidebar
@@ -132,120 +143,110 @@ html(lang="vi")
         header.admin-header
           h2(style="margin:0; font-weight: 800; color: #444;") 
             i.fas.fa-boxes(style="color: var(--pink-main); margin-right: 12px;") 
-            | Quản lý kho hoa
+            | Quản lý kho theo danh mục
           button.btn-add(onclick="toggleForm()") 
             i.fas.fa-plus-circle
             | Thêm sản phẩm mới
 
+        //- 1. BỘ ĐẾM THỐNG KÊ
+        section.admin-stats(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px;")
+          .stat-card
+            span(style="color: #888; font-size: 12px; font-weight: 700; text-transform: uppercase;") Tổng loại hoa
+            h2(style="margin: 10px 0 0; color: var(--pink-dark); font-size: 2.2rem;") #{flowers ? flowers.length : 0}
+          .stat-card(style="border-left-color: #4CAF50;")
+            span(style="color: #888; font-size: 12px; font-weight: 700; text-transform: uppercase;") Tổng số lượng trong kho
+            - let totalStock = flowers ? flowers.reduce((sum, f) => sum + (f.stock || 0), 0) : 0
+            h2(style="margin: 10px 0 0; color: #2e7d32; font-size: 2.2rem;") #{totalStock}
+
+        //- Form thêm mới
         section#flower-form.modal-form(style="display:none")
           form(action="/admin/add", method="POST", enctype="multipart/form-data")
-            h3(style="color: var(--pink-dark); margin-top:0; margin-bottom: 25px;") <i class="fas fa-magic"></i> Đưa hoa lên kệ
-            
+            h3(style="color: var(--pink-dark); margin-bottom: 25px;") <i class="fas fa-magic"></i> Đưa hoa lên kệ
             .form-row(style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;")
               .form-group
                 label Tên sản phẩm:
-                input(type="text", name="name", placeholder="Ví dụ: Hoa Hồng Leo Pháp", required)
+                input(type="text", name="name", placeholder="Ví dụ: Hoa Hồng Leo", required)
               .form-group
                 label Thể loại:
                 select(name="category", required)
-                  //- Nhóm Hoa
-                  option(value="Hoa cảnh", selected=(flower && flower.category === "Hoa cảnh")) Hoa cảnh
-                  option(value="Hoa đám cưới", selected=(flower && flower.category === "Hoa đám cưới")) Hoa đám cưới
-                  option(value="Hoa sinh nhật", selected=(flower && flower.category === "Hoa sinh nhật")) Hoa sinh nhật
-                  option(value="Hoa sự kiện", selected=(flower && flower.category === "Hoa sự kiện")) Hoa sự kiện
-                  option(value="Hoa khai trương", selected=(flower && flower.category === "Hoa khai trương")) Hoa khai trương
-                  option(value="Hoa chủ đề", selected=(flower && flower.category === "Hoa chủ đề")) Hoa chủ đề
-                  option(value="Hoa theo mùa", selected=(flower && flower.category === "Hoa theo mùa")) Hoa theo mùa
-                  option(value="Bonsai", selected=(flower && flower.category === "Bonsai")) Bonsai
-                  option(value="Cây cảnh trang trí", selected=(flower && flower.category === "Cây cảnh trang trí")) Cây cảnh trang trí
+                  option(value="Hoa cảnh") Hoa cảnh
+                  option(value="Hoa đám cưới") Hoa đám cưới
+                  option(value="Hoa sinh nhật") Hoa sinh nhật
+                  option(value="Hoa sự kiện") Hoa sự kiện
+                  option(value="Hoa khai trương") Hoa khai trương
+                  option(value="Hoa chủ đề") Hoa chủ đề
+                  option(value="Hoa theo mùa") Hoa theo mùa
+                  option(value="Bonsai") Bonsai
+                  option(value="Cây cảnh trang trí") Cây cảnh trang trí
             .form-row(style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;")
               .form-group
                 label Giá vốn (đ):
-                input(type="number", name="cost_price", placeholder="0", required)
+                input(type="number", name="cost_price", required)
               .form-group
                 label Giá bán (đ):
-                input(type="number", name="price", placeholder="0", required)
+                input(type="number", name="price", required)
               .form-group
                 label Số lượng kho:
-                input(type="number", name="stock", placeholder="0", required)
-            
+                input(type="number", name="stock", required)
             .form-group
               label Ảnh minh họa:
               input(type="file", name="image", accept="image/*", required)
-            
             .form-btns(style="display: flex; gap: 12px;")
-              button(type="submit" style="background: var(--pink-dark); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Xác nhận thêm
-              button(type="button", onclick="toggleForm()" style="background: #f5f5f5; color: #888; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Đóng lại
+              button(type="submit" style="background: var(--pink-dark); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Xác nhận
+              button(type="button", onclick="toggleForm()" style="background: #f5f5f5; color: #888; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer;") Đóng lại
 
-        //- FORM BLOG MỚI (TƯƠNG TỰ FORM HOA CỦA BẠN)
-        section#blog-form.modal-form(style="display:none")
-          form(action="/admin/blog/add", method="POST")
-            h3(style="color: var(--pink-dark); margin-top:0; margin-bottom: 25px;") <i class="fas fa-edit"></i> Đăng bài viết chia sẻ
-            .form-group
-              label Tiêu đề bài viết:
-              input(type="text", name="title", placeholder="Nhập tiêu đề...", required)
-            .form-group
-              label Nội dung:
-              textarea(name="content", rows="8", placeholder="Viết nội dung bài viết vào đây...")
-            .form-btns(style="display: flex; gap: 12px;")
-              button(type="submit" style="background: var(--pink-dark); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Đăng bài ngay
-              button(type="button", onclick="toggleBlogForm()" style="background: #f5f5f5; color: #888; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 700;") Đóng lại
+        //- 2. HIỂN THỊ CHIA THEO TỪNG THỂ LOẠI (ĐÃ ĐỦ 9 LOẠI)
+        - const allCategories = ["Hoa cảnh", "Hoa đám cưới", "Hoa sinh nhật", "Hoa sự kiện", "Hoa khai trương", "Hoa chủ đề", "Hoa theo mùa", "Bonsai", "Cây cảnh trang trí"]
+        
+        each cat in allCategories
+          - const productsInCategory = flowers ? flowers.filter(f => f.category === cat) : []
+          
+          if productsInCategory.length > 0
+            section.category-section
+              .category-title
+                i.fas.fa-tag(style="color: var(--pink-main);")
+                h3(style="margin:0; font-size: 1.2rem;") #{cat} 
+                span(style="margin-left: 10px; background: var(--pink-bg); color: var(--pink-dark); padding: 2px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800;") #{productsInCategory.length} mặt hàng
+              
+              table.admin-table
+                thead
+                  tr
+                    th Hình ảnh
+                    th Tên & ID
+                    th Giá niêm yết
+                    th Trạng thái kho
+                    th Thao tác
+                tbody
+                  each flower in productsInCategory
+                    tr
+                      td: img(src=flower.image)
+                      td
+                        strong(style="color: #333;")= flower.name
+                        div(style="color: #aaa; font-size: 11px; margin-top: 4px;") ID: #{flower._id ? flower._id.toString().slice(-6).toUpperCase() : 'N/A'}
+                      td
+                        strong(style="color: var(--pink-dark);")= (flower.price || 0).toLocaleString('vi-VN') + ' đ'
+                      td
+                        if !flower.stock || flower.stock <= 0
+                          span.stock-status.stock-out Cháy hàng
+                        else if flower.stock <= 5
+                          span.stock-status.stock-low Sắp hết (#{flower.stock})
+                        else
+                          span.stock-status.stock-ok Sẵn có: #{flower.stock}
+                      td
+                        div(style="display: flex; gap: 15px;")
+                          a(href=`/admin/edit/${flower._id}` style="color: #f1c40f;"): i.fas.fa-edit.action-icon
+                          a(href=`/admin/delete/${flower._id}` onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')" style="color: #ff7675;"): i.fas.fa-trash-alt.action-icon
 
-        table.admin-table
-          thead
-            tr
-              th Hình ảnh
-              th Thông tin sản phẩm
-              th Thể loại
-              th Giá bán
-              th Trạng thái kho
-              th Thao tác
-          tbody
-            if flowers && flowers.length > 0
-              each flower in flowers
-                tr
-                  td: img(src=flower.image)
-                  td
-                    strong(style="color: #333; font-size: 1rem;")= flower.name
-                    div(style="color: #aaa; font-size: 11px; margin-top: 4px;") ID: #{flower._id.toString().slice(-6).toUpperCase()}
-                  td
-                    span.category-badge= flower.category || 'Phổ thông'
-                  td
-                    strong(style="color: var(--pink-dark); font-size: 1.1rem;")= (flower.price || 0).toLocaleString('vi-VN') + ' đ'
-                  td
-                    if !flower.stock || flower.stock <= 0
-                      span.stock-status.stock-out Cháy hàng
-                    else if flower.stock <= 5
-                      span.stock-status.stock-low Chỉ còn #{flower.stock}
-                    else
-                      span.stock-status.stock-ok Sẵn có: #{flower.stock}
-                  td
-                    div(style="display: flex; gap: 15px;")
-                      a(href=`/admin/edit/${flower._id}` style="color: #f1c40f;")
-                        i.fas.fa-edit.action-icon
-                      a(href=`/admin/delete/${flower._id}` onclick="return confirm('Bạn chắc chắn muốn xóa?')" style="color: #ff7675;")
-                        i.fas.fa-trash-alt.action-icon
-            else
-              tr
-                td(colspan="6", style="text-align: center; padding: 80px; background: white; border-radius: 20px;")
-                  i.fas.fa-box-open(style="font-size: 4rem; color: var(--pink-bg); margin-bottom: 20px; display: block;")
-                  p(style="color: #bbb; font-weight: 600;") Chưa có loại hoa nào trong kho.
+        if !flowers || flowers.length === 0
+          .empty-box(style="text-align: center; padding: 100px; background: white; border-radius: 30px;")
+            i.fas.fa-seedling(style="font-size: 4rem; color: var(--pink-bg); margin-bottom: 20px; display: block;")
+            p(style="color: #bbb; font-weight: 600;") Kho đang trống, hãy thêm sản phẩm đầu tiên!
 
     script.
       function toggleForm() {
         const form = document.getElementById('flower-form');
         form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
         if(form.style.display === 'block') {
-          document.getElementById('blog-form').style.display = 'none';
           form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-      // Script cho Blog
-      function toggleBlogForm() {
-        const bForm = document.getElementById('blog-form');
-        bForm.style.display = (bForm.style.display === 'none' || bForm.style.display === '') ? 'block' : 'none';
-        if(bForm.style.display === 'block') {
-          document.getElementById('flower-form').style.display = 'none';
-          bForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }

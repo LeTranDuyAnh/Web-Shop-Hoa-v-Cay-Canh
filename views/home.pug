@@ -139,6 +139,111 @@ html(lang="vi")
           .hero-content
             h1 Plant Library
             a.btn-hero(href="/wiki") Khám phá cẩm nang
+    //- --- THANH TÌM KIẾM THEO TỪ KHÓA ---
+    section.search-section-container
+      style.
+        .search-section-container {
+          padding: 40px 8% 20px 8%;
+          background: #fff;
+          display: flex;
+          justify-content: center;
+        }
+
+        .search-wrapper {
+          width: 100%;
+          max-width: 700px;
+          position: relative;
+          display: flex;
+          align-items: center;
+          background: #fff;
+          border: 2px solid #fff0f3;
+          padding: 8px 8px 8px 25px;
+          border-radius: 50px;
+          transition: all 0.3s ease;
+          box-shadow: 0 10px 25px rgba(255, 133, 161, 0.1);
+        }
+
+        .search-wrapper:focus-within {
+          border-color: var(--pink-main);
+          box-shadow: 0 15px 30px rgba(255, 133, 161, 0.2);
+          transform: translateY(-2px);
+        }
+
+        .search-input {
+          flex: 1;
+          border: none;
+          outline: none;
+          font-family: 'Quicksand', sans-serif;
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: #555;
+          background: transparent;
+        }
+
+        .search-input::placeholder {
+          color: #bbb;
+          font-weight: 500;
+        }
+
+        .btn-search {
+          background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+          color: white;
+          border: none;
+          padding: 12px 30px;
+          border-radius: 50px;
+          font-family: 'Quicksand', sans-serif;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: 0.3s;
+        }
+
+        .btn-search:hover {
+          transform: scale(1.05);
+          box-shadow: 0 5px 15px rgba(255, 133, 161, 0.3);
+          opacity: 0.9;
+        }
+
+        .search-icon-inside {
+          color: var(--pink-main);
+          margin-right: 15px;
+          font-size: 1.2rem;
+        }
+
+        /* Gợi ý từ khóa phổ biến bên dưới thanh search */
+        .popular-tags {
+          margin-top: 15px;
+          font-size: 0.9rem;
+          color: #888;
+          text-align: center;
+        }
+        .tag-link {
+          color: var(--pink-main);
+          text-decoration: none;
+          margin: 0 8px;
+          font-weight: 600;
+          transition: 0.2s;
+        }
+        .tag-link:hover {
+          text-decoration: underline;
+          color: var(--pink-dark);
+        }
+
+        @media (max-width: 576px) {
+          .search-wrapper { padding: 5px 5px 5px 15px; }
+          .btn-search { padding: 10px 20px; span { display: none; } } /* Ẩn chữ 'Tìm kiếm' trên mobile chỉ hiện icon */
+        }
+
+      .search-box-area(style="width: 100%; max-width: 700px;")
+        form(action="/explore" method="GET")
+          .search-wrapper
+            i.fas.fa-search.search-icon-inside
+            input.search-input(type="text" name="keyword" placeholder="Bạn đang tìm loại hoa nào?...")
+            button.btn-search(type="submit")
+              i.fas.fa-paper-plane
+              span Tìm kiếm      
     section#products(style="padding: 60px 8%; background: white;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800;") Sản phẩm nổi bật
       .grid-container(style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;")
@@ -153,7 +258,7 @@ html(lang="vi")
                 form(action="/cart/add", method="POST")
                   input(type="hidden", name="flowerId", value=flower._id.toString())
                   button.btn-hero(type="submit" style="padding: 10px 20px;") <i class="fas fa-cart-plus"></i>
-    section#products(style="padding: 60px 8%; background: white;")
+    section#products(style="padding: 60px 8%; background:#fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: var(--text-dark);") 
         i.fas.fa-leaf(style="color: #2ecc71; margin-right: 15px;")
         | Cây Bonsai Nghệ Thuật
@@ -216,7 +321,7 @@ html(lang="vi")
           div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
             p Đang cập nhật các mẫu hoa cưới mới nhất...     
     //- PHẦN HOA SINH NHẬT
-    section#birthday-flowers(style="padding: 60px 8%; background: #fffcf0;")
+    section#birthday-flowers(style="padding: 60px 8%; background: #fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #ff9f43;") 
         i.fas.fa-birthday-cake(style="margin-right: 15px;")
         | Hoa Sinh Nhật Tươi Thắm
@@ -247,7 +352,7 @@ html(lang="vi")
           div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
             p Đang cập nhật những mẫu hoa chúc mừng sinh nhật mới nhất...  
     //- PHẦN HOA SỰ KIỆN
-    section#event-flowers(style="padding: 60px 8%; background: #f4f7f6;")
+    section#event-flowers(style="padding: 60px 8%; background: #fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #2c3e50;") 
         i.fas.fa-microphone-alt(style="margin-right: 15px;")
         | Hoa Sự Kiện & Hội Nghị
@@ -278,7 +383,7 @@ html(lang="vi")
           div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
             p Đang thiết kế các mẫu hoa sự kiện đẳng cấp...
     //- PHẦN HOA KHAI TRƯƠNG
-    section#grand-opening(style="padding: 60px 8%; background: #fff5f5;")
+    section#grand-opening(style="padding: 60px 8%; background: #fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #e74c3c;") 
         i.fas.fa-store(style="margin-right: 15px;")
         | Hoa Khai Trương Hồng Phát
@@ -309,7 +414,7 @@ html(lang="vi")
           div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
             p Đang cập nhật những mẫu hoa khai trương mới nhất...
     //- PHẦN CÂY CẢNH TRANG TRÍ
-    section#decor-plants(style="padding: 60px 8%; background: #f0fff4;")
+    section#decor-plants(style="padding: 60px 8%; background: #fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #27ae60;") 
         i.fas.fa-couch(style="margin-right: 15px;")
         | Cây Cảnh Trang Trí Không Gian
@@ -341,7 +446,7 @@ html(lang="vi")
             p Đang cập nhật những mẫu cây cảnh trang trí mới nhất...
 
     //- PHẦN HOA THEO MÙA
-    section#seasonal(style="padding: 60px 8%; background: #f0f7ff;")
+    section#seasonal(style="padding: 60px 8%; background: #fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #3498db;") 
         i.fas.fa-cloud-sun(style="margin-right: 15px;")
         | Hoa Theo Mùa Rực Rỡ
@@ -372,7 +477,7 @@ html(lang="vi")
           div(style="grid-column: 1/-1; text-align: center; padding: 40px; color: #bbb;")
             p Đang cập nhật những mẫu hoa theo mùa mới nhất...
     //- PHẦN HOA CHỦ ĐỀ (Tông tím lãng mạn & tinh tế)
-    section#themed-flowers(style="padding: 60px 8%; background: #f8f0ff;")
+    section#themed-flowers(style="padding: 60px 8%; background: #fffafb;")
       h2(style="text-align: center; font-size: 2.2rem; margin-bottom: 40px; font-weight: 800; color: #8e44ad;") 
         i.fas.fa-star(style="margin-right: 15px;")
         | Hoa Thiết Kế Theo Chủ Đề
@@ -404,22 +509,218 @@ html(lang="vi")
             i.fas.fa-magic(style="font-size: 3rem; margin-bottom: 10px;")
             p FloraHub đang chuẩn bị những mẫu hoa theo chủ đề mới nhất...                           
     //- --- BANNER VOUCHER 10% ---
+    //- --- PHẦN ƯU ĐÃI THÀNH VIÊN MỚI (CHÀO MỪNG + VOUCHER) ---
     section.voucher-banner-container
+      style.
+        /* Container chính */
+        .voucher-banner-container {
+          padding: 100px 8%;
+          background: #fff;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        /* 1. CSS CHO DÒNG CHÀO MỪNG */
+        .welcome-text-container {
+          text-align: center;
+          margin-bottom: 50px;
+        }
+        .welcome-badge {
+          background: #fff0f3; /* Màu hồng rất nhạt */
+          color: var(--pink-dark);
+          padding: 10px 25px;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          display: inline-block;
+          margin-bottom: 15px;
+          box-shadow: 0 5px 15px rgba(255, 133, 161, 0.1);
+        }
+        .welcome-main-title {
+          font-family: 'Dancing Script', cursive;
+          font-size: 3.5rem;
+          color: var(--pink-dark);
+          margin: 0;
+          line-height: 1.2;
+        }
+        .welcome-main-title span {
+          color: var(--pink-main);
+        }
+        .welcome-sub-title {
+          color: #888;
+          font-size: 1.1rem;
+          font-weight: 500;
+          margin-top: 10px;
+        }
+
+        /* 2. CSS CHO TẤM VÉ VOUCHER */
+        .voucher-ticket {
+          display: flex;
+          width: 100%;
+          max-width: 950px;
+          background: white;
+          border-radius: 35px;
+          position: relative;
+          filter: drop-shadow(0 20px 45px rgba(255, 133, 161, 0.25));
+          border: 1px solid #fff0f3;
+          overflow: visible;
+        }
+
+        .ticket-left {
+          flex: 1.8;
+          padding: 60px;
+          background: radial-gradient(circle at top left, #ffffff, #fffcfd);
+          border-radius: 35px 0 0 35px;
+          position: relative;
+        }
+
+        .ticket-left h2 {
+          font-family: 'Dancing Script', cursive;
+          font-size: 3rem;
+          color: var(--pink-dark);
+          margin-bottom: 5px;
+        }
+
+        .discount-val {
+          font-family: 'Quicksand', sans-serif;
+          font-size: 4.8rem;
+          font-weight: 800;
+          color: var(--pink-main);
+          line-height: 1;
+          margin: 15px 0;
+          text-shadow: 2px 2px 0px rgba(255, 133, 161, 0.1);
+        }
+
+        .ticket-left p {
+          font-size: 1.15rem;
+          color: #666;
+          max-width: 90%;
+          line-height: 1.6;
+        }
+
+        .ticket-right {
+          flex: 1;
+          background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 40px;
+          text-align: center;
+          border-radius: 0 35px 35px 0;
+          position: relative;
+        }
+
+        /* Hiệu ứng đục lỗ đặc trưng của vé */
+        .punch-hole {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: #fff; /* Trùng với nền ngoài để tạo hiệu ứng khuyết */
+          border-radius: 50%;
+          left: -20px;
+          z-index: 10;
+        }
+        .punch-top { top: -20px; }
+        .punch-bottom { bottom: -20px; }
+
+        .ticket-divider {
+          position: absolute;
+          left: -1px;
+          top: 15%;
+          height: 70%;
+          border-left: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .promo-code {
+          background: rgba(255, 255, 255, 0.95);
+          color: var(--pink-dark);
+          padding: 18px 30px;
+          border-radius: 18px;
+          font-size: 1.6rem;
+          font-weight: 800;
+          margin-bottom: 15px;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          letter-spacing: 2px;
+        }
+
+        .promo-code:hover {
+          transform: scale(1.1) rotate(-3deg);
+          background: #fff;
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-voucher-action {
+          background: white;
+          color: var(--pink-dark);
+          padding: 12px 35px;
+          border-radius: 50px;
+          text-decoration: none;
+          font-weight: 800;
+          font-size: 0.9rem;
+          margin-top: 15px;
+          transition: 0.3s;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-voucher-action:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+          .welcome-main-title { font-size: 2.5rem; }
+          .voucher-ticket { flex-direction: column; }
+          .ticket-left { border-radius: 35px 35px 0 0; padding: 40px; text-align: center; }
+          .ticket-left p { max-width: 100%; }
+          .discount-val { font-size: 3.5rem; }
+          .ticket-right { border-radius: 0 0 35px 35px; padding: 50px 30px; }
+          .punch-hole, .ticket-divider { display: none; }
+        }
+
+      //- 1. PHẦN CHỮ CHÀO MỪNG
+      .welcome-text-container
+        .welcome-badge Ưu đãi đặc biệt
+        h2.welcome-main-title Quà Tặng <span>Thành Viên Mới</span>
+        p.welcome-sub-title Cùng FloraHub lan tỏa yêu thương qua những đóa hoa tươi thắm
+
+      //- 2. PHẦN VOUCHER
       .voucher-ticket
         .ticket-left
-          h2 Chào mừng bạn mới!
+          .punch-hole.punch-top
+          .punch-hole.punch-bottom
+          h2 Sweet Welcome!
           .discount-val GIẢM 10%
-          p Chỉ dành riêng cho đơn hàng đầu tiên khi bạn đăng nhập vào FloraHub.
-          small(style="color: #bbb; margin-top: 10px; display: block;") * Áp dụng cho đơn hàng từ 200.000đ.
+          p Chúc mừng bạn đã gia nhập gia đình FloraHub. Nhận ngay ưu đãi cho đơn hàng đầu tiên của bạn!
+          small(style="color: #ccc; margin-top: 25px; display: block; font-style: italic;") * Áp dụng cho đơn hàng bất kì.
         
         .ticket-right
-          p(style="margin-bottom: 10px; font-weight: 600;") MÃ GIẢM GIÁ:
-          .promo-code(onclick="copyVoucher('HELLOVNUA')") NEW2026
-          p(style="font-size: 0.8rem; opacity: 0.9;") Click để sao chép
+          .ticket-divider
+          p(style="margin-bottom: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; opacity: 0.9;") Copy mã tại đây:
+          .promo-code(onclick="copyVoucher('NEW2026')") NEW2026
+          p(style="font-size: 0.75rem; opacity: 0.85;") (Nhấn vào mã để sao chép nhanh)
+          
           if !session || !session.user
-            a.btn-hero(href="/login" style="background: white; color: var(--pink-main); margin-top: 15px;") Đăng nhập
+            a.btn-voucher-action(href="/login") Đăng nhập ngay
           else
-            a.btn-hero(href="/explore" style="background: white; color: var(--pink-main); margin-top: 15px;") Dùng ngay
+            a.btn-voucher-action(href="/explore") Mua sắm ngay
+
+    //- JavaScript xử lý copy
+    script.
+      function copyVoucher(code) {
+        navigator.clipboard.writeText(code).then(() => {
+          alert('🌿 Tuyệt vời! Bạn đã copy mã: ' + code + '. Hãy chọn cho mình những bông hoa thật xinh nhé!');
+        }).catch(err => {
+          console.error('Lỗi: ', err);
+        });
+      }
 
     footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")

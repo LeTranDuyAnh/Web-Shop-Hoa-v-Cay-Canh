@@ -16,12 +16,9 @@ html(lang="vi")
         --text-dark: #2d3436;
         --white: #FFFFFF;
       }
-      
       * { box-sizing: border-box; }
       body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; color: var(--text-dark); }
       .admin-layout { display: flex; min-height: 100vh; width: 100%; }
-
-      /* --- SIDEBAR --- */
       nav.admin-sidebar { width: 280px; min-width: 280px; background: var(--white); border-right: 2px solid var(--pink-bg); padding: 30px 20px; height: 100vh; position: sticky; top: 0; }
       .logo { font-size: 1.8rem; font-weight: 800; color: var(--pink-dark); margin-bottom: 40px; text-align: center; }
       .logo span { color: var(--pink-main); font-weight: 400; }
@@ -29,54 +26,35 @@ html(lang="vi")
       .admin-sidebar li { margin-bottom: 8px; }
       .admin-sidebar a { display: flex; align-items: center; gap: 12px; padding: 14px 20px; text-decoration: none; color: #888; border-radius: 15px; font-weight: 600; transition: 0.3s; }
       .admin-sidebar li.active a { background: var(--pink-main); color: white; box-shadow: 0 4px 15px rgba(233, 30, 99, 0.2); }
-      
-      .badge-pending { 
-        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px; 
-        font-size: 0.7rem; margin-left: auto; font-weight: bold; 
-        animation: blink-animation 1.5s linear infinite; 
-      }
+      .badge-pending { background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: auto; font-weight: bold; animation: blink-animation 1.5s linear infinite; }
       @keyframes blink-animation { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-
-      /* --- MAIN CONTENT --- */
       .admin-main { flex-grow: 1; padding: 40px; background-color: #fce4ec; }
       .day-group-header { background: var(--pink-dark); color: white; padding: 12px 25px; margin-top: 35px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 4px 12px rgba(194, 24, 91, 0.2); }
-      
       .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
       .admin-table td { padding: 20px 15px; background: white; vertical-align: middle; }
       .admin-table td:first-child { border-radius: 20px 0 0 20px; border-left: 5px solid var(--pink-bg); }
       .admin-table td:last-child { border-radius: 0 20px 20px 0; }
-
       .status-badge { padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase; display: inline-block; }
       .status-pending { background: #fff4e5; color: #ef6c00; border: 1px solid #ffe0b2; }
       .status-shipping { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; }
       .status-completed { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
       .status-cancelled { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-
       .btn-status { border: none; padding: 10px; border-radius: 10px; color: white; font-weight: 700; font-size: 12px; cursor: pointer; width: 100%; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 5px; }
-      .btn-status:hover { transform: translateY(-2px); filter: brightness(1.1); }
       .btn-ship { background: var(--blue-ship); }
       .btn-done { background: var(--green-done); }
       .btn-view { background: #636e72; }
-      
       .btn-cancel-trigger { background: #f5f5f5; color: #888; border: none; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 11px; font-weight: 600; margin-top: 5px; }
-      
       .cancel-form textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; margin: 10px 0; font-family: inherit; font-size: 12px; resize: none; }
-
-      /* --- MODAL CSS --- */
       .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
-      .order-detail-card { background: white; width: 550px; max-width: 95%; border-radius: 30px; padding: 35px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+      .order-detail-card { background: white; width: 550px; max-width: 95%; border-radius: 30px; padding: 35px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
       .close-modal { position: absolute; top: 20px; right: 25px; font-size: 2rem; color: #ccc; cursor: pointer; }
       .bill-header { border-bottom: 2px dashed var(--pink-bg); padding-bottom: 15px; margin-bottom: 20px; text-align: center; }
       .bill-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; gap: 15px; }
-      .bill-row strong { text-align: right; word-wrap: break-word; max-width: 70%; }
       .bill-items { background: #fff9fa; border-radius: 15px; padding: 15px; margin: 15px 0; max-height: 250px; overflow-y: auto; }
-
-      /* Loyalty Tooltip */
-      .loyalty-tag {
-        display: inline-flex; align-items: center; gap: 4px;
-        background: #e8f5e9; color: #2e7d32; padding: 2px 8px;
-        border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 5px;
-      }
+      .badge-status { padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+      .status-paid { background: #e8f5e9; color: #2e7d32; }
+      .status-unpaid { background: #fff4e5; color: #ef6c00; }
+      .proof-preview { width: 100%; margin-top: 15px; border-radius: 15px; border: 2px solid var(--pink-bg); padding: 5px; }
 
   body
     .admin-layout
@@ -92,10 +70,8 @@ html(lang="vi")
             if pendingCount > 0
               span.badge-pending #{pendingCount}
           li: a(href="/admin/analytics") <i class="fas fa-chart-pie"></i> Doanh thu shop
-          li: a(href="/admin/blog/create") 
-            i.fas.fa-pen-nib
-            | Viết bài Blog
-          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher  
+          li: a(href="/admin/blog/create") <i class="fas fa-pen-nib"></i> Viết bài Blog
+          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher
           li: a(href="/") <i class="fas fa-external-link-alt"></i> Xem cửa hàng
           li: a(href="/logout" style="color: #ff7675; margin-top: 50px;") <i class="fas fa-power-off"></i> Đăng xuất
 
@@ -122,33 +98,38 @@ html(lang="vi")
                     br
                     small(style="color: #bbb;")= dateString
                   
-                  td(width="20%")
+                  td(width="18%")
                     strong(style="color: #333;")= order.customer ? order.customer.name : 'Khách vãng lai'
                     br
                     small(style="color: #777;") <i class="fas fa-phone-alt"></i> #{order.customer ? order.customer.phone : 'N/A'}
                   
-                  td(width="23%")
-                    ul(style="padding:0; margin:0; list-style:none; font-size: 13px; max-height: 80px; overflow-y: auto;")
+                  td(width="20%")
+                    ul(style="padding:0; margin:0; list-style:none; font-size: 13px;")
                       if order.items
                         each item in order.items
-                          li(style="margin-bottom:4px;") <i class="fas fa-seedling" style="color:#2ecc71; font-size:10px;"></i> #{item.name} <strong>(x#{item.qty})</strong>
+                          li <i class="fas fa-seedling" style="color:#2ecc71; font-size:10px;"></i> #{item.name} (x#{item.qty})
                   
-                  td(width="15%")
+                  td(width="12%")
                     strong(style="color: var(--pink-dark); font-size: 1.1rem;")= (order.totalAmount || 0).toLocaleString('vi-VN') + ' đ'
-                    if order.status !== 'cancelled'
-                      br
-                      .loyalty-tag
-                        i.fas.fa-leaf
-                        | +#{Math.floor((order.totalAmount || 0) / 10000)} điểm
                   
-                  td(width="10%")
-                    - var stClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : (order.status === 'cancelled' ? 'status-cancelled' : 'status-completed'))
-                    span(class=`status-badge ${stClass}`)
-                      case order.status
-                        when 'pending': | Chờ duyệt
-                        when 'shipping': | Đang giao
-                        when 'cancelled': | Đã hủy
-                        default: | Hoàn tất
+                  td(width="18%")
+                    //- LOGIC HIỂN THỊ TRẠNG THÁI THANH TOÁN KÈM ICON ẢNH
+                    if order.paymentProof
+                      span.badge-status.status-paid(style="font-size: 10px; margin-bottom: 5px;") 
+                        i.fas.fa-check-circle
+                        |  ĐÃ CHUYỂN KHOẢN
+                      br
+                      span(style="color: var(--pink-main); font-size: 11px; font-weight: bold;") 
+                        i.fas.fa-image
+                        |  Có ảnh minh chứng
+                    else
+                      - var stClass = order.status === 'pending' ? 'status-pending' : (order.status === 'shipping' ? 'status-shipping' : (order.status === 'cancelled' ? 'status-cancelled' : 'status-completed'))
+                      span(class=`status-badge ${stClass}`)
+                        case order.status
+                          when 'pending': | Chờ duyệt
+                          when 'shipping': | Đang giao
+                          when 'cancelled': | Đã hủy
+                          default: | Hoàn tất
 
                   td(width="20%").actions
                     button.btn-status.btn-view(type="button" onclick=`showDetail(${JSON.stringify(order)})`)
@@ -158,7 +139,7 @@ html(lang="vi")
                     if order.status === 'pending'
                       form(action=`/admin/orders/update-status/${order._id}` method="POST")
                         input(type="hidden" name="status" value="shipping")
-                        button.btn-status.btn-ship(type="submit") <i class="fas fa-truck"></i> Giao hàng
+                        button.btn-status.btn-ship(type="submit") <i class="fas fa-truck"></i> Duyệt & Giao hàng
                       
                       button.btn-cancel-trigger(onclick=`toggleCancel('${order._id}')`) Hủy đơn
                       
@@ -196,11 +177,21 @@ html(lang="vi")
             span Địa chỉ giao hàng:
             strong#modal-customer-address ...
           .bill-row
-            span Thời gian mong muốn:
-            strong#modal-delivery-time ...
-        
+            span Phương thức:
+            strong#modal-payment-method ...
+          .bill-row
+            span Trạng thái tiền:
+            span#modal-payment-status-badge.badge-status ...
+
         .bill-items#modal-items-list
         
+        //- PHẦN HIỂN THỊ ẢNH MINH CHỨNG TRONG MODAL
+        #modal-proof-section(style="display:none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;")
+          h4(style="color: var(--pink-dark); margin: 0 0 10px 0;") <i class="fas fa-camera"></i> Ảnh minh chứng thanh toán:
+          a#modal-proof-link(href="#" target="_blank")
+            img#modal-proof-img.proof-preview(src="" alt="Minh chứng")
+          p(style="font-size: 11px; color: #888; text-align: center; margin-top: 5px;") (Bấm vào ảnh để xem kích thước lớn)
+
         .bill-footer
           .bill-row(style="font-size: 1.2rem; border-top: 2px solid #eee; padding-top: 15px;")
             strong TỔNG THANH TOÁN:
@@ -210,7 +201,7 @@ html(lang="vi")
     script.
       function toggleCancel(id) {
         const box = document.getElementById('box-' + id);
-        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+        if (box) box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
       }
 
       function showDetail(order) {
@@ -220,11 +211,41 @@ html(lang="vi")
         document.getElementById('modal-customer-name').innerText = cus.name || 'Khách vãng lai';
         document.getElementById('modal-customer-phone').innerText = cus.phone || 'N/A';
         document.getElementById('modal-customer-address').innerText = cus.address || 'Chưa có địa chỉ';
-        document.getElementById('modal-delivery-time').innerText = cus.deliveryTime || 'Càng sớm càng tốt';
         document.getElementById('modal-total-amount').innerText = (order.totalAmount || 0).toLocaleString('vi-VN') + ' đ';
 
+        const paymentMethodEl = document.getElementById('modal-payment-method');
+        const paymentStatusEl = document.getElementById('modal-payment-status-badge');
+
+        if (paymentMethodEl) {
+          paymentMethodEl.innerText = order.paymentMethod === 'BANK' ? 'Chuyển khoản ngân hàng' : 'Thanh toán COD';
+        }
+
+        // Cập nhật nhãn thanh toán dựa trên proof hoặc isPaid
+        if (paymentStatusEl) {
+          if (order.paymentProof || order.isPaid) {
+            paymentStatusEl.innerText = 'Đã thanh toán';
+            paymentStatusEl.className = 'badge-status status-paid';
+          } else {
+            paymentStatusEl.innerText = 'Chưa thanh toán';
+            paymentStatusEl.className = 'badge-status status-unpaid';
+          }
+        }
+
+        // Xử lý hiển thị ảnh minh chứng
+        const proofSection = document.getElementById('modal-proof-section');
+        const proofImg = document.getElementById('modal-proof-img');
+        const proofLink = document.getElementById('modal-proof-link');
+
+        if (order.paymentProof) {
+          proofSection.style.display = 'block';
+          proofImg.src = order.paymentProof;
+          proofLink.href = order.paymentProof;
+        } else {
+          proofSection.style.display = 'none';
+        }
+
         const itemsContainer = document.getElementById('modal-items-list');
-        itemsContainer.innerHTML = '<h4 style="margin-top:0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">Sản phẩm & Khuyến mãi:</h4>';
+        itemsContainer.innerHTML = '<h4 style="margin-top:0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px;">Sản phẩm:</h4>';
         
         if (order.items) {
           order.items.forEach(item => {
@@ -236,23 +257,11 @@ html(lang="vi")
         }
 
         if (order.appliedVoucher) {
-          const voucherRow = document.createElement('div');
-          voucherRow.className = 'bill-row';
-          voucherRow.style.color = '#2ecc71';
-          voucherRow.style.fontWeight = '700';
-          voucherRow.innerHTML = `<span><i class="fas fa-ticket-alt"></i> Giảm giá (${order.appliedVoucher.code})</span><span>- ${order.appliedVoucher.discountAmount.toLocaleString('vi-VN')} đ</span>`;
-          itemsContainer.appendChild(voucherRow);
-        }
-
-        if (cus.note) {
-          const noteBox = document.createElement('div');
-          noteBox.style.marginTop = '15px';
-          noteBox.style.padding = '10px';
-          noteBox.style.background = '#fff4e5';
-          noteBox.style.borderRadius = '10px';
-          noteBox.style.fontSize = '13px';
-          noteBox.innerHTML = `<strong>Lời nhắn:</strong> ${cus.note}`;
-          itemsContainer.appendChild(noteBox);
+          const vRow = document.createElement('div');
+          vRow.className = 'bill-row';
+          vRow.style.color = '#2ecc71';
+          vRow.innerHTML = `<span>Giảm giá (${order.appliedVoucher.code})</span><span>-${order.appliedVoucher.discountAmount.toLocaleString('vi-VN')} đ</span>`;
+          itemsContainer.appendChild(vRow);
         }
 
         document.getElementById('detailModal').style.display = 'flex';

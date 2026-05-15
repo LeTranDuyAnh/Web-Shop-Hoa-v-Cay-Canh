@@ -169,8 +169,7 @@ html(lang="vi")
       .search-container
         .search-box
           i.fas.fa-search
-          input#flowerSearch(type="text", placeholder="Tìm tên hoa trong cửa hàng...", onkeyup="filterFlowers()")
-
+          input#flowerSearch(type="text", placeholder="Tìm tên hoa trong cửa hàng...", onkeyup="filterFlowers()", value=keyword)
       if groupedFlowers && Object.keys(groupedFlowers).length > 1
         .category-nav
           a.filter-chip.active(href="javascript:void(0)" onclick="scrollToCat('all')") Tất cả
@@ -251,6 +250,20 @@ html(lang="vi")
             current = (current + 1) % slides.length;
             slides[current].classList.add('active');
           }, 4000); 
+        }
+        // TỰ ĐỘNG LỌC KHI NHẢY TỪ TRANG CHỦ SANG
+        const searchInput = document.getElementById('flowerSearch');
+        if (searchInput && searchInput.value) {
+          // Gọi hàm lọc ngay lập tức
+          filterFlowers();
+          
+          // Cuộn xuống vùng kết quả để người dùng thấy luôn
+          setTimeout(() => {
+            const contentSection = document.querySelector('section.content');
+            if (contentSection) {
+              contentSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 500); // Chờ 1 chút cho mượt
         }
       });
 

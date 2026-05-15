@@ -50,6 +50,20 @@ html(lang="vi")
       }
       .form-control:focus { border-color: var(--pink-main); box-shadow: 0 0 0 4px rgba(255, 133, 161, 0.1); }
 
+      /* Payment Method Styles */
+      .payment-options { display: grid; gap: 15px; margin-top: 10px; }
+      .payment-item { position: relative; }
+      .payment-item input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+      .payment-label {
+        display: flex; align-items: center; gap: 15px; padding: 15px 20px;
+        border: 2px solid var(--pink-bg); border-radius: 15px; cursor: pointer;
+        transition: 0.3s; font-weight: 600;
+      }
+      .payment-item input:checked + .payment-label {
+        border-color: var(--pink-main); background: #fff8f9;
+      }
+      .payment-label i { font-size: 1.2rem; color: var(--pink-main); width: 25px; text-align: center; }
+
       .order-summary { background: #fff9fa; border: 2px dashed var(--pink-soft); position: sticky; top: 100px; }
       .item-line { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
       .item-info { flex: 1; }
@@ -78,7 +92,7 @@ html(lang="vi")
       h2 <i class="fas fa-magic"></i> Hoàn tất đơn hàng của bạn
 
       form.checkout-grid(action="/place-order" method="POST")
-        //- Bên trái: Thông tin nhận hoa
+        //- Bên trái: Thông tin nhận hoa & Thanh toán
         .card-custom
           h4 <i class="fas fa-truck" style="margin-right: 10px; color: var(--pink-soft);"></i> Thông tin giao hàng
           
@@ -100,7 +114,27 @@ html(lang="vi")
 
           .form-group
             label Lời nhắn gửi kèm hoa (nếu có)
-            textarea.form-control(name="note" rows="4" placeholder="Viết những lời yêu thương bạn muốn gửi gắm vào đây...")
+            textarea.form-control(name="note" rows="3" placeholder="Viết những lời yêu thương...")
+
+          //- PHẦN MỚI: CHỌN PHƯƠNG THỨC THANH TOÁN
+          div(style="margin-top: 30px; padding-top: 25px; border-top: 2px solid var(--pink-bg);")
+            h4 <i class="fas fa-credit-card" style="margin-right: 10px; color: var(--pink-soft);"></i> Phương thức thanh toán
+            .payment-options
+              label.payment-item
+                input(type="radio" name="paymentMethod" value="COD" checked)
+                .payment-label
+                  i.fas.fa-hand-holding-usd
+                  div
+                    span(style="display:block;") Thanh toán khi nhận hàng (COD)
+                    small(style="font-weight: 400; color: #888;") Trả tiền mặt khi shipper giao hoa
+              
+              label.payment-item
+                input(type="radio" name="paymentMethod" value="BANK")
+                .payment-label
+                  i.fas.fa-qrcode
+                  div
+                    span(style="display:block;") Chuyển khoản VietQR (Nhanh chóng)
+                    small(style="font-weight: 400; color: #888;") Quét mã QR để thanh toán an toàn
           
           a.back-link(href="/cart") <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng để sửa
 
@@ -123,7 +157,6 @@ html(lang="vi")
               span Tạm tính:
               span #{total.toLocaleString('vi-VN')} đ
             
-            //- HIỂN THỊ VOUCHER NẾU CÓ
             if appliedVoucher
               div(style="display:flex; justify-content:space-between; margin-bottom: 12px;")
                 span.voucher-badge <i class="fas fa-ticket-alt"></i> Mã giảm giá (#{appliedVoucher.code}):

@@ -20,6 +20,8 @@
     "@fastify/view": "^11.1.1",
     "bcrypt": "^6.0.0",
     "fastify": "^5.7.4",
+    "fastify-multer": "^2.0.3",
+    "multer": "^2.1.1",
     "pug": "^3.0.3"
   }
 }

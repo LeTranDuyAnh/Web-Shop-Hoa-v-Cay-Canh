@@ -168,10 +168,16 @@ fastify.get('/admin/delete/:id', async (request, reply) => {
 fastify.get('/explore', async (request, reply) => {
   try {
     const collection = fastify.mongo.db.collection('flowers');
-    const { category } = request.query;
+    const { category, keyword } = request.query;
     
     let filter = {};
-    if (category) {
+
+    // Nếu có keyword, ta ưu tiên tìm theo tên trên toàn bộ hệ thống
+    if (keyword) {
+      filter.name = { $regex: keyword, $options: 'i' };
+    } 
+    // Nếu không có keyword nhưng có category, thì lọc theo category
+    else if (category) {
       filter.category = category;
     }
 
@@ -185,13 +191,13 @@ fastify.get('/explore', async (request, reply) => {
       return acc;
     }, {});
 
-    // --- LOGIC GIỎ HÀNG ---
     const cart = request.session.get('cart') || [];
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
     return reply.view('all_flowers.pug', { 
-      groupedFlowers, // <--- Gửi object đã nhóm thay vì mảng phẳng
+      groupedFlowers,
       currentCategory: category || 'Tất cả',
+      keyword: keyword || '', // Đảm bảo luôn có string để tránh lỗi Pug
       cartCount: totalItems,
       session: { user: request.session.get('user') }
     });
@@ -738,7 +744,8 @@ fastify.post('/place-order', async (request, reply) => {
   const user = request.session.user;
   if (!user) return reply.redirect('/login?error=vui-long-dang-nhap');
 
-  const { customerName, phone, address, note, deliveryTime } = request.body;
+  // [MỚI]: Lấy thêm paymentMethod từ form gửi lên
+  const { customerName, phone, address, note, deliveryTime, paymentMethod } = request.body;
   const cart = request.session.cart || [];
   const appliedVoucher = request.session.appliedVoucher || null; 
 
@@ -747,12 +754,12 @@ fastify.post('/place-order', async (request, reply) => {
   const { ObjectId } = fastify.mongo;
   const flowerColl = fastify.mongo.db.collection('flowers');
   const orderColl = fastify.mongo.db.collection('orders');
-  const voucherColl = fastify.mongo.db.collection('vouchers'); // Khai báo collection voucher
+  const voucherColl = fastify.mongo.db.collection('vouchers');
 
   try {
     const orderItems = [];
 
-    // 1. Cập nhật kho hàng và chuẩn bị dữ liệu sản phẩm
+    // 1. Cập nhật kho hàng
     await Promise.all(cart.map(async (item) => {
       const flowerId = new ObjectId(item.id);
       const quantityToSubtract = parseInt(item.qty) || 0;
@@ -763,6 +770,7 @@ fastify.post('/place-order', async (request, reply) => {
         name: item.name,
         price: item.price,
         qty: item.qty,
+        image: item.image, // [MỚI]: Lưu thêm ảnh để hiển thị ở trang thành công/admin
         cost_price: flowerInfo ? (flowerInfo.cost_price || 0) : 0 
       });
 
@@ -772,14 +780,13 @@ fastify.post('/place-order', async (request, reply) => {
       );
     }));
 
-    // 2. Tính toán tiền bạc
     const subTotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const discountAmount = appliedVoucher ? appliedVoucher.discountAmount : 0;
-    const finalTotal = Math.max(0, subTotal - discountAmount); // Đảm bảo không âm
+    const finalTotal = Math.max(0, subTotal - discountAmount);
 
-    // 3. Tạo đối tượng đơn hàng mới
+    // 2. Tạo đối tượng đơn hàng mới
     const newOrder = {
-      userId: new ObjectId(user.id || user._id), // Đảm bảo lấy đúng ID
+      userId: new ObjectId(user.id || user._id),
       orderedBy: {
         username: user.username,
         fullName: user.name
@@ -795,36 +802,33 @@ fastify.post('/place-order', async (request, reply) => {
       subTotal: subTotal,
       appliedVoucher: appliedVoucher,
       totalAmount: finalTotal,
+      
+      // [MỚI]: Lưu phương thức và trạng thái thanh toán
+      paymentMethod: paymentMethod || 'COD', 
+      paymentStatus: (paymentMethod === 'BANK') ? 'unpaid' : 'pending_cod',
+      
       status: 'pending',
       createdAt: new Date()
     };
 
-    // 4. Lưu đơn hàng vào Database
     const result = await orderColl.insertOne(newOrder);
 
-    // --- 5. CỐT LÕI: ĐÁNH DẤU VOUCHER ĐÃ DÙNG ---
+    // 3. Đánh dấu Voucher đã dùng
     if (appliedVoucher && appliedVoucher.code) {
-      console.log(`[Voucher System] Đang khóa mã ${appliedVoucher.code} cho user: ${user.username}`);
-      
       await voucherColl.updateOne(
         { code: appliedVoucher.code.toUpperCase() },
         { 
-          // Thêm ID người dùng vào mảng usedBy để lần sau includes() sẽ tìm thấy
           $addToSet: { usedBy: (user.id || user._id).toString() },
-          // Tăng số lần sử dụng tổng thể (nếu bạn cần thống kê)
           $inc: { usedCount: 1 } 
         }
       );
     }
-    // ------------------------------------------
 
-    // 6. Xóa session sau khi hoàn tất
+    // 4. Dọn dẹp session
     request.session.cart = [];
     request.session.appliedVoucher = null; 
     
-    console.log(`[Order Success] ID: ${result.insertedId} | Thực thu: ${finalTotal}đ`);
-
-    // 7. Hiển thị trang thành công
+    // 5. Render trang thành công (Sử dụng orderId mới để tạo mã VietQR)
     return reply.view('order_success.pug', { 
       order: { ...newOrder, _id: result.insertedId },
       session: request.session
@@ -1044,18 +1048,11 @@ fastify.get('/admin/orders/detail/:id', async (request, reply) => {
   }
 });
 
-
-
 // Route: Làm trống hoàn toàn giỏ hàng
 fastify.get('/cart/clear', async (request, reply) => {
   request.session.cart = [];
   return reply.redirect('/cart');
 });
-
-
-
-
-
 
 // Route: Báo cáo tài chính (Analytics)
 fastify.get('/admin/analytics', async (request, reply) => {
@@ -1552,7 +1549,6 @@ fastify.post('/cart/apply-voucher', async (request, reply) => {
     }
 
     // 3. LOGIC QUAN TRỌNG: Kiểm tra xem người này đã dùng mã này chưa
-    // Cường dùng currentUserId đã xử lý .toString() ở trên để so sánh
     if (voucher.usedBy && voucher.usedBy.includes(currentUserId)) {
         return reply.send({ success: false, msg: "Mã này bạn đã sử dụng rồi, không thể dùng thêm lần nữa!" });
     }
@@ -1628,7 +1624,94 @@ fastify.get('/vouchers', async (request, reply) => {
 });
 
 
+fastify.post('/admin/orders/confirm-payment/:id', async (request, reply) => {
+  const order = await db.collection('orders').findOne({ _id: new ObjectId(request.params.id) });
+  
+  if (order && order.userId) {
+    // 1 điểm cho mỗi 10.000đ thanh toán
+    const pointsToAdd = Math.floor(order.totalAmount / 10000);
+    
+    await db.collection('users').updateOne(
+      { _id: order.userId },
+      { $inc: { points: pointsToAdd } }
+    );
+  }
+  
+  await db.collection('orders').updateOne(
+    { _id: new ObjectId(request.params.id) },
+    { $set: { paymentStatus: 'paid', status: 'processing' } }
+  );
+  
+  reply.redirect('/admin/orders');
+});
 
+
+
+
+
+// Route: Khách hàng upload ảnh minh chứng chuyển khoản
+fastify.post('/orders/upload-proof/:id', async (request, reply) => {
+  try {
+    const { ObjectId } = fastify.mongo;
+    const orderId = request.params.id;
+
+    // 1. Đọc file từ form gửi lên
+    const data = await request.file();
+    if (!data) return reply.code(400).send('Chưa chọn ảnh minh chứng');
+
+    // 2. Tạo tên file duy nhất và đường dẫn lưu
+    const fileName = 'proof-' + Date.now() + '-' + data.filename;
+    const uploadPath = path.join(__dirname, 'public/uploads/proofs', fileName);
+
+    // 3. Tiến hành lưu file vào thư mục public/uploads/proofs
+    await pump(data.file, fs.createWriteStream(uploadPath));
+
+    // 4. Đường dẫn ảnh để lưu vào database
+    const proofUrl = `/public/uploads/proofs/${fileName}`;
+
+    // 5. Cập nhật vào đơn hàng trong MongoDB
+    const collection = fastify.mongo.db.collection('orders');
+    await collection.updateOne(
+      { _id: new ObjectId(orderId) },
+      { $set: { paymentProof: proofUrl, updatedAt: new Date() } }
+    );
+
+    // 6. Quay lại trang thành công và thông báo đã gửi
+    return reply.redirect(`/order-success/${orderId}?status=uploaded`);
+
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send("Lỗi khi tải ảnh minh chứng");
+  }
+});
+// Route: Hiển thị trang thông báo đặt hàng thành công
+fastify.get('/order-success/:id', async (request, reply) => {
+  try {
+    const { ObjectId } = fastify.mongo;
+    const orderId = request.params.id;
+
+    // Lấy thông tin đơn hàng từ database để hiển thị
+    const order = await fastify.mongo.db.collection('orders').findOne({
+      _id: new ObjectId(orderId)
+    });
+
+    if (!order) {
+      return reply.code(404).send('Không tìm thấy đơn hàng');
+    }
+
+    // Lấy trạng thái từ URL (nếu có) để hiển thị thông báo "Đã tải ảnh thành công"
+    const status = request.query.status;
+
+    return reply.view('order_success.pug', { 
+      order, 
+      status,
+      session: request.session 
+    });
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send('Lỗi hiển thị trang thành công');
+  }
+});
 
 // Khởi động Server
 const start = async () => {
