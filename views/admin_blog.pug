@@ -74,7 +74,11 @@ html(lang="vi")
       .admin-table img { border-radius: 12px; height: 65px; width: 65px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
       .action-icon { font-size: 1.2rem; transition: 0.3s; cursor: pointer; }
       .action-icon:hover { transform: scale(1.2); }
-      .badge-pending { background: var(--pink-main); color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 5px; }
+      .badge-pending {
+        background: var(--pink-dark); color: white; padding: 2px 8px; border-radius: 12px;
+        font-size: 0.7rem; margin-left: auto; font-weight: bold;
+        animation: blink-animation 1.5s linear infinite;
+      }
 
   body
     .admin-layout
@@ -106,7 +110,10 @@ html(lang="vi")
             a(href="/admin/blog/create") 
               i.fas.fa-pen-nib
               | Viết bài Blog
-          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher    
+          li: a(href="/admin/vouchers") <i class="fas fa-ticket-alt"></i> Quản lý Voucher 
+          li: a(href="/admin/import-history") 
+            i.fas.fa-boxes
+            | Quản Lý nhập kho   
           li
             a(href="/") 
               i.fas.fa-external-link-alt

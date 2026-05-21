@@ -6,42 +6,74 @@ html(lang="vi")
     title= entry.common_name + " | VNUA Flora Wiki"
     link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
-    //- Thêm Be Vietnam Pro để tiếng Việt hiển thị rõ nét hơn
     link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Quicksand:wght@500;700&display=swap", rel="stylesheet")
     style.
-      :root { 
-        --pink-main: #FF85A1; 
-        --pink-dark: #E91E63; 
+      :root {
+        --pink-main: #FF85A1;
+        --pink-dark: #E91E63;
         --pink-soft: #FBB1BD;
         --pink-bg: #FFF0F3;
-        --text-dark: #2D3436; /* Màu chữ đậm hơn để dễ đọc */
-        --shadow: 0 10px 30px rgba(255, 133, 161, 0.15);
+        --text-dark: #2D3436;
+        --white: #FFFFFF;
+        --shadow: 0 15px 45px rgba(255, 133, 161, 0.12);
       }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body { 
-        background-color: var(--pink-bg); 
         font-family: 'Be Vietnam Pro', sans-serif; 
+        background: var(--pink-bg); 
         color: var(--text-dark);
-        line-height: 1.6;
+        line-height: 1.7;
       }
       
-      /* --- NAVBAR SYNC --- */
+      /* --- NAVBAR SYNC (Căn hai bên như ban đầu) --- */
       .navbar { 
-        padding: 15px 5%; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 15px 8%; 
         background: rgba(255, 255, 255, 0.98); 
+        position: sticky; 
+        top: 0; 
+        z-index: 1000; 
         box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
       }
-      .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
-      .btn-back {
-        color: var(--pink-main);
-        text-decoration: none;
-        font-weight: 700;
-        transition: 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-family: 'Quicksand', sans-serif;
+      .logo { 
+        font-family: 'Dancing Script', cursive; 
+        font-size: 2.2rem; 
+        color: var(--pink-main); 
+        text-decoration: none; 
       }
-      .btn-back:hover { color: var(--pink-dark); transform: translateX(-5px); }
+      .nav-menu { 
+        display: flex; 
+        list-style: none; 
+        gap: 15px; 
+        align-items: center; 
+        margin-bottom: 0;
+        padding-left: 0;
+      }
+      .nav-link { 
+        text-decoration: none; 
+        color: var(--text-dark); 
+        font-weight: 700; 
+        font-size: 0.9rem; 
+        padding: 8px 20px; 
+        transition: 0.3s; 
+        border-radius: 50px;
+      }
+      .nav-link.active { 
+        background: var(--pink-main); 
+        color: white !important; 
+        box-shadow: 0 4px 10px rgba(255, 133, 161, 0.3); 
+      }
+      .nav-link:not(.active):hover { color: var(--pink-main); }
+      
+      .nav-right { display: flex; align-items: center; gap: 15px; }
+      .icon-btn { color: var(--pink-main); font-size: 1.2rem; text-decoration: none; position: relative; transition: 0.3s; }
+      .cart-count { 
+        background: #ff4757; color: white; border-radius: 50%; padding: 2px 6px; 
+        font-size: 0.65rem; position: absolute; top: -8px; right: -8px; border: 2px solid white; 
+      }
+      .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
 
       /* --- WIKI CONTAINER --- */
       .wiki-container { 
@@ -133,14 +165,30 @@ html(lang="vi")
       }
 
   body
-    nav.navbar.sticky-top
-      .container
+    header
+      nav.navbar
         a.logo(href="/") FloraHub
-        a.btn-back(href="/wiki") 
-          i.fas.fa-arrow-left
-          | Trở lại Thư viện
+        ul.nav-menu
+          li: a.nav-link(href="/") Trang chủ
+          li: a.nav-link(href="/explore") Shop Hoa
+          li: a.nav-link.active(href="/wiki") Cẩm nang
+          li: a.nav-link(href="/vouchers") Kho Vouchers
+          li: a.nav-link(href="/blog") Tin tức
+        .nav-right
+          a.icon-btn(href="/cart")
+            i.fas.fa-shopping-basket
+            if typeof cartCount !== 'undefined' && cartCount > 0
+              span.cart-count= cartCount
+        
+          if session && session.user
+            if session.user.role === 'admin'
+              a.icon-btn(href="/admin" title="Quản trị"): i.fas.fa-user-shield
+            a.icon-btn(href="/profile" title="Tài khoản"): i.fas.fa-user-circle
+            a.btn-exit(href="/logout") Thoát
+          else
+            a.nav-link(href="/login" style="padding: 8px 15px") Đăng nhập
 
-    .container
+    main.container
       - const tax = entry.taxonomy || {}
       - const mor = entry.morphology || {}
       - const eco = entry.ecology || {}
@@ -178,11 +226,11 @@ html(lang="vi")
                 .row.g-4
                   .col-md-6
                     .info-card
-                      h6 #[i.fas.fa-fan.me-2.text-pink-main] Cấu tạo Hoa
+                      h6 #[i.fas.fa-fan.me-2(style="color: var(--pink-main);")] Cấu tạo Hoa
                       p= mor.flower || 'Dữ liệu về cấu tạo cánh hoa đang được cập nhật...'
                   .col-md-6
                     .info-card
-                      h6 #[i.fas.fa-leaf.me-2.text-pink-main] Thân & Lá
+                      h6 #[i.fas.fa-leaf.me-2(style="color: var(--pink-main);")] Thân & Lá
                       p= mor.leaf || 'Dữ liệu về đặc điểm thân và lá đang được cập nhật...'
 
               section.mb-5
@@ -192,17 +240,17 @@ html(lang="vi")
                 .row.g-3
                   .col-md-4
                     .ecology-item
-                      i.fas.fa-vial.fa-2x.text-pink-main
+                      i.fas.fa-vial.fa-2x(style="color: var(--pink-main);")
                       h6.small.fw-bold.mt-3 Độ pH Đất
                       span.badge-custom= eco.soil_ph || '5.5 - 7.0'
                   .col-md-4
                     .ecology-item
-                      i.fas.fa-temperature-high.fa-2x.text-pink-main
+                      i.fas.fa-temperature-high.fa-2x(style="color: var(--pink-main);")
                       h6.small.fw-bold.mt-3 Nhiệt độ
                       span.badge-custom= eco.temperature || '20°C - 30°C'
                   .col-md-4
                     .ecology-item
-                      i.fas.fa-sun.fa-2x.text-pink-main
+                      i.fas.fa-sun.fa-2x(style="color: var(--pink-main);")
                       h6.small.fw-bold.mt-3 Ánh sáng
                       span.badge-custom= eco.light || 'Nắng trực tiếp'
 
@@ -224,8 +272,8 @@ html(lang="vi")
                   p.small Ghé thăm cửa hàng của chúng tôi để sở hữu những chậu hoa tươi nhất.
                   a.btn.btn-light.w-100.fw-bold.mt-2(href="/explore" style="border-radius: 50px; color: var(--pink-main);") Shop Ngay
 
-    //- FOOTER ĐỒNG BỘ HOÀN TOÀN
-    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
+    //- FOOTER CĂN LỀ TRÁI CHUẨN WEB GỐC
+    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg); margin-top: 60px;")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
         div
           a.logo(href="/") FloraHub
@@ -233,7 +281,7 @@ html(lang="vi")
         
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
-          ul(style="list-style: none; line-height: 2;")
+          ul(style="list-style: none; line-height: 2; padding-left: 0;")
             li: a(href="/" style="text-decoration: none; color: #777;") Trang chủ
             li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
             li: a(href="/wiki" style="text-decoration: none; color: #777;") Cẩm nang
@@ -244,13 +292,9 @@ html(lang="vi")
         
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Liên Hệ
-          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2;")
+          ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2; padding-left: 0;")
             li <i class="fas fa-map-marker-alt" style="color: var(--pink-main); margin-right: 10px;"></i> Trâu Quỳ, Gia Lâm, Hà Nội
             li <i class="fas fa-phone-alt" style="color: var(--pink-main); margin-right: 10px;"></i> 0123 456 789
       
       div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
         p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
-
-    .social-chat-wrapper
-      a.chat-btn.zalo(href="https://zalo.me/0398102869" target="_blank"): img(src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_Zalo.svg")
-      a.chat-btn.messenger(href="#" target="_blank"): i.fab.fa-facebook-messenger

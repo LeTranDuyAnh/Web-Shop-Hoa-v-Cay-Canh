@@ -1461,9 +1461,21 @@ fastify.post('/admin/blog/update/:id', async (request, reply) => {
 // 1. Hiển thị danh sách Voucher
 fastify.get('/admin/vouchers', async (request, reply) => {
     try {
-        const vouchers = await fastify.mongo.db.collection('vouchers').find().sort({ _id: -1 }).toArray();
+        const db = fastify.mongo.db;
+
+        // 1. Lấy danh sách voucher cũ của bạn
+        const vouchers = await db.collection('vouchers').find().sort({ _id: -1 }).toArray();
         console.log(`[Voucher Admin] Đã tải ${vouchers.length} mã voucher.`);
-        return reply.view('admin_vouchers.pug', { vouchers });
+        
+        // 2. [BỔ SUNG]: Đếm số đơn hàng có trạng thái 'pending' để nuôi Sidebar
+        const orderColl = db.collection('orders');
+        const pendingCount = await orderColl.countDocuments({ status: 'pending' });
+
+        // 3. Truyền thêm biến pendingCount sang file Pug
+        return reply.view('admin_vouchers.pug', { 
+            vouchers, 
+            pendingCount // <-- Thêm dòng này để sidebar không bị lỗi số đơn hàng
+        });
     } catch (err) {
         console.error('[Voucher Admin Error]', err);
         reply.status(500).send('Lỗi tải danh sách voucher');
@@ -1712,6 +1724,129 @@ fastify.get('/order-success/:id', async (request, reply) => {
     return reply.code(500).send('Lỗi hiển thị trang thành công');
   }
 });
+
+
+// 1. GET: Hiển thị giao diện Form Nhập Kho
+fastify.get('/admin/import-stock', async (request, reply) => {
+  try {
+    // Truy cập trực tiếp vào collection 'flowers' giống như các route khác của bạn
+    const flowerColl = fastify.mongo.db.collection('flowers');
+    
+    // Lấy toàn bộ danh sách hoa để đưa vào thẻ select chọn hàng
+    const flowers = await flowerColl.find({}).sort({ name: 1 }).toArray();
+    
+    // Đếm số đơn hàng chưa xử lý cho Sidebar/Navbar nếu giao diện admin cần dùng
+    const orderColl = fastify.mongo.db.collection('orders');
+    const pendingCount = await orderColl.countDocuments({ status: 'pending' });
+
+    // Trả về file giao diện và truyền dữ liệu sang
+    return reply.view('admin_import_stock.pug', {
+      flowers,
+      pendingCount,
+      title: "Nhập hàng vào kho"
+    });
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send("Không thể tải trang nhập kho");
+  }
+});
+
+// 2. POST: Xử lý nhận dữ liệu form - Tự động cộng kho và ghi lịch sử nhập
+fastify.post('/admin/import-stock', async (request, reply) => {
+  try {
+    const { ObjectId } = fastify.mongo;
+    
+    // Lấy thông tin từ formbody gửi lên
+    const { productId, quantity, importPrice, note } = request.body;
+
+    const qtyNum = parseInt(quantity) || 0;
+    const priceNum = parseFloat(importPrice) || 0;
+
+    // A. Ghi lịch sử nhập kho vào collection 'import_history'
+    const importHistoryColl = fastify.mongo.db.collection('import_history');
+    await importHistoryColl.insertOne({
+      product_id: new ObjectId(productId),
+      quantity: qtyNum,
+      import_price: priceNum,
+      note: note || '',
+      import_date: new Date() // Lưu thời gian nhập hàng phục vụ làm báo cáo tài chính
+    });
+
+    // B. Tự động cập nhật cộng dồn số lượng vào kho gốc (collection 'flowers')
+    const flowerColl = fastify.mongo.db.collection('flowers');
+    await flowerColl.updateOne(
+      { _id: new ObjectId(productId) },
+      { $inc: { stock: qtyNum } } // Dùng $inc tăng số lượng tự động cực kỳ an toàn
+    );
+
+    // C. Thành công, điều hướng về lại trang danh sách quản lý
+    return reply.redirect('/admin/import-history');
+
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send("Xử lý nhập kho thất bại");
+  }
+});
+
+// 3. GET: Hiển thị trang Quản lý nhập kho (Gộp lịch sử + Form)
+fastify.get('/admin/import-history', async (request, reply) => {
+  try {
+    const db = fastify.mongo.db;
+    
+    // [BỔ SUNG]: Lấy danh sách toàn bộ hoa để truyền vào Modal nhập kho
+    const flowerColl = db.collection('flowers');
+    const flowers = await flowerColl.find({}).sort({ name: 1 }).toArray();
+
+    // Dùng Aggregate để nối bảng lịch sử với bảng hoa lấy thông tin hiển thị
+    const history = await db.collection('import_history').aggregate([
+      {
+        $lookup: {
+          from: 'flowers',
+          localField: 'product_id',
+          foreignField: '_id',
+          as: 'flower_info'
+        }
+      },
+      {
+        $unwind: {
+          path: '$flower_info',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $sort: { import_date: -1 }
+      }
+    ]).toArray();
+
+    // Đếm số đơn hàng chưa xử lý cho Sidebar
+    const orderColl = db.collection('orders');
+    const pendingCount = await orderColl.countDocuments({ status: 'pending' });
+
+    // Trả về view và truyền ĐẦY ĐỦ cả 'history' và 'flowers' sang cho Pug
+    return reply.view('admin_import_history.pug', {
+      history,
+      flowers, // <--- Biến quyết định cứu bạn khỏi lỗi undefined đây!
+      pendingCount,
+      title: "Quản lý nhập kho"
+    });
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send("Lỗi không thể tải trang quản lý nhập kho");
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Khởi động Server
 const start = async () => {
