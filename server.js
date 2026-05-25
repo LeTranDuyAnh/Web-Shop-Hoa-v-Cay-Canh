@@ -28,7 +28,7 @@ fastify.register(require('@fastify/formbody'));
 fastify.get('/', async (request, reply) => {
   try {
     const col = fastify.mongo.db.collection('flowers');
-    const limit = 8;
+    const limit = 9;
     const sort = { _id: -1 };
 
     // Truy vấn song song tất cả các danh mục để tối ưu tốc độ
