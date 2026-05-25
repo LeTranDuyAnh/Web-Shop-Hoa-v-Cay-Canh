@@ -20,9 +20,21 @@ html(lang="vi")
       
       /* --- NAVBAR --- */
       .navbar { 
-        display: flex; justify-content: space-between; align-items: center; 
-        padding: 12px 5%; background: rgba(255, 255, 255, 0.98); 
-        position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 12px 5%; 
+        background: rgba(255, 255, 255, 0.98); 
+        
+        /* CỐ ĐỊNH NAVBAR */
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        z-index: 9999; /* Đảm bảo nó luôn nằm trên cùng */
+        
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+        transition: all 0.3s ease;
       }
       .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
       
@@ -197,9 +209,11 @@ html(lang="vi")
 
 
     .social-chat-wrapper
-      a.chat-btn.zalo(href="https://zalo.me/0398102869" target="_blank"): img(src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_Zalo.svg")
-      a.chat-btn.messenger(href="#" target="_blank"): i.fab.fa-facebook-messenger
-
+      a.chat-btn.zalo(href="https://zalo.me/0398102869", title="Chat qua Zalo" target="_blank")
+        //- Sử dụng icon comment làm biểu tượng thay thế cho Zalo
+        i.fas.fa-comment-alt
+      a.chat-btn.messenger(href="#", title="Chat qua Messenger")
+        i.fab.fa-facebook-messenger
 
     script.
       // Slider logic đơn giản
@@ -220,3 +234,13 @@ html(lang="vi")
         navigator.clipboard.writeText(code);
         alert('Đã sao chép mã: ' + code);
       }
+      script.
+        window.addEventListener('scroll', function() {
+          const navbar = document.querySelector('.navbar');
+          // Khi cuộn xuống quá 50px thì thêm class 'scrolled'
+          if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+          } else {
+            navbar.classList.remove('scrolled');
+          }
+        });

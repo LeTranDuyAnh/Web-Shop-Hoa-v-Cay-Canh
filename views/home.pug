@@ -20,10 +20,32 @@ html(lang="vi")
       
       /* --- NAVBAR --- */
       .navbar { 
-        display: flex; justify-content: space-between; align-items: center; 
-        padding: 12px 5%; background: rgba(255, 255, 255, 0.98); 
-        position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 12px 5%; 
+        background: rgba(255, 255, 255, 0.98); 
+        
+        /* CỐ ĐỊNH NAVBAR */
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        z-index: 9999; /* Đảm bảo nó luôn nằm trên cùng */
+        
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+        transition: all 0.3s ease;
       }
+
+      /* Hiệu ứng khi cuộn xuống (được thêm bởi JS) */
+      .navbar.scrolled {
+        padding: 8px 5%; /* Thu nhỏ thanh menu */
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        backdrop-filter: blur(10px); /* Làm mờ phần nội dung bên dưới */
+        border-bottom: 1px solid rgba(255, 133, 161, 0.1);
+      }
+
       .logo { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--pink-main); text-decoration: none; }
       .nav-menu { display: flex; list-style: none; gap: 15px; align-items: center; }
       .nav-link { 
@@ -39,7 +61,6 @@ html(lang="vi")
         font-size: 0.65rem; position: absolute; top: -8px; right: -8px; border: 2px solid white; 
       }
       .btn-exit { background: #4A4A4A; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
-
       /* --- BANNER SLIDER --- */
       .hero-slider { position: relative; height: 70vh; min-height: 450px; width: 100%; overflow: hidden; background: #fce4ec; }
       .slide { 
@@ -47,6 +68,7 @@ html(lang="vi")
         transition: opacity 1s ease-in-out; display: flex; align-items: center; padding: 0 10%; 
         background-size: cover; background-position: center; z-index: 1;
       }
+
       .slide.active { opacity: 1; z-index: 2; }
       .hero-content { position: relative; z-index: 10; max-width: 500px; }
       .hero-content h1 { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--pink-main); margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8); }
@@ -667,8 +689,9 @@ html(lang="vi")
         p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
     //- --- NÚT CHAT BÊN GÓC ---
     .social-chat-wrapper
-      a.chat-btn.zalo(href="#", title="Chat qua Zalo")
-        i.comment-dots
+      a.chat-btn.zalo(href="https://zalo.me/0398102869", title="Chat qua Zalo" target="_blank")
+        //- Sử dụng icon comment làm biểu tượng thay thế cho Zalo
+        i.fas.fa-comment-alt
       a.chat-btn.messenger(href="#", title="Chat qua Messenger")
         i.fab.fa-facebook-messenger
 
@@ -719,3 +742,13 @@ html(lang="vi")
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
       });
+      script.
+        window.addEventListener('scroll', function() {
+          const navbar = document.querySelector('.navbar');
+          // Khi cuộn xuống quá 50px thì thêm class 'scrolled'
+          if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+          } else {
+            navbar.classList.remove('scrolled');
+          }
+        });
