@@ -732,11 +732,23 @@ fastify.get('/checkout', async (request, reply) => {
   const cart = request.session.cart || [];
   if (cart.length === 0) return reply.redirect('/');
 
+  const user = request.session.user || null; 
+
+  // THÊM CONSOLE LOG ĐỂ KIỂM TRA DỮ LIỆU
+  console.log("--- DEBUG CHECKOUT ---");
+  console.log("User object:", JSON.stringify(user, null, 2));
+  console.log("Full Name trực tiếp:", user ? user.fullName : "User is null");
+  console.log("----------------------");
+
   const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  // Lấy voucher đã áp dụng từ session
   const appliedVoucher = request.session.appliedVoucher || null;
 
-  return reply.view('checkout.pug', { cart, total, appliedVoucher });
+  return reply.view('checkout.pug', { 
+    cart, 
+    total, 
+    appliedVoucher, 
+    user 
+  });
 });
 
 // B. Xử lý lưu Đơn hàng vào Database
@@ -787,6 +799,11 @@ fastify.post('/place-order', async (request, reply) => {
     // 2. Tạo đối tượng đơn hàng mới
     const newOrder = {
       userId: new ObjectId(user.id || user._id),
+      
+      // SỬA Ở ĐÂY: Lưu trực tiếp senderName và senderPhone
+      senderName: user.name, 
+      senderPhone: user.phone || 'Chưa cập nhật',
+      
       orderedBy: {
         username: user.username,
         fullName: user.name
@@ -859,6 +876,27 @@ fastify.get('/my-orders', async (request, reply) => {
     return reply.code(500).send("Lỗi khi tải danh sách đơn hàng");
   }
 });
+
+fastify.get('/order-detail/:id', async (request, reply) => {
+  if (!request.session.user) return reply.redirect('/login');
+  
+  const { ObjectId } = fastify.mongo;
+  try {
+    const order = await fastify.mongo.db.collection('orders').findOne({ 
+      _id: new ObjectId(request.params.id),
+      userId: new ObjectId(request.session.user.id || request.session.user._id) 
+    });
+
+    if (!order) return reply.status(404).send("Không tìm thấy đơn hàng!");
+
+    return reply.view('order_detail_view.pug', { order });
+  } catch (err) {
+    fastify.log.error(err);
+    return reply.code(500).send("Lỗi tải chi tiết đơn hàng");
+  }
+});
+
+
 // B. Route Tra cứu đơn hàng (Dành cho khách hàng)
 fastify.get('/track-order', async (request, reply) => {
   const { phone } = request.query;
@@ -1034,20 +1072,22 @@ fastify.get('/admin/orders/detail/:id', async (request, reply) => {
 
     if (!order) return reply.code(404).send('Không tìm thấy đơn hàng');
 
-    // --- CHÈN LOG TẠI ĐÂY ---
+    // --- LOG KIỂM TRA DỮ LIỆU ---
     console.log("--- DEBUG ORDER DATA ---");
-    console.log("Full Order:", JSON.stringify(order, null, 2)); 
-    console.log("Username field:", order.userName);
-    console.log("OrderedBy field:", order.orderedBy);
-    // ------------------------
+    console.log("ID đơn hàng:", order._id);
+    console.log("Người gửi (Sender):", { 
+      name: order.senderName, 
+      phone: order.senderPhone 
+    });
+    console.log("Người nhận (Customer/Receiver):", order.customer);
+    // ----------------------------
 
     return reply.view('admin_order_detail.pug', { order });
   } catch (err) {
-    console.error("Lỗi Route Detail:", err);
+    fastify.log.error(err);
     return reply.code(500).send('Lỗi hệ thống');
   }
 });
-
 // Route: Làm trống hoàn toàn giỏ hàng
 fastify.get('/cart/clear', async (request, reply) => {
   request.session.cart = [];
@@ -1096,7 +1136,8 @@ fastify.get('/admin/analytics', async (request, reply) => {
         const phone = order.customer.phone;
         if (!customerStats[phone]) {
           customerStats[phone] = {
-            name: order.customer.name,
+            name: order.senderName || 'N/A',      // Lấy từ senderName
+            receiverName: order.customer.name,    // Lấy từ customer.name
             phone: phone,
             orderCount: 0,
             totalSpent: 0
@@ -1104,6 +1145,8 @@ fastify.get('/admin/analytics', async (request, reply) => {
         }
         customerStats[phone].orderCount += 1;
         customerStats[phone].totalSpent += (order.totalAmount || 0);
+        // Cập nhật tên người nhận là người nhận của đơn hàng gần nhất
+        customerStats[phone].receiverName = order.customer.name; 
       }
     });
 

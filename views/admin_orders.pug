@@ -116,7 +116,6 @@ html(lang="vi")
                     strong(style="color: var(--pink-dark); font-size: 1.1rem;")= (order.totalAmount || 0).toLocaleString('vi-VN') + ' đ'
                   
                   td(width="18%")
-                    //- LOGIC HIỂN THỊ TRẠNG THÁI THANH TOÁN KÈM ICON ẢNH
                     if order.paymentProof
                       span.badge-status.status-paid(style="font-size: 10px; margin-bottom: 5px;") 
                         i.fas.fa-check-circle
@@ -138,20 +137,16 @@ html(lang="vi")
                     button.btn-status.btn-view(type="button" onclick=`showDetail(${JSON.stringify(order)})`)
                       i.fas.fa-eye
                       | Xem hóa đơn
-
                     if order.status === 'pending'
                       form(action=`/admin/orders/update-status/${order._id}` method="POST")
                         input(type="hidden" name="status" value="shipping")
                         button.btn-status.btn-ship(type="submit") <i class="fas fa-truck"></i> Duyệt & Giao hàng
-                      
                       button.btn-cancel-trigger(onclick=`toggleCancel('${order._id}')`) Hủy đơn
-                      
                       div(id=`box-${order._id}` style="display:none;").cancel-form
                         form(action=`/admin/orders/update-status/${order._id}` method="POST")
                           input(type="hidden" name="status" value="cancelled")
                           textarea(name="reason" placeholder="Lý do hủy..." required)
                           button.btn-status(type="submit" style="background:#ff4757;") Xác nhận hủy
-
                     else if order.status === 'shipping'
                       form(action=`/admin/orders/update-status/${order._id}` method="POST")
                         input(type="hidden" name="status" value="completed")
@@ -161,7 +156,6 @@ html(lang="vi")
             i.fas.fa-box-open(style="font-size:4rem; margin-bottom:20px;")
             p Chưa có đơn hàng nào.
 
-    // Modal xem chi tiết
     #detailModal.modal-overlay(onclick="closeDetail()")
       .order-detail-card(onclick="event.stopPropagation()")
         span.close-modal(onclick="closeDetail()") &times;
@@ -171,14 +165,21 @@ html(lang="vi")
         
         .bill-info
           .bill-row
-            span Khách hàng:
+            span Khách hàng (Nhận):
             strong#modal-customer-name ...
           .bill-row
-            span Số điện thoại:
+            span Số điện thoại (Nhận):
             strong#modal-customer-phone ...
           .bill-row
             span Địa chỉ giao hàng:
             strong#modal-customer-address ...
+          hr(style="border: 0.5px dashed #eee; margin: 10px 0;")
+          .bill-row
+            span Người gửi:
+            strong#modal-sender-name ...
+          .bill-row
+            span SĐT người gửi:
+            strong#modal-sender-phone ...
           .bill-row
             span Phương thức:
             strong#modal-payment-method ...
@@ -188,7 +189,6 @@ html(lang="vi")
 
         .bill-items#modal-items-list
         
-        //- PHẦN HIỂN THỊ ẢNH MINH CHỨNG TRONG MODAL
         #modal-proof-section(style="display:none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;")
           h4(style="color: var(--pink-dark); margin: 0 0 10px 0;") <i class="fas fa-camera"></i> Ảnh minh chứng thanh toán:
           a#modal-proof-link(href="#" target="_blank")
@@ -209,11 +209,15 @@ html(lang="vi")
 
       function showDetail(order) {
         const cus = order.customer || {};
-        
         document.getElementById('modal-order-id').innerText = 'Mã đơn: ' + order._id;
         document.getElementById('modal-customer-name').innerText = cus.name || 'Khách vãng lai';
         document.getElementById('modal-customer-phone').innerText = cus.phone || 'N/A';
         document.getElementById('modal-customer-address').innerText = cus.address || 'Chưa có địa chỉ';
+        
+        // Hiển thị thông tin người gửi
+        document.getElementById('modal-sender-name').innerText = order.senderName || 'Không có';
+        document.getElementById('modal-sender-phone').innerText = order.senderPhone || 'N/A';
+
         document.getElementById('modal-total-amount').innerText = (order.totalAmount || 0).toLocaleString('vi-VN') + ' đ';
 
         const paymentMethodEl = document.getElementById('modal-payment-method');
@@ -223,7 +227,6 @@ html(lang="vi")
           paymentMethodEl.innerText = order.paymentMethod === 'BANK' ? 'Chuyển khoản ngân hàng' : 'Thanh toán COD';
         }
 
-        // Cập nhật nhãn thanh toán dựa trên proof hoặc isPaid
         if (paymentStatusEl) {
           if (order.paymentProof || order.isPaid) {
             paymentStatusEl.innerText = 'Đã thanh toán';
@@ -234,7 +237,6 @@ html(lang="vi")
           }
         }
 
-        // Xử lý hiển thị ảnh minh chứng
         const proofSection = document.getElementById('modal-proof-section');
         const proofImg = document.getElementById('modal-proof-img');
         const proofLink = document.getElementById('modal-proof-link');

@@ -15,52 +15,32 @@ html(lang="vi")
       }
       body { font-family: 'Quicksand', sans-serif; background: #f4f7f6; color: var(--text-dark); margin: 0; padding: 20px; }
       .invoice-container { 
-        max-width: 850px; margin: auto; background: white; padding: 50px; 
+        max-width: 1000px; margin: auto; background: white; padding: 50px; 
         border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         border-top: 8px solid var(--pink-main);
-        position: relative;
       }
       .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid var(--gray-light); }
       .logo-area h1 { font-family: 'Dancing Script', cursive; color: var(--pink-main); margin: 0; font-size: 32px; }
-      .logo-area p { font-size: 0.85rem; color: #888; margin: 5px 0; }
       .order-meta { text-align: right; }
-      .order-meta h2 { margin: 0; color: var(--text-dark); letter-spacing: 2px; font-size: 1.5rem; }
       .order-id { color: var(--pink-main); font-weight: 700; margin-top: 5px; }
-      .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; margin-bottom: 40px; }
-      .section-title { 
-        font-weight: 800; text-transform: uppercase; color: #b2bec3; 
-        font-size: 11px; border-bottom: 1px solid var(--gray-light); 
-        margin-bottom: 12px; padding-bottom: 5px; letter-spacing: 1px;
-      }
-      .info-block strong { display: block; margin-bottom: 5px; color: var(--text-dark); font-size: 1.05rem; }
-      .info-block p { margin: 5px 0; font-size: 0.9rem; line-height: 1.5; color: #636e72; }
-      .user-tag { 
-        display: inline-block; padding: 3px 10px; background: var(--pink-bg); 
-        color: var(--pink-main); border-radius: 6px; font-size: 0.75rem; font-weight: 700; 
-      }
+      /* Cấu trúc 4 cột để hiển thị đầy đủ thông tin */
+      .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+      .section-title { font-weight: 800; text-transform: uppercase; color: #b2bec3; font-size: 11px; border-bottom: 1px solid var(--gray-light); margin-bottom: 12px; padding-bottom: 5px; }
+      .info-block strong { display: block; margin-bottom: 5px; color: var(--text-dark); font-size: 0.95rem; }
+      .info-block p { margin: 5px 0; font-size: 0.85rem; color: #636e72; }
+      .user-tag { display: inline-block; padding: 2px 8px; background: var(--pink-bg); color: var(--pink-main); border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
       table { width: 100%; border-collapse: collapse; margin-top: 20px; }
       th { background: var(--gray-light); text-align: left; padding: 15px; font-size: 0.85rem; text-transform: uppercase; color: #636e72; }
-      td { padding: 15px; border-bottom: 1px solid var(--gray-light); font-size: 0.95rem; }
-      .total-box { margin-top: 40px; padding: 25px; background: var(--gray-light); border-radius: 15px; text-align: right; }
-      .total-label { font-weight: 600; color: #636e72; }
-      .total-amount { font-size: 32px; color: var(--pink-dark); font-weight: 800; display: block; margin-top: 8px; }
-      .badge { padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+      td { padding: 15px; border-bottom: 1px solid var(--gray-light); }
+      .total-box { margin-top: 30px; padding: 20px; background: var(--gray-light); border-radius: 15px; text-align: right; }
+      .total-amount { font-size: 28px; color: var(--pink-dark); font-weight: 800; }
+      .badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; font-weight: 700; }
       .status-pending { background: #ffeaa7; color: #d63031; }
       .status-completed { background: #55efc4; color: #00b894; }
-      .btn-group { margin-top: 40px; display: flex; gap: 15px; justify-content: center; }
-      .btn { 
-        padding: 12px 25px; border-radius: 50px; text-decoration: none; 
-        font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px;
-        transition: 0.3s; cursor: pointer; border: none;
-      }
+      .btn-group { margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
+      .btn { padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 13px; transition: 0.3s; border: none; cursor: pointer; }
       .btn-print { background: var(--text-dark); color: white; }
       .btn-back { background: #dfe6e9; color: #636e72; }
-      .btn:hover { opacity: 0.8; transform: translateY(-2px); }
-      @media print { 
-        .btn-group { display: none; } 
-        body { background: white; padding: 0; } 
-        .invoice-container { box-shadow: none; width: 100%; border-radius: 0; padding: 20px; border-top: none; } 
-      }
 
   body
     .invoice-container
@@ -68,72 +48,50 @@ html(lang="vi")
         .logo-area
           h1 FloraHub Admin
           p Đơn vị cung cấp hoa nghệ thuật - VNUA
-          p 
-            i.fas.fa-globe(style="margin-right: 5px;")
-            | www.florahub.vnua
         .order-meta
           h2 HÓA ĐƠN CHI TIẾT
           p.order-id ID: ##{order._id.toString().toUpperCase()}
-          p(style="font-size: 0.85rem; color: #636e72;") Ngày xuất: #{new Date().toLocaleString('vi-VN')}
+          p Ngày xuất: #{new Date().toLocaleString('vi-VN')}
 
+      //- Grid 4 cột hiển thị chi tiết
       .info-grid
+        //- 1. Tài khoản đặt hàng
         .info-block
-          .section-title Tài khoản đặt hàng
-          
-          //- ƯU TIÊN 1: Hiển thị Username nếu có
-          if order.userName || (order.orderedBy && order.orderedBy.username)
-            strong(style="color: var(--pink-dark);")
-              i.fas.fa-user-circle(style="margin-right: 8px; color: var(--pink-main);")
-              | #{order.userName || order.orderedBy.username}
-            p: span.user-tag Thành viên FloraHub
-            if order.orderedBy && order.orderedBy.fullName
-              p(style="font-size: 0.8rem; font-style: italic; margin-top: 5px; color: #888;") Họ tên: #{order.orderedBy.fullName}
-          
-          //- ƯU TIÊN 2: Nếu username null nhưng có Họ tên (Trường hợp của bạn)
-          else if order.orderedBy && order.orderedBy.fullName
-            strong(style="color: var(--pink-dark);")
-              i.fas.fa-address-card(style="margin-right: 8px; color: var(--pink-main);")
-              | #{order.orderedBy.fullName}
-            p: span.user-tag Khách đã đăng ký
-            p(style="font-size: 0.75rem; color: #b2bec3;") (Chưa thiết lập username)
-
-          //- ƯU TIÊN 3: Chỉ có ID người dùng
-          else if order.userId
-            strong ID: #{order.userId.toString().slice(-8).toUpperCase()}
-            p: span.user-tag Thành viên hệ thống
-          
-          //- TRƯỜNG HỢP CUỐI: Khách vãng lai
-          else
-            strong 
-              i.fas.fa-user-secret(style="margin-right: 5px; color: #b2bec3;")
-              | Khách vãng lai
-            p: span.user-tag(style="background: #eee; color: #888;") Không có tài khoản
-
+          .section-title Tài khoản đặt
+          strong= (order.orderedBy ? order.orderedBy.username : 'Vãng lai')
+          p: span.user-tag Khách hàng hệ thống
+        
+        //- 2. Thông tin NGƯỜI GỬI (Đã thêm vào đây)
         .info-block
-          .section-title Thông tin người nhận
+          .section-title Người gửi (Sender)
+          strong= order.senderName || 'N/A'
+          p 
+            i.fas.fa-phone(style="margin-right: 5px;")
+            | #{order.senderPhone || 'N/A'}
+            
+        //- 3. Thông tin NGƯỜI NHẬN (Receiver)
+        .info-block
+          .section-title Người nhận (Receiver)
           strong= order.customer.name
           p 
-            i.fas.fa-phone(style="width: 20px; color: #b2bec3;")
+            i.fas.fa-phone(style="margin-right: 5px;")
             | #{order.customer.phone}
           p 
-            i.fas.fa-map-marker-alt(style="width: 20px; color: #b2bec3;")
+            i.fas.fa-map-marker-alt(style="margin-right: 5px;")
             | #{order.customer.address}
-
+            
+        //- 4. Trạng thái đơn hàng
         .info-block
-          .section-title Trạng thái & Ghi chú
-          p
+          .section-title Trạng thái
+          div
             if order.status === 'pending'
               span.badge.status-pending Đang chờ xử lý
             else if order.status === 'completed'
               span.badge.status-completed Đã hoàn thành
             else
               span.badge(style="background: #fab1a0; color: #d63031;") Đã hủy
-          
           if order.customer.note
-            p(style="font-size: 0.8rem; color: #e67e22; margin-top: 10px;")
-              i.fas.fa-sticky-note(style="margin-right: 5px;")
-              | #{order.customer.note}
-
+            p(style="margin-top: 8px; font-style: italic; color: #e67e22;") Note: #{order.customer.note}
       table
         thead
           tr
@@ -147,18 +105,16 @@ html(lang="vi")
               td(style="font-weight: 600;")= item.name
               td(style="text-align: center;") x#{item.qty}
               td(style="text-align: right;")= item.price.toLocaleString('vi-VN') + ' đ'
-              td(style="text-align: right; font-weight: 700; color: var(--text-dark);")= (item.price * item.qty).toLocaleString('vi-VN') + ' đ'
+              td(style="text-align: right; font-weight: 700;")= (item.price * item.qty).toLocaleString('vi-VN') + ' đ'
       
       .total-box
-        span.total-label Tổng thanh toán (Đã bao gồm VAT):
+        span(style="color: #636e72;") Tổng thanh toán: 
         span.total-amount= order.totalAmount.toLocaleString('vi-VN') + ' đ'
-        p(style="margin: 15px 0 0; font-size: 0.75rem; color: #b2bec3; font-style: italic;") 
-          | Cảm ơn quý khách đã lựa chọn những đóa hoa từ VNUA FloraHub!
 
       .btn-group
         button.btn.btn-print(onclick="window.print()") 
-          i.fas.fa-print
+          i.fas.fa-print(style="margin-right: 5px;")
           | In hóa đơn
         a.btn.btn-back(href="/admin/orders") 
-          i.fas.fa-arrow-left
-          | Quay lại quản lý đơn
+          i.fas.fa-arrow-left(style="margin-right: 5px;")
+          | Quay lại danh sách

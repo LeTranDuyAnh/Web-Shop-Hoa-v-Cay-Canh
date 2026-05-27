@@ -8,182 +8,132 @@ html(lang="vi")
     link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
     style.
       :root {
-        --pink-main: #FF85A1;
-        --pink-dark: #E91E63;
-        --pink-soft: #FBB1BD;
-        --pink-bg: #FFF0F3;
-        --text-dark: #4A4A4A;
-        --success: #2ecc71;
+        --pink-main: #FF85A1; --pink-dark: #E91E63; --pink-soft: #FBB1BD;
+        --pink-bg: #FFF0F3; --text-dark: #4A4A4A; --success: #2ecc71;
       }
       body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); margin: 0; padding: 20px; }
-      
-      .navbar { 
-        display: flex; justify-content: center; padding: 15px; 
-        background: white; border-radius: 50px; max-width: 200px; margin: 0 auto 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      }
+      .navbar { display: flex; justify-content: center; padding: 15px; background: white; border-radius: 50px; max-width: 200px; margin: 0 auto 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
       .logo { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--pink-main); text-decoration: none; }
-
-      .success-card { 
-        max-width: 650px; margin: 0 auto; background: white; padding: 45px; 
-        border-radius: 35px; box-shadow: 0 15px 40px rgba(255, 133, 161, 0.15); 
-        position: relative; overflow: hidden;
-      }
-      
-      .check-icon { 
-        width: 80px; height: 80px; background: var(--pink-bg); color: var(--pink-main);
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 50%; margin: 0 auto 20px; font-size: 2.5rem;
-        animation: scaleIn 0.5s ease-out;
-      }
-      @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
-
-      .order-details { 
-        background: #fff; border: 2px solid var(--pink-bg); 
-        border-radius: 20px; padding: 25px; margin: 25px 0; 
-      }
+      .success-card { max-width: 650px; margin: 0 auto; background: white; padding: 45px; border-radius: 35px; box-shadow: 0 15px 40px rgba(255, 133, 161, 0.15); }
+      .check-icon { width: 80px; height: 80px; background: var(--pink-bg); color: var(--pink-main); display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 20px; font-size: 2.5rem; }
+      .order-details { background: #fff; border: 2px solid var(--pink-bg); border-radius: 20px; padding: 25px; margin: 25px 0; }
       .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed var(--pink-bg); font-size: 0.95rem; }
       .detail-row:last-child { border-bottom: none; }
-      
-      .qr-section {
-        background: #fdf2f4; border: 2px solid var(--pink-soft);
-        border-radius: 20px; padding: 25px; text-align: center; margin: 25px 0;
-      }
+      .qr-section { background: #fdf2f4; border: 2px solid var(--pink-soft); border-radius: 20px; padding: 25px; text-align: center; margin: 25px 0; }
       .qr-image { width: 220px; height: 220px; border-radius: 15px; margin: 15px 0; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
-      .upload-box {
-        margin-top: 20px; border: 2px dashed var(--pink-soft); padding: 20px;
-        border-radius: 15px; background: #fff; transition: 0.3s;
-      }
+      .upload-box { margin-top: 20px; border: 2px dashed var(--pink-soft); padding: 20px; border-radius: 15px; }
       .upload-box.uploaded { border: 2px solid var(--success); background: #f0fff4; }
-      
-      #preview { max-width: 100%; max-height: 250px; border-radius: 10px; display: none; margin: 15px auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
       .btn-upload { background: var(--pink-dark); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; display: none; }
-
-      .item-row { display: flex; justify-content: space-between; padding: 8px 0; color: #666; font-size: 0.9rem; }
       h4 { color: var(--pink-dark); margin-bottom: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-      
       .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 35px; }
       .btn { padding: 15px; border-radius: 50px; text-decoration: none; font-weight: 700; text-align: center; transition: 0.3s; font-size: 0.9rem; }
-      .btn-primary { background: var(--pink-main); color: white; box-shadow: 0 5px 15px rgba(255, 133, 161, 0.3); }
+      .btn-primary { background: var(--pink-main); color: white; }
       .btn-outline { border: 2px solid var(--pink-soft); color: var(--pink-main); }
-      .btn-outline:hover { background: var(--pink-bg); }
 
   body
     header: nav.navbar: a.logo(href="/") FloraHub
 
     .success-card
-      .content-wrapper
-        div(style="text-align:center; margin-bottom: 30px;")
-          .check-icon: i.fas.fa-heart
-          h1(style="font-family: 'Dancing Script', cursive; color: var(--pink-main); font-size: 2.5rem;") Cảm ơn bạn đã đặt hoa!
-          p(style="color: #888;") Đơn hàng của bạn đã được ghi nhận thành công.
-          div(style="margin-top: 15px; padding: 8px 20px; background: var(--pink-bg); display: inline-block; border-radius: 50px;")
-            span Mã đơn hàng: 
-            strong(style="color: var(--pink-dark);") ##{order._id.toString().slice(-8).toUpperCase()}
+      div(style="text-align:center; margin-bottom: 30px;")
+        .check-icon: i.fas.fa-heart
+        h1(style="font-family: 'Dancing Script', cursive; color: var(--pink-main); font-size: 2.5rem;") Đặt hàng thành công!
+        p Mã đơn hàng: 
+          strong(style="color: var(--pink-dark);") ##{order._id.toString().slice(-8).toUpperCase()}
 
-        //- PHẦN HIỂN THỊ QUÉT MÃ QR NẾU CHỌN CHUYỂN KHOẢN
-        if order.paymentMethod === 'BANK'
-          .qr-section
-            h4(style="justify-content: center;")
-              i.fas.fa-qrcode
-              | Thanh toán Chuyển khoản
-            p(style="font-size: 0.85rem; color: #666;") Bạn vui lòng quét mã QR hoặc chuyển khoản theo thông tin bên dưới
+      //- PHẦN 1: THÔNG TIN NGƯỜI GỬI
+      .order-details
+        h4 <i class="fas fa-user-circle"></i> Thông tin người đặt (Người gửi)
+        .detail-row
+          span Họ tên:
+          strong= order.senderName || 'Không xác định'
+        .detail-row
+          span Số điện thoại:
+          strong= order.senderPhone || 'Không xác định'
 
-            - const myFixedQr = "/public/qr2.png" 
-            img.qr-image(src=myFixedQr alt="VietQR Payment")
-            
-            div(style="text-align: left; background: #fff; padding: 15px; border-radius: 12px; font-size: 0.9rem; margin-top: 15px; border: 1px solid #eee;")
-              p(style="margin: 5px 0;") 🏛️ Ngân hàng: **MB Bank**
-              p(style="margin: 5px 0;") 👤 Chủ tài khoản: **Nguyen Thi Phuong**
-              p(style="margin: 5px 0;") 💰 Số tiền: **#{order.totalAmount.toLocaleString('vi-VN')} đ**
-              p(style="margin: 5px 0;") 📝 Nội dung: **FLORAHUB #{order._id.toString().slice(-8).toUpperCase()}**
+      //- PHẦN 2: THÔNG TIN NGƯỜI NHẬN
+      .order-details
+        h4 <i class="fas fa-gift"></i> Thông tin người nhận hoa
+        .detail-row
+          span Người nhận:
+          strong= order.customer.name
+        .detail-row
+          span Số điện thoại:
+          strong= order.customer.phone
+        .detail-row
+          span Thời gian nhận:
+          strong= order.deliveryTime || 'Sớm nhất'
+        .detail-row
+          span Địa chỉ:
+          span(style="text-align: right; max-width: 60%;")= order.customer.address
+        .detail-row
+          span Lời nhắn:
+          em(style="color: #666;")= order.note || 'Không có'
 
-            //- LOGIC: NẾU ĐÃ CÓ ẢNH THÌ BÁO THÀNH CÔNG, CHƯA CÓ THÌ HIỆN FORM
-            if status === 'uploaded' || order.paymentProof
-              .upload-box.uploaded
-                h5(style="margin: 0; color: var(--success);") 
-                  i.fas.fa-check-circle 
-                  |  Đã gửi ảnh minh chứng thành công!
-                p(style="font-size: 0.85rem; color: #666; margin-top: 5px;") FloraHub sẽ xác nhận và giao hoa cho bạn sớm nhất.
-                if order.paymentProof
-                  img(src=order.paymentProof, style="max-width: 150px; border-radius: 10px; margin-top: 15px; border: 2px solid #fff;")
-            else
-              .upload-box
-                h5(style="margin: 0 0 10px 0; color: var(--pink-dark);") 
-                  i.fas.fa-camera 
-                  |  Gửi ảnh chụp màn hình chuyển khoản
-                p(style="font-size: 0.8rem; color: #888; margin-bottom: 15px;") Giúp shop xác nhận đơn hàng của bạn nhanh hơn nhé!
-                
-                form(action=`/orders/upload-proof/${order._id}` method="POST" enctype="multipart/form-data")
-                  input#proof-input(type="file" name="paymentProof" accept="image/*" style="display:none" onchange="previewImage(event)")
-                  label(for="proof-input" style="cursor: pointer;")
-                    div(style="padding: 20px; border: 1px dashed #ccc; border-radius: 10px;")
-                      i.fas.fa-cloud-upload-alt(style="font-size: 2rem; color: var(--pink-soft);")
-                      p#upload-text(style="margin: 10px 0 0 0; font-size: 0.85rem;") Chọn ảnh minh chứng
-                    img#preview(alt="Preview")
-                  
-                  button#submit-btn.btn-upload(type="submit") 
-                    i.fas.fa-paper-plane 
-                    |  GỬI MINH CHỨNG NGAY
+      //- PHẦN THANH TOÁN QR (Khôi phục logic ban đầu)
+      if order.paymentMethod === 'BANK'
+        .qr-section
+          h4(style="justify-content: center;")
+            i.fas.fa-qrcode
+            | Thanh toán Chuyển khoản
+          p(style="font-size: 0.85rem; color: #666;") Bạn vui lòng quét mã QR hoặc chuyển khoản theo thông tin bên dưới
 
-        .order-details
-          h4 <i class="fas fa-truck-loading"></i> Thông tin giao hàng
-          .detail-row
-            span Người nhận:
-            strong= order.customer.name
-          .detail-row
-            span Số điện thoại:
-            strong= order.customer.phone
-          .detail-row
-            span Địa chỉ giao:
-            span(style="text-align: right; max-width: 60%;")= order.customer.address
-          .detail-row
-            span Phương thức:
-            strong(style="color: var(--pink-main);")= order.paymentMethod === 'BANK' ? 'Chuyển khoản' : 'Thanh toán COD'
-
-        .order-details
-          h4 <i class="fas fa-receipt"></i> Tóm tắt chi phí
-          each item in order.items
-            .item-row
-              span #{item.name} 
-                small(style="color: #bbb;") (x#{item.qty})
-              span= (item.price * item.qty).toLocaleString('vi-VN') + ' đ'
+          - const myFixedQr = "/public/qr2.png" 
+          img.qr-image(src=myFixedQr alt="VietQR Payment")
           
-          div(style="margin: 15px 0; border-top: 2px solid var(--pink-bg); padding-top: 15px;")
-            if order.appliedVoucher
-              .detail-row(style="color: var(--success); font-weight: 600;")
-                span Giảm giá:
-                span - #{order.appliedVoucher.discountAmount.toLocaleString('vi-VN')} đ
+          div(style="text-align: left; background: #fff; padding: 15px; border-radius: 12px; font-size: 0.9rem; margin-top: 15px; border: 1px solid #eee;")
+            p(style="margin: 5px 0;") 🏛️ Ngân hàng: **MB Bank**
+            p(style="margin: 5px 0;") 👤 Chủ tài khoản: **Nguyen Thi Phuong**
+            p(style="margin: 5px 0;") 💰 Số tiền: **#{order.totalAmount.toLocaleString('vi-VN')} đ**
+            p(style="margin: 5px 0;") 📝 Nội dung: **FLORAHUB #{order._id.toString().slice(-8).toUpperCase()}**
 
-            .detail-row(style="border:none; font-weight: 800; font-size: 1.3rem; color: var(--pink-dark); padding-top: 10px;")
-              span Tổng cộng:
-              span= order.totalAmount.toLocaleString('vi-VN') + ' đ'
+          //- LOGIC: NẾU ĐÃ CÓ ẢNH THÌ BÁO THÀNH CÔNG, CHƯA CÓ THÌ HIỆN FORM
+          if status === 'uploaded' || order.paymentProof
+            .upload-box.uploaded
+              h5(style="margin: 0; color: var(--success);") 
+                i.fas.fa-check-circle 
+                |  Đã gửi ảnh minh chứng thành công!
+              p(style="font-size: 0.85rem; color: #666; margin-top: 5px;") FloraHub sẽ xác nhận và giao hoa cho bạn sớm nhất.
+              if order.paymentProof
+                img(src=order.paymentProof, style="max-width: 150px; border-radius: 10px; margin-top: 15px; border: 2px solid #fff;")
+          else
+            .upload-box
+              h5(style="margin: 0 0 10px 0; color: var(--pink-dark);") 
+                i.fas.fa-camera 
+                |  Gửi ảnh chụp màn hình chuyển khoản
+              p(style="font-size: 0.8rem; color: #888; margin-bottom: 15px;") Giúp shop xác nhận đơn hàng của bạn nhanh hơn nhé!
+              
+              form(action=`/orders/upload-proof/${order._id}` method="POST" enctype="multipart/form-data")
+                input#proof-input(type="file" name="paymentProof" accept="image/*" style="display:none" onchange="previewImage(event)")
+                label(for="proof-input" style="cursor: pointer;")
+                  div(style="padding: 20px; border: 1px dashed #ccc; border-radius: 10px;")
+                    i.fas.fa-cloud-upload-alt(style="font-size: 2rem; color: var(--pink-soft);")
+                    p#upload-text(style="margin: 10px 0 0 0; font-size: 0.85rem;") Chọn ảnh minh chứng
+                  img#preview(alt="Preview" style="max-width: 100%; max-height: 250px; border-radius: 10px; display: none; margin: 15px auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1);")
+                
+                button#submit-btn.btn-upload(type="submit") 
+                  i.fas.fa-paper-plane 
+                  |  GỬI MINH CHỨNG NGAY
 
-        .btn-group
-          a.btn.btn-outline(href="/") <i class="fas fa-shopping-basket"></i> Tiếp tục mua
-          a.btn.btn-primary(href="/") <i class="fas fa-home"></i> Về trang chủ
+      //- TÓM TẮT CHI PHÍ
+      .order-details
+        h4 <i class="fas fa-receipt"></i> Tóm tắt chi phí
+        each item in order.items
+          .detail-row
+            span #{item.name} (x#{item.qty})
+            span= (item.price * item.qty).toLocaleString('vi-VN') + ' đ'
+        .detail-row(style="font-weight: 800; font-size: 1.2rem; color: var(--pink-dark);")
+          span Tổng cộng:
+          span= order.totalAmount.toLocaleString('vi-VN') + ' đ'
 
-        div(style="text-align:center; margin-top: 30px;")
-          a(href=`/order/cancel/${order._id}`, style="color: #bbb; font-size: 0.8rem; text-decoration: none;" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng không?')") 
-            i.fas.fa-times-circle(style="margin-right: 5px;")
-            | Tôi muốn hủy đơn hàng này
+      .btn-group
+        a.btn.btn-outline(href="/") Tiếp tục mua
+        a.btn.btn-primary(href="/") Về trang chủ
 
     script.
       function previewImage(event) {
         const input = event.target;
-        const preview = document.getElementById('preview');
-        const uploadText = document.getElementById('upload-text');
         const submitBtn = document.getElementById('submit-btn');
-
         if (input.files && input.files[0]) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            uploadText.innerText = "Đã chọn ảnh!";
-            submitBtn.style.display = 'block';
-          }
-          reader.readAsDataURL(input.files[0]);
+          submitBtn.style.display = 'block';
         }
       }

@@ -14,7 +14,6 @@ html(lang="vi")
       }
       body { font-family: 'Quicksand', sans-serif; background: #fafafa; color: var(--text-dark); margin: 0; }
       
-      /* Header đơn giản */
       .simple-nav { 
         background: white; padding: 15px 5%; 
         display: flex; justify-content: space-between; align-items: center;
@@ -25,7 +24,6 @@ html(lang="vi")
       .container { max-width: 800px; margin: 40px auto; padding: 0 20px; min-height: 50vh; }
       h2 { font-weight: 700; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
       
-      /* Card đơn giản */
       .order-item-card {
         background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
         border: 1px solid #eee; transition: 0.2s;
@@ -45,11 +43,18 @@ html(lang="vi")
       
       .btn-back { color: #888; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
       .btn-back:hover { color: var(--pink-main); }
+      
+      .btn-detail {
+        text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+        background: var(--pink-bg); color: var(--pink-main); padding: 8px 15px;
+        border-radius: 50px; font-weight: 600; font-size: 0.85rem; transition: 0.3s;
+      }
+      .btn-detail:hover { background: var(--pink-main); color: white; }
 
   body
     nav.simple-nav
       a.logo-small(href="/") FloraHub
-      a.btn-back(href="/") </i> Quay lại cửa hàng
+      a.btn-back(href="/") Quay lại cửa hàng
 
     .container
       h2 Lịch sử đơn hàng
@@ -77,37 +82,32 @@ html(lang="vi")
             .total-price
               span(style="font-size: 0.9rem; color: #888; font-weight: 400;") Tổng cộng: 
               | #{order.totalAmount.toLocaleString('vi-VN')}đ
+            
+            //- Nút Xem chi tiết đơn hàng mới thêm
+            .order-footer(style="margin-top: 15px; border-top: 1px solid #f5f5f5; padding-top: 15px; text-align: right;")
+              a.btn-detail(href=`/order-detail/${order._id}`)
+                i.fas.fa-eye(style="margin-right: 6px;")
+                | Xem chi tiết
       else
         div(style="text-align: center; padding: 50px; color: #bbb;")
           p Bạn chưa có đơn hàng nào.
 
-    //- GIỮ NGUYÊN FOOTER
-    footer(style="background: var(--white); padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
+    footer(style="background: #fff; padding: 80px 8% 40px; border-top: 5px solid var(--pink-bg);")
       div(style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px;")
         div
-          a.logo(href="/") FloraHub
+          a.logo-small(href="/") FloraHub
           p(style="margin-top: 20px; line-height: 1.8; color: #888; font-size: 0.9rem;") VNUA FloraHub mang đến những đóa hoa tươi thắm nhất, thay bạn gửi gắm yêu thương đến những người trân quý.
         
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Dịch Vụ
           ul(style="list-style: none; line-height: 2;")
             li: a(href="/" style="text-decoration: none; color: #777;") Trang chủ
-            li: a(href="/explore" style="text-decoration: none; color: #777;") Shop hoa
-            li: a(href="/wiki" style="text-decoration: none; color: #777;") Cẩm nang
-            li: a(href="/vouchers" style="text-decoration: none; color: #777;") Kho vouchers
-            li: a(href="/blog" style="text-decoration: none; color: #777;") Tin tức
             li: a(href="/my-orders" style="text-decoration: none; color: #777;") Lịch sử đặt hàng
-            li: a(href="/track-order" style="text-decoration: none; color: #777;") Theo dõi đơn
         
         div
           h4(style="margin-bottom: 20px; font-weight: 800; color: #333;") Liên Hệ
           ul(style="list-style: none; color: #777; font-size: 0.9rem; line-height: 2;")
             li <i class="fas fa-map-marker-alt" style="color: var(--pink-main); margin-right: 10px;"></i> Trâu Quỳ, Gia Lâm, Hà Nội
-            li <i class="fas fa-phone-alt" style="color: var(--pink-main); margin-right: 10px;"></i> 0123 456 789
       
       div(style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #f2f2f2; color: #bbb; font-size: 0.8rem;")
         p &copy; 2026 VNUA FloraHub. Thiết kế bởi FloraHub Team.
-
-    .social-chat-wrapper
-      a.chat-btn.zalo(href="https://zalo.me/0398102869" target="_blank"): img(src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_Zalo.svg")
-      a.chat-btn.messenger(href="#" target="_blank"): i.fab.fa-facebook-messenger

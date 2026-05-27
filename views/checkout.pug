@@ -5,7 +5,7 @@ html(lang="vi")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Xác nhận đơn hàng - FloraHub
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
-    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght=700&family=Quicksand:wght@300;400;500;600;700&display=swap", rel="stylesheet")
     style.
       :root {
         --pink-main: #FF85A1;
@@ -15,6 +15,7 @@ html(lang="vi")
         --text-dark: #4A4A4A;
         --white: #FFFFFF;
         --green-success: #2ecc71;
+        --gray-light: #f8f9fa;
       }
       body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); color: var(--text-dark); margin: 0; }
       
@@ -40,6 +41,25 @@ html(lang="vi")
 
       h2, h4 { font-weight: 800; color: var(--text-dark); margin-bottom: 25px; }
       h2 i { color: var(--pink-main); margin-right: 15px; }
+
+      .section-divider {
+        margin: 30px 0; padding-top: 25px; border-top: 2px dashed var(--pink-bg);
+      }
+
+      /* Khung hiển thị thông tin có sẵn từ DB */
+      .sender-info-box {
+        background: var(--gray-light);
+        border-left: 5px solid var(--pink-main);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 22px;
+      }
+      .sender-info-line {
+        display: flex; margin-bottom: 10px; font-size: 0.95rem;
+      }
+      .sender-info-line:last-child { margin-bottom: 0; }
+      .sender-info-line strong { width: 140px; color: #666; }
+      .sender-info-line span { color: var(--text-dark); font-weight: 600; }
 
       .form-group { margin-bottom: 22px; }
       .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 0.9rem; color: #666; }
@@ -92,32 +112,55 @@ html(lang="vi")
       h2 <i class="fas fa-magic"></i> Hoàn tất đơn hàng của bạn
 
       form.checkout-grid(action="/place-order" method="POST")
-        //- Bên trái: Thông tin nhận hoa & Thanh toán
+        //- Bên trái: Thông tin Người gửi, Người nhận & Thanh toán
         .card-custom
-          h4 <i class="fas fa-truck" style="margin-right: 10px; color: var(--pink-soft);"></i> Thông tin giao hàng
+          //- PHẦN 1: THÔNG TIN NGƯỜI GỬI (Tự động lấy từ MongoDB User)
+          h4 <i class="fas fa-user-feather" style="margin-right: 10px; color: var(--pink-soft);"></i> Thông tin người đặt (Người gửi)
+          
+          .sender-info-box
+            if user
+              .sender-info-line
+                strong <i class="fas fa-user me-2"></i> Họ tên:
+                span #{user.name}
+              .sender-info-line
+                strong <i class="fas fa-phone me-2"></i> Số điện thoại:
+                span #{user.phone}
+              .sender-info-line
+                strong <i class="fas fa-map-marker-alt me-2"></i> Địa chỉ tài khoản:
+                span #{user.address}
+              //- Input ẩn để gửi kèm dữ liệu người mua lên Server xử lý nếu cần
+              input(type="hidden" name="senderName" value=user.fullName)
+              input(type="hidden" name="senderPhone" value=user.phone)
+            else
+              p.text-danger.mb-0 Vui lòng đăng nhập để đồng bộ thông tin đặt hoa.
+
+          //- Chỉ để lại duy nhất ô lời nhắn ở phần thông tin người đặt
+          .form-group
+            label Lời nhắn gửi kèm hoa (Người đặt tự viết)
+            textarea.form-control(name="note" rows="3" placeholder="Nhập lời chúc ghi trên thiệp hoặc yêu cầu gói hoa...")
+
+          //- PHẦN 2: THÔNG TIN NGƯỜI NHẬN HOA (Để trống cho khách tự điền)
+          .section-divider
+            h4 <i class="fas fa-gift" style="margin-right: 10px; color: var(--pink-soft);"></i> Thông tin người nhận hoa
           
           .form-group
             label Họ tên người nhận
-            input.form-control(name="customerName" required placeholder="Nhập tên người nhận hoa...")
+            input.form-control(name="customerName" required placeholder="Nhập tên người nhận hoa thực tế...")
           
           div(style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;")
             .form-group
-              label Số điện thoại
-              input.form-control(name="phone" type="tel" pattern="[0-9]{10,11}" required placeholder="Để shipper gọi khi đến...")
+              label Số điện thoại nhận
+              input.form-control(name="phone" type="tel" pattern="[0-9]{10,11}" required placeholder="Số điện thoại để shipper gọi...")
             .form-group
-              label Thời gian mong muốn
-              input.form-control(name="deliveryTime" placeholder="Ví dụ: Sáng mai, 2h chiều...")
+              label Thời gian giao mong muốn
+              input.form-control(name="deliveryTime" placeholder="Ví dụ: Giờ hành chính, trước 5h chiều...")
 
           .form-group
-            label Địa chỉ nhận hoa
-            input.form-control(name="address" required placeholder="Số nhà, tên đường, phường/xã...")
+            label Địa chỉ giao hoa đến
+            input.form-control(name="address" required placeholder="Địa chỉ cụ thể nơi nhận hoa...")
 
-          .form-group
-            label Lời nhắn gửi kèm hoa (nếu có)
-            textarea.form-control(name="note" rows="3" placeholder="Viết những lời yêu thương...")
-
-          //- PHẦN MỚI: CHỌN PHƯƠNG THỨC THANH TOÁN
-          div(style="margin-top: 30px; padding-top: 25px; border-top: 2px solid var(--pink-bg);")
+          //- PHẦN 3: PHƯƠNG THỨC THANH TOÁN (Giữ nguyên không thay đổi)
+          .section-divider
             h4 <i class="fas fa-credit-card" style="margin-right: 10px; color: var(--pink-soft);"></i> Phương thức thanh toán
             .payment-options
               label.payment-item
@@ -138,7 +181,7 @@ html(lang="vi")
           
           a.back-link(href="/cart") <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng để sửa
 
-        //- Bên phải: Tóm tắt đơn hàng
+        //- Bên phải: Tóm tắt đơn hàng (Giữ nguyên không thay đổi)
         .card-custom.order-summary
           h4 <i class="fas fa-shopping-bag" style="margin-right: 10px; color: var(--pink-soft);"></i> Tóm tắt đơn hàng
           

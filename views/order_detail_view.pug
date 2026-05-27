@@ -1,0 +1,32 @@
+doctype html
+html(lang="vi")
+  head
+    title Chi tiết đơn hàng - FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    style.
+      body { font-family: 'Quicksand', sans-serif; background: #FFF0F3; padding: 20px; }
+      .detail-card { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+      .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+      h4 { color: #FF85A1; margin-top: 25px; display: flex; align-items: center; gap: 10px; }
+  body
+    .detail-card
+      h2(style="text-align: center; color: #333;") Chi tiết đơn hàng
+      p(style="text-align:center; color:#888;") Mã: #{order._id.toString().slice(-8).toUpperCase()}
+      
+      h4 <i class="fas fa-user-circle"></i> Người đặt (Người gửi)
+      .row: span Họ tên: <strong>#{order.senderName || order.orderedBy.fullName}</strong>
+      .row: span SĐT: <strong>#{order.senderPhone || 'Chưa cập nhật'}</strong>
+
+      h4 <i class="fas fa-gift"></i> Người nhận hoa
+      .row: span Tên: <strong>#{order.customer.name}</strong>
+      .row: span SĐT: <strong>#{order.customer.phone}</strong>
+      .row: span Địa chỉ: <span>#{order.customer.address}</span>
+      .row: span Lời nhắn: <em>#{order.note || 'Không có'}</em>
+      .row: span Giao hàng: <strong>#{order.customer.deliveryTime || 'Sớm nhất'}</strong>
+
+      h4 <i class="fas fa-receipt"></i> Thanh toán
+      .row: span Phương thức: <strong>#{order.paymentMethod === 'BANK' ? 'Chuyển khoản' : 'COD'}</strong>
+      .row: span Tổng cộng: <strong style="color: #FF85A1;">#{order.totalAmount.toLocaleString('vi-VN')} đ</strong>
+
+      div(style="margin-top: 30px; text-align: center;")
+        a(href="/my-orders", style="background: #FF85A1; color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 700;") Quay lại danh sách

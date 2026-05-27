@@ -209,27 +209,32 @@ html(lang="vi")
         .table-container
           h3(style="margin-top:0; font-size: 1.1rem; color: var(--pink-dark);") 
             i.fas.fa-users(style="margin-right: 10px;")
-            | Khách hàng thân thiết trong tháng (#{new Date().getMonth() + 1}/#{new Date().getFullYear()})
+            | Khách hàng thân thiết tháng #{new Date().getMonth() + 1}/#{new Date().getFullYear()}
           table.admin-table
             thead
               tr
-                th Tên khách hàng
+                th Tên người đặt
+                th Người nhận gần nhất
                 th Số điện thoại
-                th(style="text-align:center") Số đơn đã hoàn tất
+                th(style="text-align:center") Đơn hoàn tất
                 th(style="text-align:right") Tổng chi tiêu
             tbody
               if stats.monthlyCustomers && stats.monthlyCustomers.length > 0
                 each user in stats.monthlyCustomers
                   tr
-                    td: strong(style="color: #444;")= user.name
+                    //- Cột 1: Người đặt
+                    td: strong(style="color: #444;")= user.name 
+                    //- Cột 2: Người nhận (Dữ liệu mới)
+                    td: span(style="color: #E91E63; font-weight: 600;")= user.receiverName
+                    //- Cột 3: SĐT người nhận
                     td: span(style="color: #888; font-family: monospace;")= user.phone
                     td(style="text-align:center")
-                      span.customer-badge #{user.orderCount} đơn hàng
+                      span.customer-badge #{user.orderCount} đơn
                     td(style="text-align:right; font-weight: 800; color: var(--pink-main);") 
                       | #{user.totalSpent.toLocaleString('vi-VN')} đ
               else
                 tr
-                  td(colspan="4", style="text-align: center; padding: 50px; color: #ccc;")
+                  td(colspan="5", style="text-align: center; padding: 50px; color: #ccc;")
                     i.fas.fa-user-slash(style="font-size: 2rem; display:block; margin-bottom:10px")
                     | Chưa có dữ liệu khách hàng trong tháng này.
 
