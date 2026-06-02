@@ -1,0 +1,97 @@
+doctype html
+html(lang="vi")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Thanh toán đơn hàng - FloraHub
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+    link(href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&display=swap", rel="stylesheet")
+    style.
+      :root { --pink-main: #E91E63; --pink-dark: #C2185B; --text-dark: #2d3436; }
+      body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f4; margin: 0; padding: 20px; color: var(--text-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+      .payment-container { background: white; max-width: 500px; width: 100%; border-radius: 30px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+      .header h2 { color: var(--pink-dark); margin-bottom: 5px; font-weight: 800; }
+      .amount-box { background: #fff4e5; border: 1px solid #ffe0b2; padding: 15px; border-radius: 15px; margin: 20px 0; }
+      .amount-box p { margin: 0; color: #666; font-size: 14px; }
+      .amount-box h1 { margin: 5px 0 0; color: #ef6c00; font-size: 28px; font-weight: 800; }
+      .qr-code { width: 220px; height: 220px; margin: 15px auto; padding: 10px; border: 2px dashed var(--pink-main); border-radius: 20px; display: flex; align-items: center; justify-content: center; }
+      .qr-code img { width: 100%; height: 100%; object-fit: contain; }
+      .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; border-bottom: 1px dashed #eee; padding-bottom: 8px; text-align: left; }
+      .info-row span { color: #888; }
+      .info-row strong { color: #333; }
+      .upload-section { margin-top: 25px; background: #fcfcfc; border: 2px dashed #ddd; padding: 20px; border-radius: 20px; position: relative; cursor: pointer; }
+      .upload-section:hover { border-color: var(--pink-main); }
+      .btn-submit { background: var(--pink-main); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; box-shadow: 0 5px 15px rgba(233,30,99,0.3); }
+      .btn-submit:hover { background: var(--pink-dark); }
+      #preview-img { max-width: 100%; max-height: 150px; border-radius: 10px; display: none; margin-top: 10px; }
+
+  body
+    .payment-container
+      //- Tiêu đề
+      div(style="text-align:center; margin-bottom: 25px;")
+        h2(style="color: var(--pink-main); font-family: 'Dancing Script', cursive; font-size: 2rem;") Thanh toán Chuyển khoản
+        p(style="color:#888; font-size: 0.9rem;") Vui lòng quét mã và gửi ảnh xác nhận
+
+      //- PHẦN QR GIỐNG TRANG THÀNH CÔNG
+      .qr-section(style="background: #fdf2f4; border: 2px solid #FBB1BD; border-radius: 20px; padding: 25px; text-align: center;")
+        img.qr-image(src="/public/qr2.png" alt="Mã QR cá nhân", style="width: 220px; height: 220px; border-radius: 15px; border: 5px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.1);")
+        
+        //- THÔNG TIN NGÂN HÀNG CỦA BẠN
+        div(style="text-align: left; background: #fff; padding: 15px; border-radius: 12px; font-size: 0.9rem; margin-top: 20px; border: 1px solid #eee;")
+          p(style="margin: 5px 0;") 🏛️ Ngân hàng: <strong>MB Bank</strong>
+          p(style="margin: 5px 0;") 👤 Chủ tài khoản: <strong>Nguyen Thi Phuong</strong>
+          p(style="margin: 5px 0;") 💰 Số tiền: <strong>#{order.totalAmount.toLocaleString('vi-VN')} đ</strong>
+          p(style="margin: 5px 0;") 📝 Nội dung: <strong>FLORAHUB #{order._id.toString().slice(-8).toUpperCase()}</strong>
+
+        .amount-box(style="margin-top: 20px; padding: 15px; background: white; border-radius: 15px;")
+          p(style="margin: 0; font-size: 0.85rem; color: #666;") TỔNG TIỀN CẦN QUÉT
+          h1(style="margin: 5px 0 0; color: #E91E63; font-size: 1.5rem;")= order.totalAmount.toLocaleString('vi-VN') + ' đ'
+
+      //- PHẦN THÔNG TIN CHI TIẾT
+      .order-details(style="background: #fff; border: 2px solid #FFF0F3; border-radius: 20px; padding: 25px; margin: 25px 0; text-align: left;")
+        h4(style="color: #E91E63; font-weight: 800; margin-bottom: 15px;") <i class="fas fa-info-circle"></i> Thông tin đơn hàng
+        .detail-row(style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #FFF0F3; font-size: 0.95rem;")
+          span Nội dung CK:
+          strong(style="color: #E91E63;")= content
+        .detail-row(style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #FFF0F3; font-size: 0.95rem;")
+          span Người nhận:
+          strong= order.customer.name
+        .detail-row(style="display: flex; justify-content: space-between; padding: 10px 0; font-size: 0.95rem;")
+          span SĐT nhận:
+          strong= order.customer.phone
+
+      //- Form nộp ảnh minh chứng
+      form(action=`/submit-payment-proof/${order._id}`, method="POST")
+        input#base64-input(type="hidden", name="paymentProofBase64")
+        
+        .upload-section(onclick="document.getElementById('file-file').click()" style="margin-top: 20px; border: 2px dashed #FBB1BD; padding: 20px; border-radius: 15px; cursor: pointer; text-align: center;")
+          i.fas.fa-cloud-upload-alt(style="font-size: 2rem; color: #FBB1BD;")
+          p#upload-text(style="margin: 10px 0 0; font-size: 0.9rem; font-weight: 600; color: #555;") Chọn ảnh minh chứng chuyển khoản
+          img#preview-img(style="max-width: 100%; max-height: 150px; border-radius: 10px; display: none; margin-top: 15px;")
+          input#file-file(type="file", accept="image/*", style="display: none;", onchange="previewFile()")
+
+        button.btn-submit(type="submit" style="background: #FF85A1; color: white; border: none; width: 100%; padding: 15px; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 20px;")
+          i.fas.fa-check-circle
+          |  XÁC NHẬN ĐÃ CHUYỂN KHOẢN
+
+    script.
+      function previewFile() {
+        const file = document.getElementById('file-file').files[0];
+        const preview = document.getElementById('preview-img');
+        const text = document.getElementById('upload-text');
+        const base64Input = document.getElementById('base64-input');
+        
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          preview.src = reader.result;
+          preview.style.display = 'inline-block';
+          text.innerText = "Đã chọn ảnh thành công! Bạn có thể chọn lại";
+          base64Input.value = reader.result; // Lưu chuỗi Base64 vào ô input ẩn để submit form
+        }
+        
+        if (file) {
+          reader.readAsDataURL(file);
+        } else {
+          preview.src = "";
+        }
+      }

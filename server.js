@@ -752,11 +752,11 @@ fastify.get('/checkout', async (request, reply) => {
 });
 
 // B. Xử lý lưu Đơn hàng vào Database
+// B. Xử lý lưu Đơn hàng vào Database
 fastify.post('/place-order', async (request, reply) => {
   const user = request.session.user;
   if (!user) return reply.redirect('/login?error=vui-long-dang-nhap');
 
-  // [MỚI]: Lấy thêm paymentMethod từ form gửi lên
   const { customerName, phone, address, note, deliveryTime, paymentMethod } = request.body;
   const cart = request.session.cart || [];
   const appliedVoucher = request.session.appliedVoucher || null; 
@@ -782,7 +782,7 @@ fastify.post('/place-order', async (request, reply) => {
         name: item.name,
         price: item.price,
         qty: item.qty,
-        image: item.image, // [MỚI]: Lưu thêm ảnh để hiển thị ở trang thành công/admin
+        image: item.image,
         cost_price: flowerInfo ? (flowerInfo.cost_price || 0) : 0 
       });
 
@@ -799,14 +799,11 @@ fastify.post('/place-order', async (request, reply) => {
     // 2. Tạo đối tượng đơn hàng mới
     const newOrder = {
       userId: new ObjectId(user.id || user._id),
-      
-      // SỬA Ở ĐÂY: Lưu trực tiếp senderName và senderPhone
-      senderName: user.name, 
+      senderName: user.name || user.fullName, 
       senderPhone: user.phone || 'Chưa cập nhật',
-      
       orderedBy: {
         username: user.username,
-        fullName: user.name
+        fullName: user.name || user.fullName
       },
       customer: { 
         name: customerName || user.name,
@@ -819,16 +816,14 @@ fastify.post('/place-order', async (request, reply) => {
       subTotal: subTotal,
       appliedVoucher: appliedVoucher,
       totalAmount: finalTotal,
-      
-      // [MỚI]: Lưu phương thức và trạng thái thanh toán
       paymentMethod: paymentMethod || 'COD', 
       paymentStatus: (paymentMethod === 'BANK') ? 'unpaid' : 'pending_cod',
-      
       status: 'pending',
       createdAt: new Date()
     };
 
     const result = await orderColl.insertOne(newOrder);
+    const orderId = result.insertedId;
 
     // 3. Đánh dấu Voucher đã dùng
     if (appliedVoucher && appliedVoucher.code) {
@@ -841,19 +836,71 @@ fastify.post('/place-order', async (request, reply) => {
       );
     }
 
-    // 4. Dọn dẹp session
+    // 4. Dọn dẹp session giỏ hàng ngay sau khi chốt đơn thành công
     request.session.cart = [];
     request.session.appliedVoucher = null; 
     
-    // 5. Render trang thành công (Sử dụng orderId mới để tạo mã VietQR)
-    return reply.view('order_success.pug', { 
-      order: { ...newOrder, _id: result.insertedId },
-      session: request.session
-    });
+    // 5. ĐIỀU CHỈNH LOGIC ĐIỀU HƯỚNG TẠI ĐÂY
+    if (paymentMethod === 'BANK') {
+      // Nếu chọn chuyển khoản -> Đẩy sang trang trung gian quét QR và up ảnh
+      return reply.redirect(`/payment-gateway/${orderId}`);
+    } else {
+      // Nếu chọn COD -> Đi thẳng đến trang hoàn tất thành công như cũ
+      return reply.redirect(`/order-success/${orderId}`);
+    }
 
   } catch (err) {
     fastify.log.error(err);
     return reply.code(500).send("Lỗi hệ thống khi xử lý đơn hàng");
+  }
+});
+
+// C. Giao diện trang cổng thanh toán Ngân hàng
+fastify.get('/payment-gateway/:orderId', async (request, reply) => {
+  const { orderId } = request.params;
+  const orderColl = fastify.mongo.db.collection('orders');
+  
+  try {
+    const order = await orderColl.findOne({ _id: new fastify.mongo.ObjectId(orderId) });
+    if (!order) return reply.code(404).send('Không tìm thấy đơn hàng');
+
+    // Tạo link VietQR tự động (Thay số tài khoản, tên ngân hàng và tên của bạn vào đây)
+    // Cấu trúc: https://img.vietqr.io/image/[Mã-Ngân-Hàng]-[Số-Tài-Khoản]-qr_only.png?amount=[Số-Tiền]&addInfo=[Nội-Dung]
+    const bankId = "MB"; // Ví dụ: MB, VCB, ICB...
+    const accountNo = "123456789999"; 
+    const accountName = "DOI MANH TUAN";
+    const content = `FLORAHUB ${orderId.toString().slice(-6).toUpperCase()}`;
+    
+    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-qr_only.png?amount=${order.totalAmount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accountName)}`;
+
+    return reply.view('payment_gateway.pug', { order, qrUrl, content });
+  } catch (err) {
+    return reply.code(500).send('Lỗi tải trang thanh toán');
+  }
+});
+
+// D. Xử lý khi khách upload ảnh và bấm "Hoàn tất thanh toán"
+fastify.post('/submit-payment-proof/:orderId', async (request, reply) => {
+  const { orderId } = request.params;
+  const { paymentProofBase64 } = request.body; // Nhận chuỗi ảnh Base64 từ client gửi lên
+  const orderColl = fastify.mongo.db.collection('orders');
+
+  try {
+    await orderColl.updateOne(
+      { _id: new fastify.mongo.ObjectId(orderId) },
+      { 
+        $set: { 
+          paymentProof: paymentProofBase64 || null, // Lưu link ảnh hoặc chuỗi base64 minh chứng
+          paymentStatus: 'paid_proof_submitted', // Đổi trạng thái tiền sang "Đã nộp minh chứng"
+          updatedAt: new Date()
+        } 
+      }
+    );
+
+    // Chuyển về trang đặt hàng thành công cũ
+    return reply.redirect(`/order-success/${orderId}`);
+  } catch (err) {
+    return reply.code(500).send('Lỗi xử lý minh chứng thanh toán');
   }
 });
 
@@ -1251,6 +1298,30 @@ fastify.get('/profile', async (request, reply) => {
   }
 });
 
+// Route xử lý cập nhật thông tin
+fastify.post('/profile/update', async (request, reply) => {
+  const sessionUser = request.session.user;
+  if (!sessionUser) return reply.redirect('/login');
+
+  const { phone, address } = request.body;
+  const currentId = sessionUser._id || sessionUser.id;
+
+  try {
+    await fastify.mongo.db.collection('users').updateOne(
+      { _id: new fastify.mongo.ObjectId(currentId) },
+      { $set: { phone: phone, address: address } }
+    );
+    
+    // Cập nhật lại session để phản ánh thay đổi ngay lập tức
+    request.session.user.phone = phone;
+    request.session.user.address = address;
+    
+    return reply.redirect('/profile');
+  } catch (err) {
+    console.error("Lỗi cập nhật:", err);
+    return reply.status(500).send("Không thể cập nhật thông tin");
+  }
+});
 
 // Route: Xem chi tiết người dùng (Chuẩn Fastify + MongoDB)
 fastify.get('/admin/users/detail/:id', async (request, reply) => {
@@ -1751,15 +1822,28 @@ fastify.get('/order-success/:id', async (request, reply) => {
     });
 
     if (!order) {
+      fastify.log.warn(`[ORDER SUCCESS] Không tìm thấy đơn hàng với ID: ${orderId}`);
       return reply.code(404).send('Không tìm thấy đơn hàng');
     }
+
+    // --- ĐOẠN LOG DEBUG ĐỂ KIỂM TRA DỮ LIỆU ĐƠN HÀNG ---
+    console.log("============== DEBUG ORDER SUCCESS ==============");
+    console.log("Mã đơn hàng (ID):", order._id);
+    console.log("Phương thức thanh toán:", order.paymentMethod);
+    console.log("Trạng thái tiền (paymentStatus):", order.paymentStatus);
+    console.log("Người đặt (Sender):", order.senderName, "-", order.senderPhone);
+    console.log("Người nhận (Customer):", order.customer ? order.customer.name : "N/A", "-", order.customer ? order.customer.phone : "N/A");
+    console.log("Có ảnh minh chứng chưa?:", order.paymentProof ? "ĐÃ CÓ (Chuỗi Base64)" : "CHƯA CÓ");
+    console.log("=================================================");
 
     // Lấy trạng thái từ URL (nếu có) để hiển thị thông báo "Đã tải ảnh thành công"
     const status = request.query.status;
 
+    // Trả về view kèm theo dữ liệu đầy đủ
     return reply.view('order_success.pug', { 
       order, 
       status,
+      user: request.session.user || null, // Đảm bảo truyền thông tin user hiện tại nếu file PUG cần dùng
       session: request.session 
     });
   } catch (err) {
@@ -1767,7 +1851,6 @@ fastify.get('/order-success/:id', async (request, reply) => {
     return reply.code(500).send('Lỗi hiển thị trang thành công');
   }
 });
-
 
 // 1. GET: Hiển thị giao diện Form Nhập Kho
 fastify.get('/admin/import-stock', async (request, reply) => {
@@ -1877,14 +1960,6 @@ fastify.get('/admin/import-history', async (request, reply) => {
     return reply.code(500).send("Lỗi không thể tải trang quản lý nhập kho");
   }
 });
-
-
-
-
-
-
-
-
 
 
 

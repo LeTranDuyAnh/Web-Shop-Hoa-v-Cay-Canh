@@ -15,67 +15,26 @@ html(lang="vi")
         --text-muted: #888;
         --white: #FFFFFF;
       }
-      body { 
-        font-family: 'Quicksand', sans-serif; 
-        background: var(--pink-bg); 
-        margin: 0; padding: 40px 5%;
-      }
-      .profile-container {
-        max-width: 1100px; margin: 0 auto;
-        display: grid; grid-template-columns: 320px 1fr; gap: 30px;
-      }
+      body { font-family: 'Quicksand', sans-serif; background: var(--pink-bg); margin: 0; padding: 40px 5%; }
+      .profile-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 320px 1fr; gap: 30px; }
       
-      /* Cột trái: Thông tin cá nhân */
-      .profile-card { 
-        background: var(--white); padding: 40px 30px; border-radius: 30px; 
-        box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1); text-align: center; height: fit-content;
-      }
-      .avatar { 
-        width: 100px; height: 100px; 
-        background: linear-gradient(135deg, var(--pink-main), #ffb1bd); 
-        color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-        font-size: 2.5rem; margin: 0 auto 20px; font-weight: 700; border: 4px solid #fff;
-      }
+      .profile-card { background: var(--white); padding: 40px 30px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1); text-align: center; height: fit-content; }
+      .avatar { width: 100px; height: 100px; background: linear-gradient(135deg, var(--pink-main), #ffb1bd); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 20px; font-weight: 700; border: 4px solid #fff; }
       .info-list { text-align: left; margin-top: 25px; }
       .info-item { margin-bottom: 18px; border-bottom: 1px solid #f9f9f9; padding-bottom: 8px; }
       .info-label { font-size: 0.7rem; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 700; }
       .info-value { font-weight: 600; font-size: 0.95rem; }
 
-      /* --- LOYALTY BANNER CẢI TIẾN --- */
-      .loyalty-banner {
-        border-radius: 25px; padding: 25px 35px; color: white;
-        display: flex; justify-content: space-between; align-items: center;
-        margin-bottom: 30px; position: relative; overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        background: linear-gradient(135deg, #A1887F, #795548); /* Mặc định Hạng Đồng */
-        transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      /* Class cho Hạng Vàng */
-      .loyalty-banner.rank-gold { 
-        background: linear-gradient(135deg, #FFD700, #FFA000); color: #5D4037; 
-      }
-      /* Class cho Hạng Kim cương */
-      .loyalty-banner.rank-diamond { 
-        background: linear-gradient(135deg, #4FC3F7, #1565C0); color: white;
-      }
-      
-      .loyalty-banner::after {
-        content: '\f06b'; font-family: 'Font Awesome 5 Free'; font-weight: 900;
-        position: absolute; right: -10px; bottom: -20px; font-size: 7rem; opacity: 0.15;
-      }
+      .loyalty-banner { border-radius: 25px; padding: 25px 35px; color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); background: linear-gradient(135deg, #A1887F, #795548); transition: 0.5s; }
+      .loyalty-banner.rank-gold { background: linear-gradient(135deg, #FFD700, #FFA000); color: #5D4037; }
+      .loyalty-banner.rank-diamond { background: linear-gradient(135deg, #4FC3F7, #1565C0); color: white; }
       .rank-title { font-family: 'Dancing Script', cursive; font-size: 2.2rem; margin-bottom: 5px; }
-      .points-display { text-align: right; z-index: 1; }
       .points-num { font-size: 2.8rem; font-weight: 800; line-height: 1; }
-      .points-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
 
-      .orders-section {
-        background: var(--white); padding: 35px; border-radius: 30px; 
-        box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1);
-      }
+      .orders-section { background: var(--white); padding: 35px; border-radius: 30px; box-shadow: 0 10px 30px rgba(255, 133, 161, 0.1); }
       .order-table { width: 100%; border-collapse: collapse; }
       .order-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--pink-bg); color: var(--text-muted); font-size: 0.8rem; }
       .order-table td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-      
       .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
       .status-completed { background: #e8f5e9; color: #2e7d32; }
       .status-pending { background: #fff4e5; color: #ef6c00; }
@@ -95,65 +54,59 @@ html(lang="vi")
             span.info-value= user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng'
           .info-item
             span.info-label Điện thoại
-            span.info-value= user.phone || 'Chưa cập nhật'
+            div(style="display:flex; justify-content:space-between; align-items:center;")
+              span.info-value= user.phone || 'Chưa cập nhật'
+              i.fas.fa-edit(style="cursor:pointer; color:var(--pink-main); font-size: 0.8rem;" onclick="openEditModal()")
           .info-item
             span.info-label Địa chỉ
-            span.info-value= user.address || 'Chưa cập nhật'
+            div(style="display:flex; justify-content:space-between; align-items:center;")
+              span.info-value= user.address || 'Chưa cập nhật'
+              i.fas.fa-edit(style="cursor:pointer; color:var(--pink-main); font-size: 0.8rem;" onclick="openEditModal()")
 
         a(href="/" style="display:inline-block; margin-top:20px; text-decoration:none; color: var(--pink-main); font-weight: 700;") <i class="fas fa-arrow-left"></i> Về cửa hàng
 
       main
-        //- Logic xác định Class Banner dựa trên Rank
-        - var rankClass = ''
-        - if (user.rank === 'Hạng Vàng') rankClass = 'rank-gold'
-        - if (user.rank === 'Hạng Kim cương') rankClass = 'rank-diamond'
-
+        - var rankClass = (user.rank === 'Hạng Vàng' ? 'rank-gold' : (user.rank === 'Hạng Kim cương' ? 'rank-diamond' : ''))
         .loyalty-banner(class=rankClass)
           .rank-info
-            .rank-title 
-              if user.rank === 'Hạng Kim cương'
-                i.fas.fa-gem(style="margin-right: 12px;")
-              else if user.rank === 'Hạng Vàng'
-                i.fas.fa-medal(style="margin-right: 12px;")
-              else
-                i.fas.fa-award(style="margin-right: 12px;")
-              | #{user.rank || 'Hạng Đồng'}
-            
-            p(style="margin:0; font-size: 0.9rem; opacity: 0.9; font-weight: 500;")
-              if user.rank === 'Hạng Kim cương'
-                | Đặc quyền VIP: Giảm 10% đơn hàng & Ưu tiên phục vụ
-              else if user.rank === 'Hạng Vàng'
-                | Đặc quyền Vàng: Ưu đãi giảm giá 5%
-              else if user.rank === 'Hạng Đồng'
-                | Tích thêm #{51 - (user.points || 0)} điểm để lên hạng Vàng
-              else
-                | Mua đơn hàng đầu tiên để nhận hạng Đồng!
-
+            .rank-title= user.rank || 'Hạng Đồng'
+            p(style="margin:0; font-size: 0.9rem; opacity: 0.9; font-weight: 500;") Đặc quyền VIP & Ưu đãi tích điểm
           .points-display
             .points-num= user.points || 0
             .points-label Flora Points
 
         .orders-section
           h3(style="color: var(--pink-main); margin-top:0; margin-bottom:25px;") <i class="fas fa-history"></i> Lịch sử mua hàng
-          
           if orders && orders.length > 0
             table.order-table
-              thead
-                tr
-                  th MÃ ĐƠN
-                  th NGÀY
-                  th TỔNG TIỀN
-                  th TRẠNG THÁI
+              thead: tr: th MÃ ĐƠN | TH NGÀY | TỔNG TIỀN | TRẠNG THÁI
               tbody
                 each order in orders
                   tr
                     td: b= '#' + order._id.toString().slice(-6).toUpperCase()
                     td= new Date(order.createdAt).toLocaleDateString('vi-VN')
                     td(style="color: var(--pink-main); font-weight: 700;")= order.totalAmount.toLocaleString('vi-VN') + ' đ'
-                    td
-                      - var statusTxt = (order.status === 'completed' ? 'Hoàn tất' : (order.status === 'pending' ? 'Chờ duyệt' : (order.status === 'shipping' ? 'Giao hàng' : 'Đã hủy')))
-                      span.status-badge(class=`status-${order.status}`)= statusTxt
+                    td: span.status-badge(class=`status-${order.status}`)= order.status
           else
-            div(style="text-align: center; padding: 40px; color: #ccc;")
-              i.fas.fa-box-open(style="font-size: 3rem; margin-bottom: 15px; display: block;")
-              p Bạn chưa có đơn hàng nào.
+            p(style="text-align:center; color:#ccc;") Bạn chưa có đơn hàng nào.
+
+    //- Modal Chỉnh sửa
+    #editModal(style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; backdrop-filter: blur(5px);")
+      .profile-card(style="width:400px; padding:30px;")
+        h3(style="margin-top:0; color:var(--pink-dark);") Cập nhật thông tin
+        form(action="/profile/update" method="POST")
+          .info-list(style="margin-top:0;")
+            .info-item
+              label Số điện thoại:
+              input(type="text" name="phone" value=user.phone style="width:100%; padding:10px; border:2px solid #f0f0f0; border-radius:10px; outline:none;")
+            .info-item
+              label Địa chỉ:
+              textarea(name="address" rows="3" style="width:100%; padding:10px; border:2px solid #f0f0f0; border-radius:10px; outline:none;")= user.address
+          div(style="margin-top:20px; display:flex; gap:10px;")
+            button(type="button" onclick="closeEditModal()" style="flex:1; padding:10px; border-radius:20px; border:none; background:#eee; cursor:pointer;") Hủy
+            button(type="submit" style="flex:1; padding:10px; border-radius:20px; border:none; background:var(--pink-main); color:white; cursor:pointer;") Lưu thay đổi
+
+    script.
+      function openEditModal() { document.getElementById('editModal').style.display = 'flex'; }
+      function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+      window.onclick = function(event) { if (event.target == document.getElementById('editModal')) closeEditModal(); }
